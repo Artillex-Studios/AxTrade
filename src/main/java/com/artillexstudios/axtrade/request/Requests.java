@@ -16,6 +16,11 @@ public class Requests {
     private static final ArrayList<Request> requests = new ArrayList<>();
 
     public static void addRequest(@NotNull Player sender, @NotNull Player receiver) {
+        if (sender.isDead() || receiver.isDead()) {
+            MESSAGEUTILS.sendLang(sender, "request.not-accepting", Map.of("%player%", receiver.getName()));
+            return;
+        }
+
         if (sender.equals(receiver)) {
             MESSAGEUTILS.sendLang(sender, "request.cant-trade-self", Map.of("%player%", receiver.getName()));
             return;

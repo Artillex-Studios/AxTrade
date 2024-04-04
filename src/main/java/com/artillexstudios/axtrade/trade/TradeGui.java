@@ -42,6 +42,7 @@ public class TradeGui extends GuiFrame {
 
         gui.setDefaultTopClickAction(event -> {
             player.cancel();
+            Scheduler.get().run(scheduledTask -> trade.update());
             if (!slots.contains(event.getSlot())) {
                 event.setCancelled(true);
                 if (event.getCursor() == null) return;
@@ -49,7 +50,6 @@ public class TradeGui extends GuiFrame {
                 event.getCursor().setAmount(0);
                 return;
             }
-            Scheduler.get().run(scheduledTask -> trade.update());
         });
 
         gui.setDragAction(event -> {

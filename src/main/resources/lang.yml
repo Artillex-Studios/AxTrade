@@ -38,6 +38,7 @@ request:
   already-in-trade: "&#CCFFEEThe player is already trading with someone!"
   already-sent: "&#CCFFEEYou have already sent a trade request to &#00FFDD%player%&#CCFFEE!"
   too-far: "&#CCFFEEYou are too far from &#00FFDD%player% &#CCFFEEto send a trade request!"
+  not-accepting: "&#CCFFEEThis player is not accepting trades right now!"
 
 # this must be 4 lines
 # note: currently the first line must be left empty
