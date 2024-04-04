@@ -1,0 +1,118 @@
+# ----- SETTINGS -----
+
+title: "&0Trading with: %player%"
+# a gui can have 1-6 rows
+rows: 6
+
+# ----- SLOTS -----
+
+# the slots where the items can be placed
+# make sure to not put decorative items in the these slots (or change this too)
+# the own-slots and partner-slots must have an equal amount of slots
+own-slots:
+  - 9-12
+  - 18-21
+  - 27-30
+  - 36-39
+  - 45-48
+
+partner-slots:
+  - 14-17
+  - 23-26
+  - 32-35
+  - 41-44
+  - 50-53
+
+# ----- ITEMS -----
+
+# items on your side
+own:
+  confirm-item:
+    slot: 0
+    accept:
+      material: "RED_CONCRETE"
+      name: "&#00ffdd&lᴀᴄᴄᴇᴘᴛ ᴛʀᴀᴅᴇ"
+      lore:
+        - ""
+        - " &7- &fAre you happy with the trade?"
+        - ""
+        - "&#00ffdd&l> &#00ffddClick &8- &#00ffddConfirm Trade"
+    cancel:
+      material: "LIME_CONCRETE"
+      name: "&#00ffdd&lᴄᴀɴᴄᴇʟ ᴄᴏɴғɪʀᴍᴀᴛɪᴏɴ"
+      lore:
+        - ""
+        - " &7- &fDo you want to change something?"
+        - ""
+        - "&#00ffdd&l> &#00ffddClick &8- &#00ffddCancel Confirmation"
+  # you can define as many currencies as you want, also make sure to copy them to the 'partner' section!
+  currency1:
+    slot: 2
+    # you need Vault installed for this
+    currency: "vault:money"
+    material: "GOLD_NUGGET"
+    name: "&#00ffdd&lᴍᴏɴᴇʏ"
+    lore:
+      - ""
+      - " &7- &fAmount:"
+      - ""
+      - "&#00ffdd&l> &#00ffddClick &8- &#00ffddChange Amount"
+  currency2:
+    slot: 3
+    # you need Vault installed for this
+    currency: "vanilla:experience"
+    material: "EXPERIENCE_BOTTLE"
+    name: "&#00ffdd&lᴇxᴘᴇʀɪᴇɴᴄᴇ"
+    lore:
+      - ""
+      - " &7- &fAmount:"
+      - ""
+      - "&#00ffdd&l> &#00ffddClick &8- &#00ffddChange Amount"
+
+# items on your trade partner's side
+partner:
+  confirm-item:
+    slot: 8
+    accept:
+      material: "RED_CONCRETE"
+      name: "&#00ffdd&lᴡᴀɪᴛɪɴɢ ғᴏʀ ᴏᴛʜᴇʀ ᴘʟᴀʏᴇʀ"
+      lore:
+        - ""
+        - " &7- &fThe other player has not yet confirmed the trade!"
+        - ""
+    cancel:
+      material: "LIME_CONCRETE"
+      name: "&#00ffdd&lᴡᴀɪᴛɪɴɢ ғᴏʀ ʏᴏᴜ"
+      lore:
+        - ""
+        - " &7- &fThe other player has confirmed the trade!"
+  currency1:
+    slot: 6
+    # you need Vault installed for this
+    currency: "vault:money"
+    material: "GOLD_NUGGET"
+    name: "&#00ffdd&lᴍᴏɴᴇʏ"
+    lore:
+      - ""
+      - " &7- &fAmount:"
+      - ""
+      - "&#00ffdd&l> &#00ffddClick &8- &#00ffddChange Amount"
+  currency2:
+    slot: 5
+    # you need Vault installed for this
+    currency: "vanilla:experience"
+    material: "EXPERIENCE_BOTTLE"
+    name: "&#00ffdd&lᴇxᴘᴇʀɪᴇɴᴄᴇ"
+    lore:
+      - ""
+      - " &7- &fAmount:"
+      - ""
+      - "&#00ffdd&l> &#00ffddClick &8- &#00ffddChange Amount"
+
+decoration-example:
+  slot: [4, 13, 22, 31, 40, 49]
+  material: "LIGHT_BLUE_STAINED_GLASS_PANE"
+  name: " "
+
+# do not change this
+version: 1

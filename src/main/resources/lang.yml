@@ -1,0 +1,23 @@
+player-help:
+  - " "
+  - "&#00FFDD&lAxTrade &7»"
+  - " &7- &f/axtrade <player> &7| &#00FFDDSend trade request"
+  - " "
+
+admin-help:
+  - " "
+  - "&#00FFDD&lAxTrade &7»"
+  - " &7- &f/axtrade <player> &7| &#00FFDDSend trade request"
+  - " &7- &f/axtrade reload &7| &#00FFDDReload plugin"
+  - " "
+
+reload:
+  success: "&#33FF33Plugin successfully reloaded!"
+  failed: "&#FF3333Failed to reload the plugin! Something is wrong in the &f%file%&#FF3333 file, look in the console or use a yaml validator to fix the errors!"
+
+trade-started: "&#CCFFEEYou have started a trade with &#00FFDD%player%&#CCFFEE!"
+trade-aborted: "&#CCFFEEYour trade with &#00FFDD%player% &#CCFFEEwas aborted!"
+trade-completed: "&#CCFFEEYour trade with &#00FFDD%player% &#CCFFEEwas completed!"
+
+# do not change this
+version: 1

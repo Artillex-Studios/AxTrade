@@ -1,0 +1,8 @@
+name: AxTrade
+version: '${project.version}'
+main: com.artillexstudios.axtrade.AxTrade
+api-version: '1.18'
+folia-supported: true
+
+softdepend:
+  - PlaceholderAPI

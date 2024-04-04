@@ -1,0 +1,13 @@
+prefix: "&#00ffdd&lAxTrade &7» "
+
+# you must define at least 1
+# reloading will add new commands, however a restart is recommended when editing this
+command-aliases:
+  - "axtrade"
+  - "trade"
+
+# the time after clicking the trade confirm button before the trade finishes
+trade-confirm-seconds: 10
+
+# do not change this
+version: 1
