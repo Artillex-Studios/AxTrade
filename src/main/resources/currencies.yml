@@ -1,0 +1,47 @@
+# you can create your own currencies by using placeholders
+# make sure that none of the placeholders have any formatting on them
+# requires PlaceholderAPI
+placeholder-currencies:
+  Example-Currency:
+    register: false
+    # if the currency uses whole numbers then disable this
+    # 100.5 - true
+    # 100 - false
+    uses-double: true
+    # if the placeholder gets parsed even for offline players, enable this
+    works-offline: false
+    settings:
+      raw-placeholder: "%vault_eco_balance_fixed%"
+      give-command: "eco give %player% %amount%"
+      take-command: "eco take %player% %amount%"
+
+currencies:
+  Experience:
+    register: true
+  Vault:
+    register: true
+  PlayerPoints:
+    register: true
+  RoyaleEconomy:
+    register: true
+  CoinsEngine:
+    register: true
+    currency-name: "coins"
+  UltraEconomy:
+    register: true
+    currency-name: "coins"
+  KingdomsX:
+    register: true
+  RivalHarvesterHoes:
+    register: true
+  SuperMobCoins:
+    register: true
+  TheOnly-MobCoins:
+    register: true
+  TokenManager:
+    register: true
+  AxQuestBoard:
+    register: true
+
+# do not change this
+version: 5

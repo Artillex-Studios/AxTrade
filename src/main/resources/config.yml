@@ -9,5 +9,28 @@ command-aliases:
 # the time after clicking the trade confirm button before the trade finishes
 trade-confirm-seconds: 10
 
+# how fast should trade requests expire?
+trade-request-expire-seconds: 60
+
+# how far can 2 people be to trade?
+# set to -1 to disable
+trade-max-distance: 10
+
+number-formatting:
+  # modes:
+  # 0 - formatted (customizable, look at the formatted part)
+  # 1 - short (1K)
+  # 2 - raw (1000.4242421412)
+  mode: 0
+  # https://docs.oracle.com/javase/tutorial/i18n/format/decimalFormat.html
+  formatted: "#,###.##"
+  # format: language_COUNTRY
+  short: "en_US"
+
+# list of gamemodes: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/GameMode.html
+# you can't use the trade in these gamemodes
+disallowed-gamemodes:
+  - SPECTATOR
+
 # do not change this
 version: 1

@@ -22,6 +22,7 @@ public class GuiFrame {
     protected final Config file;
     protected BaseGui gui;
     protected Player player;
+    protected boolean opened = false;
 
     public GuiFrame(Config file, Player player) {
         this.file = file;
@@ -69,7 +70,13 @@ public class GuiFrame {
         final ItemStack it = buildItem(itemRoute, replacements);
         it.setAmount(amount);
         final GuiItem guiItem = new GuiItem(it, action);
-        gui.setItem(getSlots(slotRoute), guiItem);
+        if (opened) {
+            for (int slot : getSlots(slotRoute)) {
+                gui.updateItem(slot, guiItem);
+            }
+        }
+        else
+            gui.setItem(getSlots(slotRoute), guiItem);
     }
 
     protected List<Integer> getSlots(String r) {

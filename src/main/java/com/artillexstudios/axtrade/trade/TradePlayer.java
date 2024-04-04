@@ -1,6 +1,11 @@
 package com.artillexstudios.axtrade.trade;
 
+import com.artillexstudios.axtrade.hooks.HookManager;
+import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
+import com.artillexstudios.axtrade.utils.SoundUtils;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 
@@ -9,6 +14,7 @@ public class TradePlayer {
     private TradePlayer otherPlayer;
     private TradeGui tradeGui;
     private final Trade trade;
+    private final HashMap<CurrencyHook, Double> currencies = new HashMap<>();
 
     // confirmed
     // null > not confirmed
@@ -48,12 +54,16 @@ public class TradePlayer {
     public void confirm() {
         this.confirmed = CONFIG.getInt("trade-confirm-seconds", 10);
         trade.update();
+        SoundUtils.playSound(player, "accept");
+        SoundUtils.playSound(otherPlayer.getPlayer(), "accept");
     }
 
     public void cancel() {
+        if (confirmed == null) return;
         this.confirmed = null;
         otherPlayer.setConfirmed(null);
-        trade.update();
+        SoundUtils.playSound(player, "cancel");
+        SoundUtils.playSound(otherPlayer.getPlayer(), "cancel");
     }
 
     public void setConfirmed(Integer confirmed) {
@@ -63,5 +73,36 @@ public class TradePlayer {
     public void tick() {
         confirmed -= 1;
         trade.update();
+        SoundUtils.playSound(player, "countdown");
+    }
+
+    public HashMap<CurrencyHook, Double> getCurrencies() {
+        return currencies;
+    }
+
+    public double getCurrency(String currency) {
+        final CurrencyHook currencyHook = HookManager.getCurrencyHook(currency);
+        if (currencyHook == null) return 0;
+        if (!currencies.containsKey(currencyHook)) return 0;
+        return currencies.get(currencyHook);
+    }
+
+    public Result setCurrency(String currency, double amount) {
+        if (Double.isNaN(amount)) return Result.NOT_A_NUMBER;
+        final CurrencyHook currencyHook = HookManager.getCurrencyHook(currency);
+        if (currencyHook == null) return Result.CURRENCY_NOT_FOUND;
+        amount = currencyHook.usesDouble() ? amount : Math.round(amount);
+        if (amount < 0.1) return Result.TOO_LOW_VALUE;
+        if (currencyHook.getBalance(player.getUniqueId()) < amount) return Result.NOT_ENOUGH_CURRENCY;
+        currencies.put(currencyHook, amount);
+        return Result.SUCCESS;
+    }
+
+    public enum Result {
+        NOT_A_NUMBER,
+        CURRENCY_NOT_FOUND,
+        TOO_LOW_VALUE,
+        NOT_ENOUGH_CURRENCY,
+        SUCCESS
     }
 }

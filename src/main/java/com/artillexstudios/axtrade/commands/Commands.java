@@ -2,13 +2,18 @@ package com.artillexstudios.axtrade.commands;
 
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.AxTrade;
+import com.artillexstudios.axtrade.hooks.HookManager;
+import com.artillexstudios.axtrade.request.Requests;
 import com.artillexstudios.axtrade.trade.Trades;
+import com.artillexstudios.axtrade.utils.NumberUtils;
+import com.artillexstudios.axtrade.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.DefaultFor;
+import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -24,17 +29,51 @@ import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
 public class Commands implements OrphanCommand {
 
-    @DefaultFor({"~", "~ help"})
     public void help(@NotNull CommandSender sender) {
-        if (!sender.hasPermission("axtrade.admin")) {
-            for (String m : LANG.getStringList("player-help")) {
-                sender.sendMessage(StringUtils.formatToString(m));
-            }
-        } else {
+        if (sender.hasPermission("axtrade.admin")) {
             for (String m : LANG.getStringList("admin-help")) {
                 sender.sendMessage(StringUtils.formatToString(m));
             }
+        } else {
+            for (String m : LANG.getStringList("player-help")) {
+                sender.sendMessage(StringUtils.formatToString(m));
+            }
         }
+    }
+
+    @DefaultFor({"~"})
+    public void trade(@NotNull Player sender, @Optional Player other) {
+        if (other == null) {
+            help(sender);
+            return;
+        }
+
+        Requests.addRequest(sender, other);
+    }
+
+    @Subcommand("accept")
+    public void accept(@NotNull Player sender, @NotNull Player other) {
+        var request = Requests.getRequest(sender, other);
+        if (request == null || request.getSender().equals(sender)) {
+            MESSAGEUTILS.sendLang(sender, "request.no-request", Map.of("%player%", other.getName()));
+            return;
+        }
+
+        Requests.addRequest(sender, other);
+    }
+
+    @Subcommand("deny")
+    public void deny(@NotNull Player sender, @NotNull Player other) {
+        var request = Requests.getRequest(sender, other);
+        if (request == null || request.getSender().equals(sender)) {
+            MESSAGEUTILS.sendLang(sender, "request.no-request", Map.of("%player%", other.getName()));
+            return;
+        }
+
+        MESSAGEUTILS.sendLang(request.getSender(), "request.deny-sender", Map.of("%player%", request.getReceiver().getName()));
+        MESSAGEUTILS.sendLang(request.getReceiver(), "request.deny-receiver", Map.of("%player%", request.getSender().getName()));
+        SoundUtils.playSound(request.getSender(), "deny");
+        SoundUtils.playSound(request.getReceiver(), "deny");
     }
 
     @Subcommand("reload")
@@ -60,6 +99,9 @@ public class Commands implements OrphanCommand {
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╠ &#AAFFDDReloaded &fguis.yml&#AAFFDD!"));
 
         Commands.registerCommand();
+
+        new HookManager().updateHooks();
+        NumberUtils.reload();
 
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╚ &#AAFFDDSuccessful reload!"));
         MESSAGEUTILS.sendLang(sender, "reload.success");
