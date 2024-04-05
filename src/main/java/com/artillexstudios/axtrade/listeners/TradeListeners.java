@@ -44,6 +44,7 @@ public class TradeListeners implements Listener {
         final Player player = event.getPlayer();
         final Trade trade = Trades.getTrade(player);
         if (trade == null) return;
+        if (System.currentTimeMillis() - trade.getPrepTime() < 1_000L) return;
         event.setCancelled(true);
         trade.abort();
     }

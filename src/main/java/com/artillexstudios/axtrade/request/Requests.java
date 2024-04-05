@@ -16,24 +16,38 @@ public class Requests {
     private static final ArrayList<Request> requests = new ArrayList<>();
 
     public static void addRequest(@NotNull Player sender, @NotNull Player receiver) {
+        final Map<String, String> replacements = Map.of("%player%", receiver.getName());
+
+        var disallowed = CONFIG.getStringList("disallowed-gamemodes");
+        if (disallowed.contains(sender.getGameMode().name()) || disallowed.contains(receiver.getGameMode().name())) {
+            MESSAGEUTILS.sendLang(sender, "request.disallowed-gamemode", replacements);
+            return;
+        }
+
+        var blacklisted = CONFIG.getStringList("blacklisted-worlds");
+        if (blacklisted.contains(sender.getWorld().getName()) || blacklisted.contains(receiver.getWorld().getName())) {
+            MESSAGEUTILS.sendLang(sender, "request.blacklisted-world", replacements);
+            return;
+        }
+
         if (sender.isDead() || receiver.isDead()) {
-            MESSAGEUTILS.sendLang(sender, "request.not-accepting", Map.of("%player%", receiver.getName()));
+            MESSAGEUTILS.sendLang(sender, "request.not-accepting", replacements);
             return;
         }
 
         if (sender.equals(receiver)) {
-            MESSAGEUTILS.sendLang(sender, "request.cant-trade-self", Map.of("%player%", receiver.getName()));
+            MESSAGEUTILS.sendLang(sender, "request.cant-trade-self", replacements);
             return;
         }
 
         if (Trades.isTrading(receiver) || Trades.isTrading(sender)) {
-            MESSAGEUTILS.sendLang(sender, "request.already-in-trade", Map.of("%player%", receiver.getName()));
+            MESSAGEUTILS.sendLang(sender, "request.already-in-trade", replacements);
             return;
         }
 
         int maxDist = CONFIG.getInt("trade-max-distance", 10);
         if (maxDist != -1 && (sender.getWorld() != receiver.getWorld() || maxDist < sender.getLocation().distance(receiver.getLocation()))) {
-            MESSAGEUTILS.sendLang(sender, "request.too-far", Map.of("%player%", receiver.getName()));
+            MESSAGEUTILS.sendLang(sender, "request.too-far", replacements);
             return;
         }
 
@@ -45,13 +59,13 @@ public class Requests {
         }
 
         if (request != null && System.currentTimeMillis() - request.getTime() < CONFIG.getInt("trade-request-expire-seconds", 60) * 1_000L) {
-            MESSAGEUTILS.sendLang(sender, "request.already-sent", Map.of("%player%", receiver.getName()));
+            MESSAGEUTILS.sendLang(sender, "request.already-sent", replacements);
             return;
         }
 
         requests.add(new Request(sender, receiver));
 
-        MESSAGEUTILS.sendLang(sender, "request.sent-sender", Map.of("%player%", receiver.getName()));
+        MESSAGEUTILS.sendLang(sender, "request.sent-sender", replacements);
         MESSAGEUTILS.sendLang(receiver, "request.sent-receiver", Map.of("%player%", sender.getName()));
         SoundUtils.playSound(sender, "requested");
         SoundUtils.playSound(receiver, "requested");

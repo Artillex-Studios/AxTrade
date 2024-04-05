@@ -1,5 +1,9 @@
 prefix: "&#00ffdd&lAxTrade &7» "
 
+# format: language_COUNTRY
+# after changing this, the server will download the default item names
+language: en_US
+
 # you must define at least 1
 # reloading will add new commands, however a restart is recommended when editing this
 command-aliases:
@@ -12,7 +16,7 @@ trade-confirm-seconds: 10
 # how fast should trade requests expire?
 trade-request-expire-seconds: 60
 
-# how far can 2 people be to trade?
+# how far apart the 2 players can be from each other?
 # set to -1 to disable
 trade-max-distance: 10
 
@@ -28,9 +32,20 @@ number-formatting:
   short: "en_US"
 
 # list of gamemodes: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/GameMode.html
-# you can't use the trade in these gamemodes
+# you can't trade in these gamemodes
 disallowed-gamemodes:
   - SPECTATOR
+
+# worlds where trades will not work
+blacklisted-worlds:
+  - "example_world"
+
+# list of items that can't be put in the trade menu
+# note: the name-contains string shouldn't include any color codes
+blacklisted-items:
+  "1":
+    material: "barrier"
+    name-contains: "Banned item's name"
 
 # do not change this
 version: 1

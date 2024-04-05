@@ -4,7 +4,8 @@
 placeholder-currencies:
   Example-Currency:
     register: false
-    # if the currency uses whole numbers then disable this
+    name: "money"
+    # if the currency uses whole numbers, then disable this
     # 100.5 - true
     # 100 - false
     uses-double: true
@@ -18,30 +19,42 @@ placeholder-currencies:
 currencies:
   Experience:
     register: true
+    name: "exp"
   Vault:
     register: true
+    name: "money"
   PlayerPoints:
     register: true
+    name: "points"
   RoyaleEconomy:
     register: true
+    name: "money"
   CoinsEngine:
     register: true
     currency-name: "coins"
+    name: "coins"
   UltraEconomy:
     register: true
     currency-name: "coins"
+    name: "coins"
   KingdomsX:
     register: true
+    name: "nexus points"
   RivalHarvesterHoes:
     register: true
+    name: "essence"
   SuperMobCoins:
     register: true
+    name: "mobcoin"
   TheOnly-MobCoins:
     register: true
+    name: "mobcoins"
   TokenManager:
     register: true
+    name: "tokens"
   AxQuestBoard:
     register: true
+    name: "quest points"
 
 # do not change this
 version: 5

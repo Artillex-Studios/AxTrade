@@ -2,13 +2,18 @@ player-help:
   - " "
   - "&#00FFDD&lAxTrade &7»"
   - " &7- &f/axtrade <player> &7| &#00FFDDSend trade request"
+  - " &7- &f/axtrade accept <player> &7| &#00FFDDAccept trade request"
+  - " &7- &f/axtrade deny <player> &7| &#00FFDDDeny trade request"
   - " "
 
 admin-help:
   - " "
   - "&#00FFDD&lAxTrade &7»"
   - " &7- &f/axtrade <player> &7| &#00FFDDSend trade request"
+  - " &7- &f/axtrade accept <player> &7| &#00FFDDAccept trade request"
+  - " &7- &f/axtrade deny <player> &7| &#00FFDDDeny trade request"
   - " &7- &f/axtrade reload &7| &#00FFDDReload plugin"
+  - " &7- &f/axtrade force <player> &7| &#00FFDDForce start a trade"
   - " "
 
 reload:
@@ -19,6 +24,16 @@ trade:
   started: "&#CCFFEEYou have started a trade with &#00FFDD%player%&#CCFFEE!"
   completed: "&#CCFFEEYour trade with &#00FFDD%player% &#CCFFEEwas completed!"
   aborted: "&#CCFFEEYour trade with &#00FFDD%player% &#CCFFEEwas aborted!"
+  blacklisted-item: "&#CCFFEEThis item is blacklisted!"
+
+# summary after a successful trade
+summary:
+  get:
+    item: "&#00FF00&l+ &#00FF00%amount%x %item%"
+    currency: "&#00FF00&l+ &#00FF00%amount% %currency%"
+  give:
+    item: "&#FF0000&l- &#FF0000%amount%x %item%"
+    currency: "&#FF0000&l- &#FF0000%amount% %currency%"
 
 currency-editor:
   success: "&#CCFFEESuccessfully changed value!"
@@ -39,6 +54,8 @@ request:
   already-sent: "&#CCFFEEYou have already sent a trade request to &#00FFDD%player%&#CCFFEE!"
   too-far: "&#CCFFEEYou are too far from &#00FFDD%player% &#CCFFEEto send a trade request!"
   not-accepting: "&#CCFFEEThis player is not accepting trades right now!"
+  disallowed-gamemode: "&#CCFFEEEither you or the other player is in a disallowed gamemode!"
+  blacklisted-world: "&#CCFFEETrades are disabled in this world!"
 
 # this must be 4 lines
 # note: currently the first line must be left empty

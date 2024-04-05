@@ -1,14 +1,20 @@
 package com.artillexstudios.axtrade.trade;
 
+import com.artillexstudios.axapi.scheduler.ScheduledTask;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.AxTrade;
+import com.artillexstudios.axtrade.utils.BlackListUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
+import com.artillexstudios.axtrade.utils.ShulkerUtils;
+import com.artillexstudios.axtrade.utils.Utils;
 import de.rapha149.signgui.SignGUI;
 import de.rapha149.signgui.SignGUIAction;
+import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.StorageGui;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static com.artillexstudios.axtrade.AxTrade.GUIS;
 import static com.artillexstudios.axtrade.AxTrade.LANG;
@@ -41,8 +48,37 @@ public class TradeGui extends GuiFrame {
         setGui(gui);
 
         gui.setDefaultTopClickAction(event -> {
-            player.cancel();
-            Scheduler.get().run(scheduledTask -> trade.update());
+            final ItemStack it = event.getClick() == ClickType.NUMBER_KEY ? event.getView().getBottomInventory().getItem(event.getHotbarButton()) : event.getCurrentItem();
+            if (BlackListUtils.isBlackListed(it)) {
+                event.setCancelled(true);
+                MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
+                return;
+            }
+
+            if (event.getCurrentItem() != null && event.getClick().isRightClick() && event.getCurrentItem().getType().toString().endsWith("SHULKER_BOX")) {
+                event.setCancelled(true);
+                player.cancel();
+                trade.update();
+                inSign = true;
+                trade.prepTime = System.currentTimeMillis();
+                event.getWhoClicked().closeInventory();
+
+                final BaseGui shulkerGui = Gui.storage().rows(3).title(StringUtils.format(Utils.getFormattedItemName(event.getCurrentItem()))).disableAllInteractions().create();
+                shulkerGui.getInventory().setContents(ShulkerUtils.getShulkerContents(event.getCurrentItem()));
+                shulkerGui.setCloseGuiAction(shulkerEvent -> Scheduler.get().run(new Consumer<>() {
+                    @Override
+                    public void accept(ScheduledTask scheduledTask) {
+                        if (trade.ended) return;
+                        trade.prepTime = System.currentTimeMillis();
+                        gui.open(player.getPlayer());
+                        inSign = false;
+                        trade.update();
+                    }
+                }));
+                shulkerGui.open(player.getPlayer());
+                return;
+            }
+
             if (!slots.contains(event.getSlot())) {
                 event.setCancelled(true);
                 if (event.getCursor() == null) return;
@@ -50,23 +86,43 @@ public class TradeGui extends GuiFrame {
                 event.getCursor().setAmount(0);
                 return;
             }
+
+            player.cancel();
+            Scheduler.get().run(scheduledTask -> trade.update());
         });
 
         gui.setDragAction(event -> {
-            if (event.getInventory() == player.getPlayer().getInventory()) return;
+            boolean ownInv = true;
+            for (int s : event.getRawSlots()) {
+                if (s > 53) continue;
+                ownInv = false;
+                break;
+            }
+
+            if (ownInv) return;
+
             if (!new HashSet<>(slots).containsAll(event.getInventorySlots())) {
                 event.setCancelled(true);
                 return;
             }
+
             player.cancel();
             Scheduler.get().run(scheduledTask -> trade.update());
         });
 
         gui.setPlayerInventoryAction(event -> {
+            final ItemStack it = event.getClick() == ClickType.NUMBER_KEY ? event.getView().getBottomInventory().getItem(event.getHotbarButton()) : event.getCurrentItem();
+            if (BlackListUtils.isBlackListed(it)) {
+                event.setCancelled(true);
+                MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
+                return;
+            }
+
             if (event.isShiftClick() && !slots.contains(event.getView().getTopInventory().firstEmpty())) {
                 event.setCancelled(true);
                 return;
             }
+
             player.cancel();
             Scheduler.get().run(scheduledTask -> trade.update());
         });

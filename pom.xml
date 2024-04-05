@@ -221,5 +221,11 @@
           <version>2.3.2</version>
           <scope>compile</scope>
       </dependency>
+      <dependency>
+          <groupId>com.artillexstudios</groupId>
+          <artifactId>AxShulkers</artifactId>
+          <version>1.5.6</version>
+          <scope>provided</scope>
+      </dependency>
   </dependencies>
 </project>

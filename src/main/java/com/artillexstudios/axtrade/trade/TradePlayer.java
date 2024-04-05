@@ -59,11 +59,12 @@ public class TradePlayer {
     }
 
     public void cancel() {
-        if (confirmed == null) return;
-        this.confirmed = null;
+        if (confirmed != null) {
+            this.confirmed = null;
+            SoundUtils.playSound(player, "cancel");
+            SoundUtils.playSound(otherPlayer.getPlayer(), "cancel");
+        }
         otherPlayer.setConfirmed(null);
-        SoundUtils.playSound(player, "cancel");
-        SoundUtils.playSound(otherPlayer.getPlayer(), "cancel");
     }
 
     public void setConfirmed(Integer confirmed) {

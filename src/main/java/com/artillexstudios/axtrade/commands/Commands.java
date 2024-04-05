@@ -3,6 +3,7 @@ package com.artillexstudios.axtrade.commands;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.AxTrade;
 import com.artillexstudios.axtrade.hooks.HookManager;
+import com.artillexstudios.axtrade.lang.LanguageManager;
 import com.artillexstudios.axtrade.request.Requests;
 import com.artillexstudios.axtrade.trade.Trades;
 import com.artillexstudios.axtrade.utils.NumberUtils;
@@ -24,6 +25,7 @@ import java.util.Map;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 import static com.artillexstudios.axtrade.AxTrade.GUIS;
+import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
@@ -97,6 +99,14 @@ public class Commands implements OrphanCommand {
             return;
         }
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╠ &#AAFFDDReloaded &fguis.yml&#AAFFDD!"));
+
+        if (!HOOKS.reload()) {
+            MESSAGEUTILS.sendFormatted(sender, "reload.failed", Map.of("%file%", "currencies.yml"));
+            return;
+        }
+        Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╠ &#AAFFDDReloaded &fcurrencies.yml&#AAFFDD!"));
+
+        LanguageManager.reload();
 
         Commands.registerCommand();
 
