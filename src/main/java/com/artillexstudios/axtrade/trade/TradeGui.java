@@ -179,8 +179,8 @@ public class TradeGui extends GuiFrame {
                     if (trade.ended) return;
                     trade.prepTime = System.currentTimeMillis();
                     String am = result.getLine(0);
-                    TradePlayer.Result addResult = TradePlayer.Result.NOT_A_NUMBER;
-                    if (com.artillexstudios.axapi.utils.NumberUtils.isDouble(am) && (addResult = player.setCurrency(currencyStr, Double.parseDouble(am))) == TradePlayer.Result.SUCCESS) {
+                    TradePlayer.Result addResult = player.setCurrency(currencyStr, am);
+                    if (addResult == TradePlayer.Result.SUCCESS) {
                         MESSAGEUTILS.sendLang(player1, "currency-editor.success");
                     } else {
                         switch (addResult) {

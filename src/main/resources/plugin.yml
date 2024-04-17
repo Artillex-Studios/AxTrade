@@ -5,4 +5,14 @@ api-version: '1.18'
 folia-supported: true
 
 softdepend:
+  - AxQuestBoard
+  - CoinsEngine
+  - Kingdoms
   - PlaceholderAPI
+  - PlayerPoints
+  - RivalHarvesterHoes
+  - RoyaleEconomy
+  - SuperMobCoins
+  - TheOnly-MobCoins
+  - TokenManager
+  - UltraEconomy

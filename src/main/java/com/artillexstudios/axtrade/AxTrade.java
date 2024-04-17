@@ -56,7 +56,7 @@ public final class AxTrade extends AxPlugin {
 
         MESSAGEUTILS = new MessageUtils(LANG.getBackingDocument(), "prefix", CONFIG.getBackingDocument());
 
-        threadedQueue = new ThreadedQueue<>("AxRewards-Datastore-thread");
+        threadedQueue = new ThreadedQueue<>("AxTrade-Datastore-thread");
 
         BUKKITAUDIENCES = BukkitAudiences.create(this);
 

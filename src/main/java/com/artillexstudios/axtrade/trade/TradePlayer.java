@@ -2,6 +2,7 @@ package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
+import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
 import org.bukkit.entity.Player;
 
@@ -88,7 +89,10 @@ public class TradePlayer {
         return currencies.get(currencyHook);
     }
 
-    public Result setCurrency(String currency, double amount) {
+    public Result setCurrency(String currency, String am) {
+        final Double unformatted = NumberUtils.parseNumber(am);
+        if (unformatted == null && !com.artillexstudios.axapi.utils.NumberUtils.isDouble(am)) return Result.NOT_A_NUMBER;
+        double amount = unformatted == null ? Double.parseDouble(am) : unformatted;
         if (Double.isNaN(amount)) return Result.NOT_A_NUMBER;
         final CurrencyHook currencyHook = HookManager.getCurrencyHook(currency);
         if (currencyHook == null) return Result.CURRENCY_NOT_FOUND;

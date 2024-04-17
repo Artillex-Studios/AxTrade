@@ -22,7 +22,7 @@ public class SoundUtils {
             final Sound sound = Sound.sound().type(Key.key(LANG.getString("sounds." + route))).build();
             BUKKITAUDIENCES.player(player).playSound(sound);
         } catch (InvalidKeyException ex) {
-            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#FFFFAA[AxAuctions] The sound %sound% does not exist, section: %section%!".replace("%sound%", LANG.getString("sounds." + route)).replace("%section%", route)));
+            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#FF0000[AxTrade] The sound %sound% does not exist, section: %section%!".replace("%sound%", LANG.getString("sounds." + route)).replace("%section%", route)));
         }
     }
 }
