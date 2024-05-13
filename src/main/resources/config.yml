@@ -11,7 +11,7 @@ command-aliases:
   - "trade"
 
 # the time after clicking the trade confirm button before the trade finishes
-trade-confirm-seconds: 10
+trade-confirm-seconds: 5
 
 # how fast should trade requests expire?
 trade-request-expire-seconds: 60

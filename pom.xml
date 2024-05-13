@@ -30,7 +30,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.5.3</version>
         <executions>
             <execution>
                 <phase>package</phase>
@@ -53,7 +53,7 @@
                             <shadedPattern>com.artillexstudios.axtrade.libs.gui</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>net.kyori.adventure</pattern>
+                            <pattern>net.kyori</pattern>
                             <shadedPattern>com.artillexstudios.axtrade.libs.kyori</shadedPattern>
                         </relocation>
                         <relocation>
@@ -109,8 +109,9 @@
       <dependency>
           <groupId>com.artillexstudios.axapi</groupId>
           <artifactId>axapi</artifactId>
-          <version>1.4.136</version>
+          <version>1.4.224</version>
           <scope>compile</scope>
+          <classifier>all</classifier>
       </dependency>
       <dependency>
           <groupId>org.spigotmc</groupId>
@@ -127,13 +128,37 @@
       <dependency>
           <groupId>me.clip</groupId>
           <artifactId>placeholderapi</artifactId>
-          <version>2.11.3</version>
+          <version>2.11.5</version>
           <scope>provided</scope>
       </dependency>
       <dependency>
           <groupId>org.bstats</groupId>
           <artifactId>bstats-bukkit</artifactId>
           <version>3.0.2</version>
+          <scope>compile</scope>
+      </dependency>
+      <dependency>
+          <groupId>net.kyori</groupId>
+          <artifactId>adventure-platform-bukkit</artifactId>
+          <version>4.3.2</version>
+          <scope>compile</scope>
+      </dependency>
+      <dependency>
+          <groupId>net.kyori</groupId>
+          <artifactId>adventure-text-minimessage</artifactId>
+          <version>4.16.0</version>
+          <scope>compile</scope>
+      </dependency>
+      <dependency>
+          <groupId>net.kyori</groupId>
+          <artifactId>adventure-text-serializer-legacy</artifactId>
+          <version>4.16.0</version>
+          <scope>compile</scope>
+      </dependency>
+      <dependency>
+          <groupId>net.kyori</groupId>
+          <artifactId>adventure-api</artifactId>
+          <version>4.16.0</version>
           <scope>compile</scope>
       </dependency>
 

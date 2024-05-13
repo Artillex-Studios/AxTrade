@@ -23,14 +23,14 @@ public class ItemBuilderUtil {
         final ItemBuilder builder = new ItemBuilder(section);
 
         section.getOptionalString("name").ifPresent((name) -> {
-            if (ClassUtils.classExists("me.clip.placeholderapi.PlaceholderAPI")) {
+            if (ClassUtils.INSTANCE.classExists("me.clip.placeholderapi.PlaceholderAPI")) {
                 name = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, name);
             }
             builder.setName(name, replacements);
         });
 
         section.getOptionalStringList("lore").ifPresent((lore) -> {
-            if (ClassUtils.classExists("me.clip.placeholderapi.PlaceholderAPI")) {
+            if (ClassUtils.INSTANCE.classExists("me.clip.placeholderapi.PlaceholderAPI")) {
                 lore = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, lore);
             }
             builder.setLore(lore, replacements);

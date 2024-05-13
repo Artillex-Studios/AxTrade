@@ -15,7 +15,7 @@ public class ShulkerUtils {
         final BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
         if (meta.getBlockState() instanceof ShulkerBox) {
             final ShulkerBox shulker = (ShulkerBox) meta.getBlockState();
-            if (ClassUtils.classExists("com.artillexstudios.axshulkers.utils.ShulkerUtils") && com.artillexstudios.axshulkers.utils.ShulkerUtils.getShulkerUUID(item) != null) {
+            if (ClassUtils.INSTANCE.classExists("com.artillexstudios.axshulkers.utils.ShulkerUtils") && com.artillexstudios.axshulkers.utils.ShulkerUtils.getShulkerUUID(item) != null) {
                 return com.artillexstudios.axshulkers.AxShulkers.getDB().getShulker(com.artillexstudios.axshulkers.utils.ShulkerUtils.getShulkerUUID(item));
             }
             return shulker.getInventory().getContents();

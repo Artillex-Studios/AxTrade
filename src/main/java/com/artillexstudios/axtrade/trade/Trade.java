@@ -26,6 +26,8 @@ public class Trade {
         this.player2 = new TradePlayer(this, p2);
         player1.setOtherPlayer(player2);
         player2.setOtherPlayer(player1);
+
+        HistoryUtils.writeToHistory(String.format("Started: %s - %s", player1.getPlayer().getName(), player2.getPlayer().getName()));
     }
 
     public void update() {
@@ -43,6 +45,7 @@ public class Trade {
             if (itemStack == null) return;
             player2.getPlayer().getInventory().addItem(itemStack);
         });
+        HistoryUtils.writeToHistory(String.format("Aborted: %s - %s", player1.getPlayer().getName(), player2.getPlayer().getName()));
         MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.aborted", Map.of("%player%", player2.getPlayer().getName()));
         MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", player1.getPlayer().getName()));
         SoundUtils.playSound(player1.getPlayer(), "aborted");

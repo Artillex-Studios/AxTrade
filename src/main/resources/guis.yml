@@ -60,7 +60,6 @@ own:
       - "&#00ffdd&l> &#00ffddClick &8- &#00ffddChange Amount"
   currency2:
     slot: 3
-    # you need Vault installed for this
     currency: "Experience"
     material: "EXPERIENCE_BOTTLE"
     name: "&#00ffdd&lᴇxᴘᴇʀɪᴇɴᴄᴇ"
