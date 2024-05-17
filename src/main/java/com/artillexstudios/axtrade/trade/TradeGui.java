@@ -1,19 +1,19 @@
 package com.artillexstudios.axtrade.trade;
 
+import com.artillexstudios.axapi.gui.SignInput;
 import com.artillexstudios.axapi.scheduler.ScheduledTask;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.StringUtils;
-import com.artillexstudios.axtrade.AxTrade;
 import com.artillexstudios.axtrade.utils.BlackListUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.ShulkerUtils;
 import com.artillexstudios.axtrade.utils.Utils;
-import de.rapha149.signgui.SignGUI;
-import de.rapha149.signgui.SignGUIAction;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.StorageGui;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -173,12 +173,13 @@ public class TradeGui extends GuiFrame {
                 trade.prepTime = System.currentTimeMillis();
                 event.getWhoClicked().closeInventory();
 
-                var lines = LANG.getStringList("currency-editor-sign");
-                lines = StringUtils.formatListToString(lines);
-                final SignGUI signGUI = SignGUI.builder().setLines(lines.toArray(new String[0])).setHandler((player1, result) -> List.of(SignGUIAction.runSync(AxTrade.getInstance(), () -> {
+                var lines = StringUtils.formatList(LANG.getStringList("currency-editor-sign"));
+                lines.set(0, Component.empty());
+
+                var sign = new SignInput.Builder().setLines(lines).setHandler((player1, result) -> {
                     if (trade.ended) return;
                     trade.prepTime = System.currentTimeMillis();
-                    String am = result.getLine(0);
+                    String am = PlainTextComponentSerializer.plainText().serialize(result[0]);
                     TradePlayer.Result addResult = player.setCurrency(currencyStr, am);
                     if (addResult == TradePlayer.Result.SUCCESS) {
                         MESSAGEUTILS.sendLang(player1, "currency-editor.success");
@@ -192,11 +193,13 @@ public class TradeGui extends GuiFrame {
                                 break;
                         }
                     }
-                    gui.open(player.getPlayer());
-                    inSign = false;
-                    trade.update();
-                }))).build();
-                signGUI.open(player.getPlayer());
+                    Scheduler.get().run(scheduledTask -> {
+                        gui.open(player.getPlayer());
+                        inSign = false;
+                        trade.update();
+                    });
+                }).build(player.getPlayer());
+                sign.open();
             }, Map.of("%amount%", NumberUtils.formatNumber(player.getCurrency(currencyStr))));
         }
 
