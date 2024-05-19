@@ -20,6 +20,9 @@ trade-request-expire-seconds: 60
 # set to -1 to disable
 trade-max-distance: 10
 
+# should shift + right clicking on another player send them a trade request?
+shift-click-send-request: true
+
 number-formatting:
   # modes:
   # 0 - formatted (customizable, look at the formatted part)
@@ -48,4 +51,4 @@ blacklisted-items:
     name-contains: "Banned item's name"
 
 # do not change this
-version: 1
+version: 2

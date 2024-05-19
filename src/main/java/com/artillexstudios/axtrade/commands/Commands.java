@@ -11,7 +11,6 @@ import com.artillexstudios.axtrade.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.DefaultFor;
 import revxrsal.commands.annotation.Optional;
@@ -29,6 +28,7 @@ import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
+@CommandPermission(value = "axtrade.trade")
 public class Commands implements OrphanCommand {
 
     public void help(@NotNull CommandSender sender) {
@@ -79,7 +79,7 @@ public class Commands implements OrphanCommand {
     }
 
     @Subcommand("reload")
-    @CommandPermission(value = "axtrade.admin", defaultAccess = PermissionDefault.OP)
+    @CommandPermission(value = "axtrade.admin")
     public void reload(@NotNull CommandSender sender) {
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD[AxTrade] &#AAFFDDReloading configuration..."));
         if (!CONFIG.reload()) {
@@ -118,8 +118,12 @@ public class Commands implements OrphanCommand {
     }
 
     @Subcommand("force")
-    @CommandPermission(value = "axtrade.admin", defaultAccess = PermissionDefault.OP)
+    @CommandPermission(value = "axtrade.admin")
     public void force(@NotNull Player sender, Player other) {
+        if (sender.equals(other)) {
+            MESSAGEUTILS.sendLang(sender, "request.cant-trade-self");
+            return;
+        }
         Trades.addTrade(sender, other);
     }
 

@@ -4,6 +4,12 @@ main: com.artillexstudios.axtrade.AxTrade
 api-version: '1.18'
 folia-supported: true
 
+permissions:
+  axtrade.admin:
+    default: op
+  axtrade.trade:
+    default: true
+
 softdepend:
   - AxQuestBoard
   - CoinsEngine

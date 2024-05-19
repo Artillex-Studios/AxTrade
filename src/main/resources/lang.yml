@@ -44,8 +44,8 @@ request:
   sent-sender: "&#CCFFEEYou have successfully sent a trade request to &#00FFDD%player%&#CCFFEE!"
   sent-receiver: |
     &#CCFFEEYou have received a trade request from &#00FFDD%player%&#CCFFEE!
-    &#00FF00<click:run_command:'/trade accept %player%'>/trade accept %player%</click>
-    &#FF0000<click:run_command:'/trade deny %player%'>/trade deny %player%</click>
+    &#00FF00/trade accept %player%
+    &#FF0000/trade deny %player%
   no-request: "&#CCFFEEYou don't have an active trade request from &#00FFDD%player%&#CCFFEE!"
   deny-sender: "&#CCFFEEYou trade request was denied by &#00FFDD%player%&#CCFFEE!"
   deny-receiver: "&#CCFFEEYou have successfully denied &#00FFDD%player%&#CCFFEE's trade request!"
