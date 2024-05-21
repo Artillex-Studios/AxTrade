@@ -18,6 +18,7 @@ public class PlayerInteractEntityListener implements Listener {
     public void onClick(@NotNull PlayerInteractEntityEvent event) {
         if (!CONFIG.getBoolean("shift-click-send-request", true)) return;
         final Player player = event.getPlayer();
+        if (!player.hasPermission("axtrade.trade")) return;
 
         if (cd.containsKey(player) && System.currentTimeMillis() - cd.get(player) < 100L) return;
 

@@ -53,7 +53,7 @@ public class PlaceholderCurrencyHook implements CurrencyHook {
         final OfflinePlayer pl = Bukkit.getOfflinePlayer(player);
         if (pl.getName() == null) return;
         final String placeholder = section.getString("settings.give-command")
-                .replace("%amount%", "" + amount)
+                .replace("%amount%", parseNumber(amount))
                 .replace("%player%", pl.getName());
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholder);
     }
@@ -63,8 +63,12 @@ public class PlaceholderCurrencyHook implements CurrencyHook {
         final OfflinePlayer pl = Bukkit.getOfflinePlayer(player);
         if (pl.getName() == null) return;
         final String placeholder = section.getString("settings.take-command")
-                .replace("%amount%", "" + amount)
+                .replace("%amount%", parseNumber(amount))
                 .replace("%player%", pl.getName());
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholder);
+    }
+
+    private String parseNumber(double amount) {
+        return usesDouble() ? "" + amount : "" + Math.round(amount);
     }
 }
