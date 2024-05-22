@@ -80,5 +80,10 @@ sounds:
   countdown: "ui.button.click"
   cancel: "ui.button.click"
 
+# can be used in the gui title as %own-status% and %partner-status%
+placeholders:
+  ready: "Ready"
+  waiting: "Waiting"
+
 # do not change this
-version: 1
+version: 2

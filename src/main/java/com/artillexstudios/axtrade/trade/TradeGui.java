@@ -1,6 +1,7 @@
 package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axapi.gui.SignInput;
+import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.scheduler.ScheduledTask;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.StringUtils;
@@ -15,6 +16,7 @@ import dev.triumphteam.gui.guis.StorageGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +44,7 @@ public class TradeGui extends GuiFrame {
         this.player = player;
         this.gui = Gui.storage()
                 .rows(GUIS.getInt("rows",6))
-                .title(StringUtils.format(GUIS.getString("title").replace("%player%", player.getOtherPlayer().getPlayer().getName())))
+                .title(Component.empty())
                 .disableItemDrop()
                 .create();
         setGui(gui);
@@ -134,6 +136,7 @@ public class TradeGui extends GuiFrame {
 
         update();
         gui.open(player.getPlayer());
+        updateTitle();
         opened = true;
     }
 
@@ -227,6 +230,8 @@ public class TradeGui extends GuiFrame {
                 gui.updateItem(slot, new GuiItem(otherItems.get(n), event -> event.setCancelled(true)));
             n++;
         }
+
+        updateTitle();
     }
 
     public List<ItemStack> getItems() {
@@ -235,5 +240,19 @@ public class TradeGui extends GuiFrame {
             items.add(gui.getInventory().getItem(slot));
         }
         return items;
+    }
+
+    public void updateTitle() {
+        Component title = StringUtils.format(
+                GUIS.getString("title")
+                        .replace("%player%", player.getOtherPlayer().getPlayer().getName())
+                        .replace("%own-status%", player.hasConfirmed() ? LANG.getString("placeholders.ready") : LANG.getString("placeholders.waiting"))
+                        .replace("%partner-status%", player.getOtherPlayer().hasConfirmed() ? LANG.getString("placeholders.ready") : LANG.getString("placeholders.waiting"))
+        );
+
+        final Inventory topInv = player.getPlayer().getOpenInventory().getTopInventory();
+        if (topInv.equals(gui.getInventory())) {
+            NMSHandlers.getNmsHandler().setTitle(player.getPlayer().getOpenInventory().getTopInventory(), title);
+        }
     }
 }
