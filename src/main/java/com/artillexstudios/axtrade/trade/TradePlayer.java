@@ -7,6 +7,7 @@ import com.artillexstudios.axtrade.utils.SoundUtils;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 
@@ -57,19 +58,30 @@ public class TradePlayer {
         trade.update();
         SoundUtils.playSound(player, "accept");
         SoundUtils.playSound(otherPlayer.getPlayer(), "accept");
+
+        getTradeGui().updateTitle();
+        otherPlayer.getTradeGui().updateTitle();
     }
 
     public void cancel() {
         if (confirmed != null) {
             this.confirmed = null;
+            otherPlayer.setConfirmed(null);
             SoundUtils.playSound(player, "cancel");
             SoundUtils.playSound(otherPlayer.getPlayer(), "cancel");
+
+            getTradeGui().updateTitle();
+            otherPlayer.getTradeGui().updateTitle();
+            return;
         }
-        otherPlayer.setConfirmed(null);
+        if (otherPlayer.setConfirmed(null)) getTradeGui().updateTitle();
     }
 
-    public void setConfirmed(Integer confirmed) {
+    public boolean setConfirmed(Integer confirmed) {
+        if (Objects.equals(this.confirmed, confirmed)) return false;
         this.confirmed = confirmed;
+        getTradeGui().updateTitle();
+        return true;
     }
 
     public void tick() {

@@ -16,6 +16,7 @@ import dev.triumphteam.gui.guis.StorageGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -120,9 +121,15 @@ public class TradeGui extends GuiFrame {
                 return;
             }
 
-            if (event.isShiftClick() && !slots.contains(event.getView().getTopInventory().firstEmpty())) {
+            if (event.getCurrentItem() != null && event.isShiftClick() && event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && !slots.contains(event.getView().getTopInventory().firstEmpty())) {
                 event.setCancelled(true);
-                return;
+                for (int i : slots) {
+                    if (gui.getInventory().getItem(i) == null) {
+                        gui.getInventory().setItem(i, event.getCurrentItem().clone());
+                        event.getCurrentItem().setAmount(0);
+                        break;
+                    }
+                }
             }
 
             player.cancel();
@@ -230,8 +237,6 @@ public class TradeGui extends GuiFrame {
                 gui.updateItem(slot, new GuiItem(otherItems.get(n), event -> event.setCancelled(true)));
             n++;
         }
-
-        updateTitle();
     }
 
     public List<ItemStack> getItems() {
