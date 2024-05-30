@@ -76,6 +76,7 @@ public class TradeGui extends GuiFrame {
                         gui.open(player.getPlayer());
                         inSign = false;
                         trade.update();
+                        updateTitle();
                     }
                 }));
                 shulkerGui.open(player.getPlayer());
@@ -207,6 +208,7 @@ public class TradeGui extends GuiFrame {
                         gui.open(player.getPlayer());
                         inSign = false;
                         trade.update();
+                        updateTitle();
                     });
                 }).build(player.getPlayer());
                 sign.open();
