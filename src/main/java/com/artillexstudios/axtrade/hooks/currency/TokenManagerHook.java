@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+import static com.artillexstudios.axtrade.AxTrade.HOOKS;
+
 public class TokenManagerHook implements CurrencyHook {
     private TokenManager eco;
 
@@ -17,6 +19,11 @@ public class TokenManagerHook implements CurrencyHook {
     @Override
     public String getName() {
         return "TokenManager";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return HOOKS.getString("currencies.TokenManager.name");
     }
 
     @Override

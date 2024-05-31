@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+import static com.artillexstudios.axtrade.AxTrade.HOOKS;
+
 public class PlayerPointsHook implements CurrencyHook {
     private PlayerPointsAPI econ = null;
 
@@ -17,6 +19,11 @@ public class PlayerPointsHook implements CurrencyHook {
     @Override
     public String getName() {
         return "PlayerPoints";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return HOOKS.getString("currencies.PlayerPoints.name");
     }
 
     @Override

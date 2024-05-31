@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+import static com.artillexstudios.axtrade.AxTrade.HOOKS;
+
 public class RivalHarvesterHoesHook implements CurrencyHook {
 
     @Override
@@ -15,6 +17,11 @@ public class RivalHarvesterHoesHook implements CurrencyHook {
     @Override
     public String getName() {
         return "RivalHarvesterHoes";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return HOOKS.getString("currencies.RivalHarvesterHoes.name");
     }
 
     @Override

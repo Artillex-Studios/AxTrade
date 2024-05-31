@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+import static com.artillexstudios.axtrade.AxTrade.HOOKS;
+
 public class VaultHook implements CurrencyHook {
     private Economy econ = null;
 
@@ -21,6 +23,11 @@ public class VaultHook implements CurrencyHook {
     @Override
     public String getName() {
         return "Vault";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return HOOKS.getString("currencies.Vault.name");
     }
 
     @Override

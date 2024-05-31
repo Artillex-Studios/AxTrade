@@ -9,6 +9,8 @@ public interface CurrencyHook {
 
     String getName();
 
+    String getDisplayName();
+
     boolean worksOffline();
 
     boolean usesDouble();

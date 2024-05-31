@@ -1,3 +1,5 @@
+# DOCUMENTATION: https://docs.artillex-studios.com/axtrade.html
+
 # you can create your own currencies by using placeholders
 # make sure that none of the placeholders have any formatting on them
 # requires PlaceholderAPI
@@ -16,6 +18,10 @@ placeholder-currencies:
       give-command: "eco give %player% %amount%"
       take-command: "eco take %player% %amount%"
 
+# INFO FOR MULTI CURRENCY PLUGINS: (like: coinsengine, ultraeconomy, rediseconomy)
+# - you can enable as many currencies as you want
+# - 'currency-name' is from the currency plugin and 'name' is what AxTrade will display in trade summaries
+# - in the guis.yml you will have to use <name of plugin>-<currency-name> format, for example: 'CoinsEngine-coins'
 currencies:
   Experience:
     register: true
@@ -31,12 +37,16 @@ currencies:
     name: "money"
   CoinsEngine:
     register: true
-    currency-name: "coins"
-    name: "coins"
+    enabled:
+      - currency-name: "coins"
+        name: "coins"
+      - currency-name: "money"
+        name: "money"
   UltraEconomy:
     register: true
-    currency-name: "coins"
-    name: "coins"
+    enabled:
+      - currency-name: "coins"
+        name: "coins"
   KingdomsX:
     register: true
     name: "nexus points"
@@ -55,6 +65,11 @@ currencies:
   AxQuestBoard:
     register: true
     name: "quest points"
+  RedisEconomy:
+    register: true
+    enabled:
+      - currency-name: "coins"
+        name: "coins"
 
 # do not change this
-version: 5
+version: 6

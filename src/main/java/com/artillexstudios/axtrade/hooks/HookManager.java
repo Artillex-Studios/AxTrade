@@ -8,6 +8,7 @@ import com.artillexstudios.axtrade.hooks.currency.ExperienceHook;
 import com.artillexstudios.axtrade.hooks.currency.KingdomsXHook;
 import com.artillexstudios.axtrade.hooks.currency.PlaceholderCurrencyHook;
 import com.artillexstudios.axtrade.hooks.currency.PlayerPointsHook;
+import com.artillexstudios.axtrade.hooks.currency.RedisEconomyHook;
 import com.artillexstudios.axtrade.hooks.currency.RivalHarvesterHoesHook;
 import com.artillexstudios.axtrade.hooks.currency.RoyaleEconomyHook;
 import com.artillexstudios.axtrade.hooks.currency.SuperMobCoinsHook;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 
@@ -48,7 +50,9 @@ public class HookManager {
         }
 
         if (HOOKS.getBoolean("currencies.CoinsEngine.register", true) && Bukkit.getPluginManager().getPlugin("CoinsEngine") != null) {
-            currency.add(new CoinsEngineHook());
+            for (Map<Object, Object> curr : HOOKS.getMapList("currencies.CoinsEngine.enabled")) {
+                currency.add(new CoinsEngineHook((String) curr.get("currency-name"), (String) curr.get("name")));
+            }
             Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into CoinsEngine!"));
         }
 
@@ -58,7 +62,9 @@ public class HookManager {
         }
 
         if (HOOKS.getBoolean("currencies.UltraEconomy.register", true) && Bukkit.getPluginManager().getPlugin("UltraEconomy") != null) {
-            currency.add(new UltraEconomyHook());
+            for (Map<Object, Object> curr : HOOKS.getMapList("currencies.UltraEconomy.enabled")) {
+                currency.add(new UltraEconomyHook((String) curr.get("currency-name"), (String) curr.get("name")));
+            }
             Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into UltraEconomy!"));
         }
 
@@ -90,6 +96,13 @@ public class HookManager {
         if (HOOKS.getBoolean("currencies.AxQuestBoard.register", true) && Bukkit.getPluginManager().getPlugin("AxQuestBoard") != null) {
             currency.add(new AxQuestBoardHook());
             Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into AxQuestBoard!"));
+        }
+
+        if (HOOKS.getBoolean("currencies.RedisEconomy.register", true) && Bukkit.getPluginManager().getPlugin("RedisEconomy") != null) {
+            for (Map<Object, Object> curr : HOOKS.getMapList("currencies.RedisEconomy.enabled")) {
+                currency.add(new RedisEconomyHook((String) curr.get("currency-name"), (String) curr.get("name")));
+            }
+            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into RedisEconomy!"));
         }
 
         for (String str : HOOKS.getSection("placeholder-currencies").getRoutesAsStrings(false)) {

@@ -5,6 +5,8 @@ import org.kingdoms.constants.player.KingdomPlayer;
 
 import java.util.UUID;
 
+import static com.artillexstudios.axtrade.AxTrade.HOOKS;
+
 public class KingdomsXHook implements CurrencyHook {
 
     @Override
@@ -14,6 +16,11 @@ public class KingdomsXHook implements CurrencyHook {
     @Override
     public String getName() {
         return "KingdomsX";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return HOOKS.getString("currencies.KingdomsX.name");
     }
 
     @Override

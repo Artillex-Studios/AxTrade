@@ -1,3 +1,6 @@
+# DOCUMENTATION: https://docs.artillex-studios.com/axtrade.html
+# ITEM BUILDER: https://docs.artillex-studios.com/item-builder.html
+
 # ----- SETTINGS -----
 
 title: "&0Trading with: %player%"
@@ -7,7 +10,7 @@ rows: 6
 # ----- SLOTS -----
 
 # the slots where the items can be placed
-# make sure to not put decorative items in the these slots (or change this too)
+# make sure to not put decorative items or currency items in the these slots
 # the own-slots and partner-slots must have an equal amount of slots
 own-slots:
   - 9-12

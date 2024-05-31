@@ -27,6 +27,11 @@ public class PlaceholderCurrencyHook implements CurrencyHook {
     }
 
     @Override
+    public String getDisplayName() {
+        return section.getString("name", "---");
+    }
+
+    @Override
     public boolean worksOffline() {
         return section.getBoolean("works-offline", false);
     }

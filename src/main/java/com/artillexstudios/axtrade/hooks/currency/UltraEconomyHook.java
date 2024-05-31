@@ -10,17 +10,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.artillexstudios.axtrade.AxTrade.HOOKS;
-
 public class UltraEconomyHook implements CurrencyHook {
     private Currency currency = null;
+    private final String internal;
+    private final String name;
+
+    public UltraEconomyHook(String internal, String name) {
+        this.internal = internal;
+        this.name = name;
+    }
 
     @Override
     public void setup() {
-        final String name = HOOKS.getString("currencies.UltraEconomy.currency-name", "coins");
-        final Optional<Currency> currencyOptional = UltraEconomy.getAPI().getCurrencies().name(name);
-        if (!currencyOptional.isPresent()) {
-            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#FF0000[AxAuctions] UltraEconomy currency named &#DD0000" + name + " &#FF0000not found! Change the currency-name or disable the hook to get rid of this warning!"));
+        final Optional<Currency> currencyOptional = UltraEconomy.getAPI().getCurrencies().name(internal);
+        if (currencyOptional.isEmpty()) {
+            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#FF0000[AxAuctions] UltraEconomy currency named &#DD0000" + internal + " &#FF0000not found! Change the currency-name or disable the hook to get rid of this warning!"));
             return;
         }
         currency = currencyOptional.get();
@@ -28,7 +32,12 @@ public class UltraEconomyHook implements CurrencyHook {
 
     @Override
     public String getName() {
-        return "UltraEconomy";
+        return "UltraEconomy-" + internal;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return name;
     }
 
     @Override
@@ -50,8 +59,7 @@ public class UltraEconomyHook implements CurrencyHook {
     public double getBalance(@NotNull UUID player) {
         if (currency == null) return 0.0D;
         final Optional<Account> account = UltraEconomy.getAPI().getAccounts().uuid(player);
-        if (!account.isPresent()) return 0.0D;
-        return account.get().getBalance(currency).getOnHand();
+        return account.map(value -> value.getBalance(currency).getOnHand()).orElse(0.0D);
     }
 
     @Override

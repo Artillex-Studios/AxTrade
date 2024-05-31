@@ -22,3 +22,4 @@ softdepend:
   - TheOnly-MobCoins
   - TokenManager
   - UltraEconomy
+  - RedisEconomy
