@@ -1,6 +1,7 @@
 package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axapi.scheduler.Scheduler;
+import com.artillexstudios.axapi.utils.ContainerUtils;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
 import com.artillexstudios.axtrade.utils.HistoryUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
@@ -108,7 +109,7 @@ public class Trade {
         List<String> player1Items = new ArrayList<>();
         player1.getTradeGui().getItems().forEach(itemStack -> {
             if (itemStack == null) return;
-            player2.getPlayer().getInventory().addItem(itemStack);
+            ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
             final String itemName = Utils.getFormattedItemName(itemStack);
             int itemAm = itemStack.getAmount();
             player1Items.add(itemAm + "x " + itemName);
@@ -119,7 +120,7 @@ public class Trade {
         List<String> player2Items = new ArrayList<>();
         player2.getTradeGui().getItems().forEach(itemStack -> {
             if (itemStack == null) return;
-            player1.getPlayer().getInventory().addItem(itemStack);
+            ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
             final String itemName = Utils.getFormattedItemName(itemStack);
             int itemAm = itemStack.getAmount();
             player2Items.add(itemAm + "x " + itemName);
