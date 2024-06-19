@@ -109,7 +109,9 @@ public class Trade {
         List<String> player1Items = new ArrayList<>();
         player1.getTradeGui().getItems().forEach(itemStack -> {
             if (itemStack == null) return;
-            ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
+            Scheduler.get().runAt(player2.getPlayer().getLocation(), task -> {
+                ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
+            });
             final String itemName = Utils.getFormattedItemName(itemStack);
             int itemAm = itemStack.getAmount();
             player1Items.add(itemAm + "x " + itemName);
@@ -120,7 +122,9 @@ public class Trade {
         List<String> player2Items = new ArrayList<>();
         player2.getTradeGui().getItems().forEach(itemStack -> {
             if (itemStack == null) return;
-            ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
+            Scheduler.get().runAt(player1.getPlayer().getLocation(), task -> {
+                ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
+            });
             final String itemName = Utils.getFormattedItemName(itemStack);
             int itemAm = itemStack.getAmount();
             player2Items.add(itemAm + "x " + itemName);
