@@ -1,7 +1,7 @@
 package com.artillexstudios.axtrade.commands;
 
 import com.artillexstudios.axapi.nms.NMSHandlers;
-import com.artillexstudios.axapi.utils.FastFieldAccessor;
+import com.artillexstudios.axapi.reflection.FastFieldAccessor;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.AxTrade;
 import com.artillexstudios.axtrade.hooks.HookManager;

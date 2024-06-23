@@ -1,6 +1,6 @@
 package com.artillexstudios.axtrade.utils;
 
-import com.artillexstudios.axapi.utils.ClassUtils;
+import com.artillexstudios.axapi.reflection.ClassUtils;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.inventory.ItemStack;

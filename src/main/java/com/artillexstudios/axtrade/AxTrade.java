@@ -18,6 +18,7 @@ import com.artillexstudios.axtrade.listeners.PlayerInteractEntityListener;
 import com.artillexstudios.axtrade.listeners.TradeListeners;
 import com.artillexstudios.axtrade.trade.TradeTicker;
 import com.artillexstudios.axtrade.utils.NumberUtils;
+import com.artillexstudios.axtrade.utils.UpdateNotifier;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -73,5 +74,7 @@ public final class AxTrade extends AxPlugin {
         Commands.registerCommand();
 
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD[AxTrade] Loaded plugin!"));
+
+        if (CONFIG.getBoolean("update-notifier.enabled", true)) new UpdateNotifier(this, 5943);
     }
 }
