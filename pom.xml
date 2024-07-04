@@ -6,7 +6,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxTrade</artifactId>
-    <version>1.6.0</version>
+    <version>1.6.1</version>
     <packaging>jar</packaging>
 
     <name>AxTrade</name>
@@ -112,7 +112,7 @@
         <dependency>
             <groupId>com.artillexstudios.axapi</groupId>
             <artifactId>axapi</artifactId>
-            <version>1.4.259</version>
+            <version>1.4.280</version>
             <scope>compile</scope>
             <classifier>all</classifier>
         </dependency>
@@ -254,6 +254,13 @@
             <artifactId>RedisEconomy</artifactId>
             <version>main-3338e61c6c-1</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.mraxetv.beasttokens.api</groupId>
+            <artifactId>BeastTokens</artifactId>
+            <version>3.13.3</version>
+            <systemPath>${project.basedir}/libs/bt-api-3.13.3.jar</systemPath>
+            <scope>system</scope>
         </dependency>
     </dependencies>
 </project>

@@ -2,6 +2,7 @@ package com.artillexstudios.axtrade.hooks;
 
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.hooks.currency.AxQuestBoardHook;
+import com.artillexstudios.axtrade.hooks.currency.BeastTokensHook;
 import com.artillexstudios.axtrade.hooks.currency.CoinsEngineHook;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
 import com.artillexstudios.axtrade.hooks.currency.ExperienceHook;
@@ -103,6 +104,11 @@ public class HookManager {
                 currency.add(new RedisEconomyHook((String) curr.get("currency-name"), (String) curr.get("name")));
             }
             Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into RedisEconomy!"));
+        }
+
+        if (HOOKS.getBoolean("currencies.BeastTokens.register", true) && Bukkit.getPluginManager().getPlugin("BeastTokens") != null) {
+            currency.add(new BeastTokensHook());
+            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into BeastTokens!"));
         }
 
         for (String str : HOOKS.getSection("placeholder-currencies").getRoutesAsStrings(false)) {

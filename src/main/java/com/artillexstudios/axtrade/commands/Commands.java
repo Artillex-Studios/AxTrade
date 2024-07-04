@@ -1,7 +1,6 @@
 package com.artillexstudios.axtrade.commands;
 
 import com.artillexstudios.axapi.nms.NMSHandlers;
-import com.artillexstudios.axapi.reflection.FastFieldAccessor;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.AxTrade;
 import com.artillexstudios.axtrade.hooks.HookManager;
@@ -13,7 +12,6 @@ import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Warning;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -140,11 +138,7 @@ public class Commands implements OrphanCommand {
     private static BukkitCommandHandler handler = null;
     public static void registerCommand() {
         if (handler == null) {
-            Warning.WarningState prevState = Bukkit.getWarningState();
-            FastFieldAccessor accessor = FastFieldAccessor.forClassField(Bukkit.getServer().getClass().getPackage().getName() + ".CraftServer", "warningState");
-            accessor.set(Bukkit.getServer(), Warning.WarningState.OFF);
             handler = BukkitCommandHandler.create(AxTrade.getInstance());
-            accessor.set(Bukkit.getServer(), prevState);
 
             handler.registerValueResolver(0, OfflinePlayer.class, context -> {
                 String value = context.pop();

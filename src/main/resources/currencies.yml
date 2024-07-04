@@ -70,6 +70,9 @@ currencies:
     enabled:
       - currency-name: "coins"
         name: "coins"
+  BeastTokens:
+    register: true
+    name: "tokens"
 
 # do not change this
-version: 6
+version: 7
