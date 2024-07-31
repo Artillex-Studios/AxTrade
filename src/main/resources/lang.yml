@@ -44,10 +44,14 @@ currency-editor:
 
 request:
   sent-sender: "&#CCFFEEYou have successfully sent a trade request to &#00FFDD%player%&#CCFFEE!"
-  sent-receiver: |
-    &#CCFFEEYou have received a trade request from &#00FFDD%player%&#CCFFEE!
-    &#00FF00/trade accept %player%
-    &#FF0000/trade deny %player%
+  sent-receiver:
+    info: "&#CCFFEEYou have received a trade request from &#00FFDD%player%&#CCFFEE!"
+    accept:
+      message: "&#00FF00/trade accept %player%"
+      hover: "&#00FF00Click here to &naccept&#00FF00 trade request!"
+    deny:
+      message: "&#FF0000/trade deny %player%"
+      hover: "&#FF0000Click here to &ndeny&#FF0000 trade request!"
   no-request: "&#CCFFEEYou don't have an active trade request from &#00FFDD%player%&#CCFFEE!"
   deny-sender: "&#CCFFEEYou trade request was denied by &#00FFDD%player%&#CCFFEE!"
   deny-receiver: "&#CCFFEEYou have successfully denied &#00FFDD%player%&#CCFFEE's trade request!"
@@ -58,6 +62,7 @@ request:
   not-accepting: "&#CCFFEEThis player is not accepting trades right now!"
   disallowed-gamemode: "&#CCFFEEEither you or the other player is in a disallowed gamemode!"
   blacklisted-world: "&#CCFFEETrades are disabled in this world!"
+  expired: "&#CCFFEEYour trade request to &#00FFDD%player% &#CCFFEEhas expired!"
 
 # this must be 4 lines
 # note: currently the first line must be left empty
@@ -100,4 +105,4 @@ commands:
 update-notifier: "&#AAFFCCThere is a new version of the plugin available! &#DDDDDD(&#FFFFFFcurrent: &#FF0000%current% &#DDDDDD| &#FFFFFFlatest: &#00FF00%latest%&#DDDDDD)"
 
 # do not change this
-version: 4
+version: 5

@@ -11,16 +11,13 @@ public class ShulkerUtils {
 
     @NotNull
     public static ItemStack[] getShulkerContents(@NotNull ItemStack item) {
-        if (!(item.getItemMeta() instanceof BlockStateMeta)) return new ItemStack[0];
-        final BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
-        if (meta.getBlockState() instanceof ShulkerBox) {
-            final ShulkerBox shulker = (ShulkerBox) meta.getBlockState();
+        if (!(item.getItemMeta() instanceof BlockStateMeta meta)) return new ItemStack[0];
+        if (meta.getBlockState() instanceof ShulkerBox shulker) {
             if (ClassUtils.INSTANCE.classExists("com.artillexstudios.axshulkers.utils.ShulkerUtils") && com.artillexstudios.axshulkers.utils.ShulkerUtils.getShulkerUUID(item) != null) {
                 return com.artillexstudios.axshulkers.AxShulkers.getDB().getShulker(com.artillexstudios.axshulkers.utils.ShulkerUtils.getShulkerUUID(item));
             }
             return shulker.getInventory().getContents();
-        } else if (meta.getBlockState() instanceof Barrel) {
-            final Barrel barrel = (Barrel) meta.getBlockState();
+        } else if (meta.getBlockState() instanceof Barrel barrel) {
             return barrel.getInventory().getContents();
         }
 

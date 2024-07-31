@@ -73,6 +73,11 @@ currencies:
   BeastTokens:
     register: true
     name: "tokens"
+  EcoBits:
+    register: true
+    enabled:
+      - currency-name: "crystals"
+        name: "crystals"
 
 # do not change this
-version: 7
+version: 8

@@ -7,12 +7,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.WeakHashMap;
+import java.util.HashMap;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 
-public class PlayerInteractEntityListener implements Listener {
-    private final WeakHashMap<Player, Long> cd = new WeakHashMap<>();
+public class EntityInteractListener implements Listener {
+    private static final HashMap<Player, Long> cd = new HashMap<>();
 
     @EventHandler (ignoreCancelled = true)
     public void onClick(@NotNull PlayerInteractEntityEvent event) {
@@ -23,12 +23,15 @@ public class PlayerInteractEntityListener implements Listener {
         if (cd.containsKey(player) && System.currentTimeMillis() - cd.get(player) < 100L) return;
 
         if (!player.isSneaking()) return;
-        if (!(event.getRightClicked() instanceof Player)) return;
+        if (!(event.getRightClicked() instanceof Player sendTo)) return;
 
         cd.put(player, System.currentTimeMillis());
-        final Player sendTo = (Player) event.getRightClicked();
         if (!sendTo.isOnline()) return;
 
         new Commands().trade(player, sendTo);
+    }
+
+    public static void onQuit(Player player) {
+        cd.remove(player);
     }
 }

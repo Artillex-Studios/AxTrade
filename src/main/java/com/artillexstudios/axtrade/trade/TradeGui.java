@@ -4,6 +4,7 @@ import com.artillexstudios.axapi.gui.SignInput;
 import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.scheduler.ScheduledTask;
 import com.artillexstudios.axapi.scheduler.Scheduler;
+import com.artillexstudios.axapi.utils.Pair;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.utils.BlackListUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
@@ -32,12 +33,13 @@ import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
 public class TradeGui extends GuiFrame {
-    private final Trade trade;
+    protected final Trade trade;
     private final TradePlayer player;
     protected final StorageGui gui;
     protected final List<Integer> slots = getSlots("own-slots");
     protected final List<Integer> otherSlots = getSlots("partner-slots");
     private boolean inSign = false;
+//    private final ItemStack fullSlot;
 
     public TradeGui(@NotNull Trade trade, @NotNull TradePlayer player) {
         super(GUIS, player.getPlayer());
@@ -50,8 +52,15 @@ public class TradeGui extends GuiFrame {
                 .create();
         setGui(gui);
 
+//        fullSlot = new ItemBuilder(GUIS.getSection("full-slot")).get();
+//        NBTUtils.writeToNBT(fullSlot, "axtrade-full-slot", true);
+
         gui.setDefaultTopClickAction(event -> {
             final ItemStack it = event.getClick() == ClickType.NUMBER_KEY ? event.getView().getBottomInventory().getItem(event.getHotbarButton()) : event.getCurrentItem();
+//            if (it != null && NBTUtils.containsNBT(it, "axtrade-full-slot")) {
+//                event.setCancelled(true);
+//                return;
+//            }
             if (BlackListUtils.isBlackListed(it)) {
                 event.setCancelled(true);
                 MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
@@ -103,6 +112,7 @@ public class TradeGui extends GuiFrame {
                 break;
             }
 
+            Scheduler.get().run(scheduledTask -> trade.update());
             if (ownInv) return;
 
             if (!new HashSet<>(slots).containsAll(event.getInventorySlots())) {
@@ -111,7 +121,6 @@ public class TradeGui extends GuiFrame {
             }
 
             player.cancel();
-            Scheduler.get().run(scheduledTask -> trade.update());
         });
 
         gui.setPlayerInventoryAction(event -> {
@@ -148,28 +157,37 @@ public class TradeGui extends GuiFrame {
         opened = true;
     }
 
+//    private final HashSet<Integer> lockedSlot = new HashSet<>();
+
     public void update() {
+        final Pair<String, String> selfTextures = NMSHandlers.getNmsHandler().textures(player.getPlayer());
+        final Pair<String, String> otherTextures = NMSHandlers.getNmsHandler().textures(trade.getOtherPlayer(player.getPlayer()));
+
+        final Map<String, String> replacements = Map.of(
+                "%own-head%", selfTextures == null ? "" : selfTextures.getFirst(),
+                "%partner-head%", otherTextures == null ? "" : otherTextures.getFirst()
+        );
         if (player.hasConfirmed()) {
             super.createItem("own.confirm-item.slot", "own.confirm-item.cancel", event -> {
                 event.setCancelled(true);
                 player.cancel();
                 trade.update();
-            }, Map.of(), player.getConfirmed());
+            }, replacements, player.getConfirmed());
         } else {
             super.createItem("own.confirm-item.slot", "own.confirm-item.accept", event -> {
                 event.setCancelled(true);
                 player.confirm();
-            }, Map.of());
+            }, replacements);
         }
 
         if (player.getOtherPlayer().hasConfirmed()) {
             super.createItem("partner.confirm-item.slot", "partner.confirm-item.cancel", event -> {
                 event.setCancelled(true);
-            }, Map.of(), player.getOtherPlayer().getConfirmed());
+            }, replacements, player.getOtherPlayer().getConfirmed());
         } else {
             super.createItem("partner.confirm-item.slot", "partner.confirm-item.accept", event -> {
                 event.setCancelled(true);
-            }, Map.of());
+            }, replacements);
         }
 
         for (String currencyItem : GUIS.getSection("own").getRoutesAsStrings(false)) {
@@ -231,12 +249,36 @@ public class TradeGui extends GuiFrame {
             gui.removeItem(slot);
         }
 
+//        for (Integer i : lockedSlot) {
+//            gui.removeItem(i);
+//        }
+
+        // full inventory checker - start
+//        var fullSlots = new ArrayList<>(slots);
+//
+//        int empty = 0;
+//        for (ItemStack stack : player.getOtherPlayer().getPlayer().getInventory().getStorageContents()) {
+//            if (stack == null) empty++;
+//        }
+//
+//        for (int i = 0; i < slots.size() - empty; i++) {
+//            int slot = fullSlots.remove(fullSlots.size() - 1);
+//            gui.updateItem(slot, fullSlot); // todo: make configurable item, add special nbt, cancel on click
+//            lockedSlot.add(slot);
+//        }
+        // full inventory checker - end
+
         if (!opened) return;
         var otherItems = player.getOtherPlayer().getTradeGui().getItems();
         int n = 0;
         for (int slot : otherSlots) {
             if (otherItems.get(n) != null)
                 gui.updateItem(slot, new GuiItem(otherItems.get(n), event -> event.setCancelled(true)));
+//            if (otherItems.size() <= n) break;
+//            final ItemStack item = otherItems.get(n);
+//            if (item != null && !NBTUtils.containsNBT(item, "axtrade-full-slot")) {
+//                gui.updateItem(slot, new GuiItem(item, event -> event.setCancelled(true)));
+//            }
             n++;
         }
     }
@@ -245,6 +287,9 @@ public class TradeGui extends GuiFrame {
         final List<ItemStack> items = new ArrayList<>();
         for (int slot : slots) {
             items.add(gui.getInventory().getItem(slot));
+//            final ItemStack item = gui.getInventory().getItem(slot);
+//            if (item != null && NBTUtils.containsNBT(item, "axtrade-full-slot")) continue;
+//            items.add(item);
         }
         return items;
     }

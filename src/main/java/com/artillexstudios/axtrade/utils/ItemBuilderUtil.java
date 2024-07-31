@@ -36,6 +36,13 @@ public class ItemBuilderUtil {
             builder.setLore(lore, replacements);
         });
 
+        section.getOptionalString("texture").ifPresent((texture) -> {
+            for (Map.Entry<String, String> entry : replacements.entrySet()) {
+                texture = texture.replace(entry.getKey(), entry.getValue());
+            }
+            builder.setTextureValue(texture);
+        });
+
         return builder;
     }
 

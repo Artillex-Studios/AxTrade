@@ -8,13 +8,14 @@ import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.dumper.Du
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.general.GeneralSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.loader.LoaderSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.updater.UpdaterSettings;
+import com.artillexstudios.axapi.utils.FeatureFlags;
 import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.commands.Commands;
 import com.artillexstudios.axtrade.currencyconverter.CurrencyConverter;
 import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.lang.LanguageManager;
-import com.artillexstudios.axtrade.listeners.PlayerInteractEntityListener;
+import com.artillexstudios.axtrade.listeners.EntityInteractListener;
 import com.artillexstudios.axtrade.listeners.TradeListeners;
 import com.artillexstudios.axtrade.trade.TradeTicker;
 import com.artillexstudios.axtrade.utils.NumberUtils;
@@ -63,7 +64,7 @@ public final class AxTrade extends AxPlugin {
 
         BUKKITAUDIENCES = BukkitAudiences.create(this);
 
-        getServer().getPluginManager().registerEvents(new PlayerInteractEntityListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityInteractListener(), this);
         getServer().getPluginManager().registerEvents(new TradeListeners(), this);
 
         new HookManager().setupHooks();
@@ -76,5 +77,9 @@ public final class AxTrade extends AxPlugin {
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD[AxTrade] Loaded plugin!"));
 
         if (CONFIG.getBoolean("update-notifier.enabled", true)) new UpdateNotifier(this, 5943);
+    }
+
+    public void updateFlags() {
+        FeatureFlags.USE_LEGACY_HEX_FORMATTER.set(true);
     }
 }

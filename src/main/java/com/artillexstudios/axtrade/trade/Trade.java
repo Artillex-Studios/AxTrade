@@ -150,4 +150,8 @@ public class Trade {
     public TradePlayer getPlayer2() {
         return player2;
     }
+
+    public Player getOtherPlayer(Player player) {
+        return player1.getPlayer().equals(player) ? player2.getPlayer() : player1.getPlayer();
+    }
 }

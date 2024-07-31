@@ -34,6 +34,9 @@ own:
     slot: 0
     accept:
       material: "RED_CONCRETE"
+      # if you want, you can add head textures, like this:
+      #material: "PLAYER_HEAD"
+      #texture: "%own-head%"
       name: "&#00ffdd&lᴀᴄᴄᴇᴘᴛ ᴛʀᴀᴅᴇ"
       lore:
         - ""
@@ -79,6 +82,9 @@ partner:
     slot: 8
     accept:
       material: "RED_CONCRETE"
+      # if you want, you can add head textures, like this:
+      #material: "PLAYER_HEAD"
+      #texture: "%partner-head%"
       name: "&#00ffdd&lᴡᴀɪᴛɪɴɢ ғᴏʀ ᴏᴛʜᴇʀ ᴘʟᴀʏᴇʀ"
       lore:
         - ""
@@ -119,4 +125,4 @@ decoration-example:
   name: " "
 
 # do not change this
-version: 1
+version: 2

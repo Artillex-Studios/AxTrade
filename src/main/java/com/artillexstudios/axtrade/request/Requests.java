@@ -1,7 +1,13 @@
 package com.artillexstudios.axtrade.request;
 
+import com.artillexstudios.axapi.nms.NMSHandlers;
+import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axtrade.api.events.AxTradeRequestEvent;
 import com.artillexstudios.axtrade.trade.Trades;
 import com.artillexstudios.axtrade.utils.SoundUtils;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
+import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
 public class Requests {
@@ -63,10 +70,26 @@ public class Requests {
             return;
         }
 
+        final AxTradeRequestEvent apiEvent = new AxTradeRequestEvent(sender, receiver);
+        Bukkit.getPluginManager().callEvent(apiEvent);
+        if (apiEvent.isCancelled()) return;
+
         requests.add(new Request(sender, receiver));
 
         MESSAGEUTILS.sendLang(sender, "request.sent-sender", replacements);
-        MESSAGEUTILS.sendLang(receiver, "request.sent-receiver", Map.of("%player%", sender.getName()));
+
+        Map<String, String> replacements2 = Map.of("%player%", sender.getName());
+        if (LANG.getSection("request.sent-receiver") == null) // this is for backwards compatibility
+            MESSAGEUTILS.sendLang(receiver, "request.sent-receiver", replacements2);
+        else {
+            NMSHandlers.getNmsHandler().sendMessage(receiver, StringUtils.format(CONFIG.getString("prefix") + LANG.getString("request.sent-receiver.info"), replacements2));
+            NMSHandlers.getNmsHandler().sendMessage(receiver, StringUtils.format(LANG.getString("request.sent-receiver.accept.message"), replacements2)
+                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, StringUtils.format(LANG.getString("request.sent-receiver.accept.hover"), replacements2)))
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/trade accept " + sender.getName())));
+            NMSHandlers.getNmsHandler().sendMessage(receiver, StringUtils.format(LANG.getString("request.sent-receiver.deny.message"), replacements2)
+                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, StringUtils.format(LANG.getString("request.sent-receiver.deny.hover"), replacements2)))
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/trade deny " + sender.getName())));
+        }
         SoundUtils.playSound(sender, "requested");
         SoundUtils.playSound(receiver, "requested");
     }
@@ -88,5 +111,9 @@ public class Requests {
         }
 
         return null;
+    }
+
+    public static ArrayList<Request> getRequests() {
+        return requests;
     }
 }
