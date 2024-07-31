@@ -58,16 +58,17 @@ public class Requests {
             return;
         }
 
-        var request = Requests.getRequest(sender, receiver);
-        if (request != null && !request.getSender().equals(sender)) {
-            Trades.addTrade(sender, receiver);
-            requests.remove(request);
-            return;
-        }
-
-        if (request != null && System.currentTimeMillis() - request.getTime() < CONFIG.getInt("trade-request-expire-seconds", 60) * 1_000L) {
-            MESSAGEUTILS.sendLang(sender, "request.already-sent", replacements);
-            return;
+        final Request request = Requests.getRequest(sender, receiver);
+        if (request != null) {
+            if (!request.getSender().equals(sender)) {
+                Trades.addTrade(sender, receiver);
+                requests.remove(request);
+                return;
+            }
+            if (request.isDeclined() || System.currentTimeMillis() - request.getTime() < CONFIG.getInt("trade-request-expire-seconds", 60) * 1_000L) {
+                MESSAGEUTILS.sendLang(sender, "request.already-sent", replacements);
+                return;
+            }
         }
 
         final AxTradeRequestEvent apiEvent = new AxTradeRequestEvent(sender, receiver);
