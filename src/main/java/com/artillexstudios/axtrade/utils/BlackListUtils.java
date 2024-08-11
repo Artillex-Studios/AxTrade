@@ -1,5 +1,6 @@
 package com.artillexstudios.axtrade.utils;
 
+import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.block.implementation.Section;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,7 +10,9 @@ public class BlackListUtils {
 
     public static boolean isBlackListed(@Nullable ItemStack it) {
         if (it == null) return false;
-        for (String s : CONFIG.getSection("blacklisted-items").getRoutesAsStrings(false)) {
+        final Section section = CONFIG.getSection("blacklisted-items");
+        if (section == null) return false;
+        for (String s : section.getRoutesAsStrings(false)) {
             if (CONFIG.getString("blacklisted-items." + s + ".material") != null) {
                 if (!it.getType().toString().equalsIgnoreCase(CONFIG.getString("blacklisted-items." + s + ".material"))) continue;
                 return true;
