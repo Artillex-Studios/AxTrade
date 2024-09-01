@@ -6,11 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.UUID;
 
 public class PlaceholderCurrencyHook implements CurrencyHook {
     private final String name;
     private final Section section;
+    private DecimalFormat df;
 
     public PlaceholderCurrencyHook(String name, Section section) {
         this.name = name;
@@ -19,6 +21,7 @@ public class PlaceholderCurrencyHook implements CurrencyHook {
 
     @Override
     public void setup() {
+        df = new DecimalFormat("#");
     }
 
     @Override
@@ -74,6 +77,6 @@ public class PlaceholderCurrencyHook implements CurrencyHook {
     }
 
     private String parseNumber(double amount) {
-        return usesDouble() ? "" + amount : "" + Math.round(amount);
+        return df.format(usesDouble() ? amount : Math.round(amount));
     }
 }

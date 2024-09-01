@@ -7,6 +7,7 @@ import com.artillexstudios.axtrade.trade.Trades;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -59,11 +60,20 @@ public class TradeListeners implements Listener {
     }
 
     @EventHandler
+    public void onPickup(@NotNull EntityPickupItemEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        final Trade trade = Trades.getTrade(player);
+        if (trade == null) return;
+        event.setCancelled(true);
+    }
+
+    @EventHandler
     public void onMove(@NotNull PlayerMoveEvent event) {
+        if (event.getTo() == null) return;
         final Player player = event.getPlayer();
         final Trade trade = Trades.getTrade(player);
         if (trade == null) return;
-        if (System.currentTimeMillis() - trade.getPrepTime() < 1_000L) return;
+        if (event.getFrom().distanceSquared(event.getTo()) == 0) return;
         trade.abort();
     }
 

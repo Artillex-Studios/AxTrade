@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
@@ -91,8 +92,10 @@ public class Trade {
             String currencyName = Utils.getFormattedCurrency(entry.getKey());
             String currencyAm = NumberUtils.formatNumber(entry.getValue());
             player1Currencies.add(currencyName + ": " + currencyAm);
-            MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
-            MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+            if (CONFIG.getBoolean("enable-trade-summaries")) {
+                MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+                MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+            }
         }
 
         List<String> player2Currencies = new ArrayList<>();
@@ -102,8 +105,10 @@ public class Trade {
             String currencyName = Utils.getFormattedCurrency(entry.getKey());
             String currencyAm = NumberUtils.formatNumber(entry.getValue());
             player2Currencies.add(currencyName + ": " + currencyAm);
-            MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
-            MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+            if (CONFIG.getBoolean("enable-trade-summaries")) {
+                MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+                MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+            }
         }
 
         List<String> player1Items = new ArrayList<>();
@@ -115,8 +120,10 @@ public class Trade {
             final String itemName = Utils.getFormattedItemName(itemStack);
             int itemAm = itemStack.getAmount();
             player1Items.add(itemAm + "x " + itemName);
-            MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
-            MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+            if (CONFIG.getBoolean("enable-trade-summaries")) {
+                MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+                MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+            }
         });
 
         List<String> player2Items = new ArrayList<>();
@@ -128,8 +135,10 @@ public class Trade {
             final String itemName = Utils.getFormattedItemName(itemStack);
             int itemAm = itemStack.getAmount();
             player2Items.add(itemAm + "x " + itemName);
-            MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
-            MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+            if (CONFIG.getBoolean("enable-trade-summaries")) {
+                MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+                MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+            }
         });
 
         HistoryUtils.writeToHistory(

@@ -136,6 +136,12 @@ public class Commands implements OrphanCommand {
         Trades.addTrade(sender, other);
     }
 
+//    @Subcommand("test")
+//    @CommandPermission(value = "axtrade.admin")
+//    public void test(@NotNull Player sender) {
+//        Trades.addTrade(sender, sender);
+//    }
+
     private static BukkitCommandHandler handler = null;
     public static void registerCommand() {
         if (handler == null) {

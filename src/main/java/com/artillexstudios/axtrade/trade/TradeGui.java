@@ -42,7 +42,7 @@ public class TradeGui extends GuiFrame {
 //    private final ItemStack fullSlot;
 
     public TradeGui(@NotNull Trade trade, @NotNull TradePlayer player) {
-        super(GUIS, player.getPlayer());
+        super(GUIS, player.getPlayer(), trade);
         this.trade = trade;
         this.player = player;
         this.gui = Gui.storage()
@@ -160,34 +160,27 @@ public class TradeGui extends GuiFrame {
 //    private final HashSet<Integer> lockedSlot = new HashSet<>();
 
     public void update() {
-        final Pair<String, String> selfTextures = NMSHandlers.getNmsHandler().textures(player.getPlayer());
-        final Pair<String, String> otherTextures = NMSHandlers.getNmsHandler().textures(trade.getOtherPlayer(player.getPlayer()));
-
-        final Map<String, String> replacements = Map.of(
-                "%own-head%", selfTextures == null ? "" : selfTextures.getFirst(),
-                "%partner-head%", otherTextures == null ? "" : otherTextures.getFirst()
-        );
         if (player.hasConfirmed()) {
             super.createItem("own.confirm-item.slot", "own.confirm-item.cancel", event -> {
                 event.setCancelled(true);
                 player.cancel();
                 trade.update();
-            }, replacements, player.getConfirmed());
+            }, Map.of(), player.getConfirmed());
         } else {
             super.createItem("own.confirm-item.slot", "own.confirm-item.accept", event -> {
                 event.setCancelled(true);
                 player.confirm();
-            }, replacements);
+            }, Map.of());
         }
 
         if (player.getOtherPlayer().hasConfirmed()) {
             super.createItem("partner.confirm-item.slot", "partner.confirm-item.cancel", event -> {
                 event.setCancelled(true);
-            }, replacements, player.getOtherPlayer().getConfirmed());
+            }, Map.of(), player.getOtherPlayer().getConfirmed());
         } else {
             super.createItem("partner.confirm-item.slot", "partner.confirm-item.accept", event -> {
                 event.setCancelled(true);
-            }, replacements);
+            }, Map.of());
         }
 
         for (String currencyItem : GUIS.getSection("own").getRoutesAsStrings(false)) {

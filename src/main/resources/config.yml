@@ -25,6 +25,9 @@ trade-max-distance: 10
 # should shift + right clicking on another player send them a trade request?
 shift-click-send-request: true
 
+# the trade summaries will not be sent after trades end to players if disabled
+enable-trade-summaries: true
+
 number-formatting:
   # modes:
   # 0 - formatted (customizable, look at the formatted part)
@@ -60,4 +63,4 @@ update-notifier:
   on-join: true
 
 # do not change this
-version: 3
+version: 4

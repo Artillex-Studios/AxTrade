@@ -1,7 +1,9 @@
 package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axapi.config.Config;
+import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.utils.NumberUtils;
+import com.artillexstudios.axapi.utils.Pair;
 import com.artillexstudios.axtrade.utils.ItemBuilderUtil;
 import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.guis.BaseGui;
@@ -14,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +26,12 @@ public class GuiFrame {
     protected BaseGui gui;
     protected Player player;
     protected boolean opened = false;
+    protected final Trade trade;
 
-    public GuiFrame(Config file, Player player) {
+    public GuiFrame(Config file, Player player, Trade trade) {
         this.file = file;
         this.player = player;
+        this.trade = trade;
     }
 
     public void setGui(BaseGui gui) {
@@ -46,7 +51,18 @@ public class GuiFrame {
 
     protected ItemStack buildItem(@NotNull String key, Map<String, String> replacements) {
         if (file.getSection(key) == null) return air;
-        return ItemBuilderUtil.newBuilder(file.getSection(key), replacements, player).get();
+
+        final Pair<String, String> selfTextures = NMSHandlers.getNmsHandler().textures(player.getPlayer());
+        final Pair<String, String> otherTextures = NMSHandlers.getNmsHandler().textures(trade.getOtherPlayer(player.getPlayer()));
+
+        final HashMap<String, String> map = new HashMap<>(Map.of(
+                "%own-head%", selfTextures == null ? "" : selfTextures.getFirst(),
+                "%partner-head%", otherTextures == null ? "" : otherTextures.getFirst()
+        ));
+
+        map.putAll(replacements);
+
+        return ItemBuilderUtil.newBuilder(file.getSection(key), map, player).get();
     }
 
     protected void createItem(@NotNull String route) {
