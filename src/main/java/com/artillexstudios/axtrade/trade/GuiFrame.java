@@ -56,8 +56,8 @@ public class GuiFrame {
         final Pair<String, String> otherTextures = NMSHandlers.getNmsHandler().textures(trade.getOtherPlayer(player.getPlayer()));
 
         final HashMap<String, String> map = new HashMap<>(Map.of(
-                "%own-head%", selfTextures == null ? "" : selfTextures.getFirst(),
-                "%partner-head%", otherTextures == null ? "" : otherTextures.getFirst()
+                "%own-head%", selfTextures == null ? "" : selfTextures.getKey(),
+                "%partner-head%", otherTextures == null ? "" : otherTextures.getKey()
         ));
 
         map.putAll(replacements);

@@ -63,9 +63,10 @@ public class Requests {
             if (!request.getSender().equals(sender)) {
                 Trades.addTrade(sender, receiver);
                 requests.remove(request);
+                request.deactivate();
                 return;
             }
-            if (request.isDeclined() || System.currentTimeMillis() - request.getTime() < CONFIG.getInt("trade-request-expire-seconds", 60) * 1_000L) {
+            if (!request.isActive() || System.currentTimeMillis() - request.getTime() < CONFIG.getInt("trade-request-expire-seconds", 60) * 1_000L) {
                 MESSAGEUTILS.sendLang(sender, "request.already-sent", replacements);
                 return;
             }

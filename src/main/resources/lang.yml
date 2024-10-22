@@ -57,7 +57,7 @@ request:
   deny-receiver: "&#CCFFEEYou have successfully denied &#00FFDD%player%&#CCFFEE's trade request!"
   cant-trade-self: "&#CCFFEEYou can't send a trade request to yourself!"
   already-in-trade: "&#CCFFEEThe player is already trading with someone!"
-  already-sent: "&#CCFFEEYou have already sent a trade request to &#00FFDD%player%&#CCFFEE!"
+  already-sent: "&#CCFFEEYou have already sent a trade request to &#00FFDD%player% &#CCFFEErecently!"
   too-far: "&#CCFFEEYou are too far from &#00FFDD%player% &#CCFFEEto send a trade request!"
   not-accepting: "&#CCFFEEThis player is not accepting trades right now!"
   disallowed-gamemode: "&#CCFFEEEither you or the other player is in a disallowed gamemode!"

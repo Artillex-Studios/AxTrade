@@ -64,7 +64,7 @@ public class Commands implements OrphanCommand {
     @Subcommand("accept")
     public void accept(@NotNull Player sender, @NotNull Player other) {
         var request = Requests.getRequest(sender, other);
-        if (request == null || request.getSender().equals(sender)) {
+        if (request == null || request.getSender().equals(sender) || !request.isActive()) {
             MESSAGEUTILS.sendLang(sender, "request.no-request", Map.of("%player%", other.getName()));
             return;
         }
@@ -75,12 +75,12 @@ public class Commands implements OrphanCommand {
     @Subcommand("deny")
     public void deny(@NotNull Player sender, @NotNull Player other) {
         var request = Requests.getRequest(sender, other);
-        if (request == null || request.getSender().equals(sender) || request.isDeclined()) {
+        if (request == null || request.getSender().equals(sender) || !request.isActive()) {
             MESSAGEUTILS.sendLang(sender, "request.no-request", Map.of("%player%", other.getName()));
             return;
         }
 
-        request.decline();
+        request.deactivate();
         MESSAGEUTILS.sendLang(request.getSender(), "request.deny-sender", Map.of("%player%", request.getReceiver().getName()));
         MESSAGEUTILS.sendLang(request.getReceiver(), "request.deny-receiver", Map.of("%player%", request.getSender().getName()));
         SoundUtils.playSound(request.getSender(), "deny");

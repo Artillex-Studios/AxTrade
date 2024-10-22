@@ -6,7 +6,7 @@ public class Request {
     private final long time;
     private final Player sender;
     private final Player receiver;
-    private boolean declined = false;
+    private boolean active = true;
 
     public Request(Player sender, Player receiver) {
         this.time = System.currentTimeMillis();
@@ -26,11 +26,11 @@ public class Request {
         return sender;
     }
 
-    public boolean isDeclined() {
-        return declined;
+    public boolean isActive() {
+        return active;
     }
 
-    public void decline() {
-        declined = true;
+    public void deactivate() {
+        this.active = false;
     }
 }

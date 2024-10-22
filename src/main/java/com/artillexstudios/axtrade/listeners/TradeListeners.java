@@ -46,6 +46,7 @@ public class TradeListeners implements Listener {
             }
             if (request.getReceiver().equals(event.getPlayer())) {
                 iterator.remove();
+                if (!request.isActive()) continue;
                 MESSAGEUTILS.sendLang(request.getSender(), "request.expired", Map.of("%player%", request.getReceiver().getName()));
             }
         }
