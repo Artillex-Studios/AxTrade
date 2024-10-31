@@ -92,25 +92,25 @@ public class Commands implements OrphanCommand {
     public void reload(@NotNull CommandSender sender) {
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD[AxTrade] &#AAFFDDReloading configuration..."));
         if (!CONFIG.reload()) {
-            MESSAGEUTILS.sendFormatted(sender, "reload.failed", Map.of("%file%", "config.yml"));
+            MESSAGEUTILS.sendLang(sender, "reload.failed", Map.of("%file%", "config.yml"));
             return;
         }
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╠ &#AAFFDDReloaded &fconfig.yml&#AAFFDD!"));
 
         if (!LANG.reload()) {
-            MESSAGEUTILS.sendFormatted(sender, "reload.failed", Map.of("%file%", "lang.yml"));
+            MESSAGEUTILS.sendLang(sender, "reload.failed", Map.of("%file%", "lang.yml"));
             return;
         }
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╠ &#AAFFDDReloaded &flang.yml&#AAFFDD!"));
 
         if (!GUIS.reload()) {
-            MESSAGEUTILS.sendFormatted(sender, "reload.failed", Map.of("%file%", "guis.yml"));
+            MESSAGEUTILS.sendLang(sender, "reload.failed", Map.of("%file%", "guis.yml"));
             return;
         }
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╠ &#AAFFDDReloaded &fguis.yml&#AAFFDD!"));
 
         if (!HOOKS.reload()) {
-            MESSAGEUTILS.sendFormatted(sender, "reload.failed", Map.of("%file%", "currencies.yml"));
+            MESSAGEUTILS.sendLang(sender, "reload.failed", Map.of("%file%", "currencies.yml"));
             return;
         }
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╠ &#AAFFDDReloaded &fcurrencies.yml&#AAFFDD!"));
