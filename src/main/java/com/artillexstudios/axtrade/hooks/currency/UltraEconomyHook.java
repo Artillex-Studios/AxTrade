@@ -24,7 +24,7 @@ public class UltraEconomyHook implements CurrencyHook {
     public void setup() {
         final Optional<Currency> currencyOptional = UltraEconomy.getAPI().getCurrencies().name(internal);
         if (currencyOptional.isEmpty()) {
-            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#FF0000[AxAuctions] UltraEconomy currency named &#DD0000" + internal + " &#FF0000not found! Change the currency-name or disable the hook to get rid of this warning!"));
+            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#FF0000[AxTrade] UltraEconomy currency named &#DD0000" + internal + " &#FF0000not found! Change the currency-name or disable the hook to get rid of this warning!"));
             return;
         }
         currency = currencyOptional.get();

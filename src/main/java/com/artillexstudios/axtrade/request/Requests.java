@@ -18,6 +18,7 @@ import java.util.Map;
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
+import static com.artillexstudios.axtrade.AxTrade.TOGGLED;
 
 public class Requests {
     private static final ArrayList<Request> requests = new ArrayList<>();
@@ -39,6 +40,16 @@ public class Requests {
 
         if (sender.isDead() || receiver.isDead()) {
             MESSAGEUTILS.sendLang(sender, "request.not-accepting", replacements);
+            return;
+        }
+
+        if (TOGGLED.getBoolean("toggled." + receiver.getUniqueId())) {
+            MESSAGEUTILS.sendLang(sender, "request.not-accepting", replacements);
+            return;
+        }
+
+        if (TOGGLED.getBoolean("toggled." + sender.getUniqueId())) {
+            MESSAGEUTILS.sendLang(sender, "request.disabled-trading", replacements);
             return;
         }
 

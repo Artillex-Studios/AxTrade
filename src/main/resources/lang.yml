@@ -28,6 +28,10 @@ trade:
   aborted: "&#CCFFEEYour trade with &#00FFDD%player% &#CCFFEEwas aborted!"
   blacklisted-item: "&#CCFFEEThis item is blacklisted!"
 
+toggle:
+  enabled: "&#CCFFEEYou have enabled trade requests!"
+  disabled: "&#CCFFEEYou have disabled trade requests!"
+
 # summary after a successful trade
 summary:
   get:
@@ -59,10 +63,11 @@ request:
   already-in-trade: "&#CCFFEEThe player is already trading with someone!"
   already-sent: "&#CCFFEEYou have already sent a trade request to &#00FFDD%player% &#CCFFEErecently!"
   too-far: "&#CCFFEEYou are too far from &#00FFDD%player% &#CCFFEEto send a trade request!"
-  not-accepting: "&#CCFFEEThis player is not accepting trades right now!"
+  not-accepting: "&#CCFFEEThis player is not accepting trades!"
   disallowed-gamemode: "&#CCFFEEEither you or the other player is in a disallowed gamemode!"
   blacklisted-world: "&#CCFFEETrades are disabled in this world!"
   expired: "&#CCFFEEYour trade request to &#00FFDD%player% &#CCFFEEhas expired!"
+  disabled-trading: "&#CCFFEEYou have disabled trades! Use &#00FFDD/trade toggle &#CCFFEEto enable."
 
 # this must be 4 lines
 # note: currently the first line must be left empty
@@ -105,4 +110,4 @@ commands:
 update-notifier: "&#AAFFCCThere is a new version of the plugin available! &#DDDDDD(&#FFFFFFcurrent: &#FF0000%current% &#DDDDDD| &#FFFFFFlatest: &#00FF00%latest%&#DDDDDD)"
 
 # do not change this
-version: 5
+version: 6

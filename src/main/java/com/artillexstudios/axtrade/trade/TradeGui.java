@@ -4,7 +4,6 @@ import com.artillexstudios.axapi.gui.SignInput;
 import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.scheduler.ScheduledTask;
 import com.artillexstudios.axapi.scheduler.Scheduler;
-import com.artillexstudios.axapi.utils.Pair;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.utils.BlackListUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
@@ -150,6 +149,8 @@ public class TradeGui extends GuiFrame {
             if (inSign) return;
             trade.abort();
         });
+
+        if (trade.ended) return;
 
         update();
         gui.open(player.getPlayer());

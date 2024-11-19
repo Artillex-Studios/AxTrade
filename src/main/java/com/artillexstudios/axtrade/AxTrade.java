@@ -31,6 +31,7 @@ public final class AxTrade extends AxPlugin {
     public static Config LANG;
     public static Config GUIS;
     public static Config HOOKS;
+    public static Config TOGGLED;
     public static MessageUtils MESSAGEUTILS;
     private static AxPlugin instance;
     private static ThreadedQueue<Runnable> threadedQueue;
@@ -55,6 +56,7 @@ public final class AxTrade extends AxPlugin {
         LANG = new Config(new File(getDataFolder(), "lang.yml"), getResource("lang.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setKeepAll(true).setVersioning(new BasicVersioning("version")).build());
         new CurrencyConverter(new Config(new File(getDataFolder(), "currencies.yml")));
         HOOKS = new Config(new File(getDataFolder(), "currencies.yml"), getResource("currencies.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setKeepAll(true).setVersioning(new BasicVersioning("version")).build());
+        TOGGLED = new Config(new File(getDataFolder(), "toggled.yml"), getResource("toggled.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.DEFAULT, DumperSettings.DEFAULT, UpdaterSettings.DEFAULT);
 
         LanguageManager.reload();
 

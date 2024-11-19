@@ -35,6 +35,7 @@ import static com.artillexstudios.axtrade.AxTrade.GUIS;
 import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
+import static com.artillexstudios.axtrade.AxTrade.TOGGLED;
 
 @CommandPermission(value = "axtrade.trade")
 public class Commands implements OrphanCommand {
@@ -85,6 +86,20 @@ public class Commands implements OrphanCommand {
         MESSAGEUTILS.sendLang(request.getReceiver(), "request.deny-receiver", Map.of("%player%", request.getSender().getName()));
         SoundUtils.playSound(request.getSender(), "deny");
         SoundUtils.playSound(request.getReceiver(), "deny");
+    }
+
+    @CommandPermission("axtrade.toggle")
+    @Subcommand("toggle")
+    public void toggle(@NotNull Player sender) {
+        boolean toggled = TOGGLED.getBoolean("toggled." + sender.getUniqueId(), false);
+        if (toggled) {
+            TOGGLED.getBackingDocument().remove("toggled." + sender.getUniqueId());
+            MESSAGEUTILS.sendLang(sender, "toggle.enabled");
+        } else {
+            TOGGLED.set("toggled." + sender.getUniqueId(), true);
+            MESSAGEUTILS.sendLang(sender, "toggle.disabled");
+        }
+        TOGGLED.save();
     }
 
     @Subcommand("reload")

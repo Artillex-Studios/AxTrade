@@ -23,7 +23,7 @@ public class RedisEconomyHook implements CurrencyHook {
         RedisEconomyAPI api = RedisEconomyAPI.getAPI();
         currency = api.getCurrencyByName(internal);
         if (currency == null) {
-            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#FF0000[AxAuctions] RedisEconomy currency named &#DD0000" + internal + " &#FF0000not found! Change the currency-name or disable the hook to get rid of this warning!"));
+            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#FF0000[AxTrade] RedisEconomy currency named &#DD0000" + internal + " &#FF0000not found! Change the currency-name or disable the hook to get rid of this warning!"));
         }
     }
 
