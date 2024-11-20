@@ -2,7 +2,6 @@ package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axapi.gui.SignInput;
 import com.artillexstudios.axapi.nms.NMSHandlers;
-import com.artillexstudios.axapi.scheduler.ScheduledTask;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.utils.BlackListUtils;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static com.artillexstudios.axtrade.AxTrade.GUIS;
 import static com.artillexstudios.axtrade.AxTrade.LANG;
@@ -76,16 +74,13 @@ public class TradeGui extends GuiFrame {
 
                 final BaseGui shulkerGui = Gui.storage().rows(3).title(StringUtils.format(Utils.getFormattedItemName(event.getCurrentItem()))).disableAllInteractions().create();
                 shulkerGui.getInventory().setContents(ShulkerUtils.getShulkerContents(event.getCurrentItem()));
-                shulkerGui.setCloseGuiAction(shulkerEvent -> Scheduler.get().run(new Consumer<>() {
-                    @Override
-                    public void accept(ScheduledTask scheduledTask) {
-                        if (trade.ended) return;
-                        trade.prepTime = System.currentTimeMillis();
-                        gui.open(player.getPlayer());
-                        inSign = false;
-                        trade.update();
-                        updateTitle();
-                    }
+                shulkerGui.setCloseGuiAction(e -> Scheduler.get().run(t -> {
+                    if (trade.isEnded()) return;
+                    trade.prepTime = System.currentTimeMillis();
+                    gui.open(player.getPlayer());
+                    inSign = false;
+                    trade.update();
+                    updateTitle();
                 }));
                 shulkerGui.open(player.getPlayer());
                 return;
@@ -150,7 +145,7 @@ public class TradeGui extends GuiFrame {
             trade.abort();
         });
 
-        if (trade.ended) return;
+        if (trade.isEnded()) return;
 
         update();
         gui.open(player.getPlayer());
@@ -200,7 +195,7 @@ public class TradeGui extends GuiFrame {
                 lines.set(0, Component.empty());
 
                 var sign = new SignInput.Builder().setLines(lines).setHandler((player1, result) -> {
-                    if (trade.ended) return;
+                    if (trade.isEnded()) return;
                     trade.prepTime = System.currentTimeMillis();
                     String am = PlainTextComponentSerializer.plainText().serialize(result[0]);
                     TradePlayer.Result addResult = player.setCurrency(currencyStr, am);
@@ -217,6 +212,7 @@ public class TradeGui extends GuiFrame {
                         }
                     }
                     Scheduler.get().run(scheduledTask -> {
+                        if (trade.isEnded()) return;
                         gui.open(player.getPlayer());
                         inSign = false;
                         trade.update();

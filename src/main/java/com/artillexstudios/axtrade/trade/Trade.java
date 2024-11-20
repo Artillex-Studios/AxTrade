@@ -20,7 +20,7 @@ import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 public class Trade {
     protected final TradePlayer player1;
     protected final TradePlayer player2;
-    protected boolean ended = false;
+    private boolean ended = false;
     protected long prepTime = System.currentTimeMillis();
 
     public Trade(Player p1, Player p2) {
@@ -162,5 +162,9 @@ public class Trade {
 
     public Player getOtherPlayer(Player player) {
         return player1.getPlayer().equals(player) ? player2.getPlayer() : player1.getPlayer();
+    }
+
+    public boolean isEnded() {
+        return ended;
     }
 }

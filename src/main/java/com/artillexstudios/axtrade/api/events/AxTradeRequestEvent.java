@@ -44,5 +44,4 @@ public class AxTradeRequestEvent extends Event implements Cancellable {
     public Player getReceiver() {
         return receiver;
     }
-
 }

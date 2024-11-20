@@ -1,6 +1,6 @@
 package com.artillexstudios.axtrade.listeners;
 
-import com.artillexstudios.axtrade.commands.Commands;
+import com.artillexstudios.axtrade.request.Requests;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +15,7 @@ public class EntityInteractListener implements Listener {
     private static final HashMap<Player, Long> cd = new HashMap<>();
 
     @EventHandler (ignoreCancelled = true)
-    public void onClick(@NotNull PlayerInteractEntityEvent event) {
+    public void onInteract(@NotNull PlayerInteractEntityEvent event) {
         if (!CONFIG.getBoolean("shift-click-send-request", true)) return;
         final Player player = event.getPlayer();
         if (!player.hasPermission("axtrade.trade")) return;
@@ -28,7 +28,7 @@ public class EntityInteractListener implements Listener {
         cd.put(player, System.currentTimeMillis());
         if (!sendTo.isOnline()) return;
 
-        new Commands().trade(player, sendTo);
+        Requests.addRequest(player, sendTo);
     }
 
     public static void onQuit(Player player) {

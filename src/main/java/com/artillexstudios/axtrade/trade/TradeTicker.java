@@ -12,7 +12,7 @@ import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
 public class TradeTicker {
 
-    public void start() {
+    public static void start() {
         Scheduler.get().runTimer(scheduledTask -> {
             for (Trade trade : Trades.getTrades()) {
                 if (!(trade.player1.hasConfirmed() && trade.player2.hasConfirmed())) continue;

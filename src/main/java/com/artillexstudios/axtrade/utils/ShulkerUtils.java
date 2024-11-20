@@ -13,6 +13,7 @@ public class ShulkerUtils {
     public static ItemStack[] getShulkerContents(@NotNull ItemStack item) {
         if (!(item.getItemMeta() instanceof BlockStateMeta meta)) return new ItemStack[0];
         if (meta.getBlockState() instanceof ShulkerBox shulker) {
+            // axshulkers viewer compatibility
             if (ClassUtils.INSTANCE.classExists("com.artillexstudios.axshulkers.utils.ShulkerUtils") && com.artillexstudios.axshulkers.utils.ShulkerUtils.getShulkerUUID(item) != null) {
                 return com.artillexstudios.axshulkers.AxShulkers.getDB().getShulker(com.artillexstudios.axshulkers.utils.ShulkerUtils.getShulkerUUID(item));
             }

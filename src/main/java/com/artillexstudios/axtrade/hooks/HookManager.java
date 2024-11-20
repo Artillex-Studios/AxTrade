@@ -31,11 +31,11 @@ import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 public class HookManager {
     private static final ArrayList<CurrencyHook> currency = new ArrayList<>();
 
-    public void setupHooks() {
+    public static void setupHooks() {
         updateHooks();
     }
 
-    public void updateHooks() {
+    public static void updateHooks() {
         currency.removeIf(currencyHook -> !currencyHook.isPersistent());
 
         if (HOOKS.getBoolean("currencies.Experience.register", true))
