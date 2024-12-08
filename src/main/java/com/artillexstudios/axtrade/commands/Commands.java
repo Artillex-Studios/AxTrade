@@ -132,8 +132,6 @@ public class Commands implements OrphanCommand {
 
         LanguageManager.reload();
 
-        Commands.registerCommand();
-
         new HookManager().updateHooks();
         NumberUtils.reload();
 

@@ -6,7 +6,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxTrade</artifactId>
-    <version>1.10.1</version>
+    <version>1.11.0</version>
     <packaging>jar</packaging>
 
     <name>AxTrade</name>
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>com.artillexstudios.axapi</groupId>
             <artifactId>axapi</artifactId>
-            <version>1.4.403</version>
+            <version>1.4.435</version>
             <scope>compile</scope>
             <classifier>all</classifier>
         </dependency>
