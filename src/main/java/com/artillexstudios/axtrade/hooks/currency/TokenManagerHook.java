@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 
@@ -47,12 +48,16 @@ public class TokenManagerHook implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
-        eco.addTokens(Bukkit.getPlayer(player), (long) amount);
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        cf.complete(eco.addTokens(Bukkit.getPlayer(player), (long) amount));
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
-        eco.removeTokens(Bukkit.getPlayer(player), (long) amount);
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        cf.complete(eco.removeTokens(Bukkit.getPlayer(player), (long) amount));
+        return cf;
     }
 }

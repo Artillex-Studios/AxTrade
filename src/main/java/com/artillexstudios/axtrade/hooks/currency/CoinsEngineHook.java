@@ -7,6 +7,7 @@ import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class CoinsEngineHook implements CurrencyHook {
     private Currency currency = null;
@@ -58,14 +59,24 @@ public class CoinsEngineHook implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
-        if (currency == null) return;
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        if (currency == null) {
+            cf.complete(false);
+            return cf;
+        }
         CoinsEngineAPI.addBalance(Bukkit.getPlayer(player), currency, amount);
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
-        if (currency == null) return;
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        if (currency == null) {
+            cf.complete(false);
+            return cf;
+        }
         CoinsEngineAPI.removeBalance(Bukkit.getPlayer(player), currency, amount);
+        return cf;
     }
 }

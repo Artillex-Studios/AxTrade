@@ -3,6 +3,7 @@ package com.artillexstudios.axtrade.hooks.currency;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public interface CurrencyHook {
     void setup();
@@ -19,7 +20,7 @@ public interface CurrencyHook {
 
     double getBalance(@NotNull UUID player);
 
-    void giveBalance(@NotNull UUID player, double amount);
+    CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount);
 
-    void takeBalance(@NotNull UUID player, double amount);
+    CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount);
 }

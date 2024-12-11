@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class UltraEconomyHook implements CurrencyHook {
     private Currency currency = null;
@@ -63,18 +64,34 @@ public class UltraEconomyHook implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
-        if (currency == null) return;
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        if (currency == null) {
+            cf.complete(false);
+            return cf;
+        }
         final Optional<Account> account = UltraEconomy.getAPI().getAccounts().uuid(player);
-        if (account.isEmpty()) return;
-        account.get().addBalance(currency, amount);
+        if (account.isEmpty()) {
+            cf.complete(false);
+            return cf;
+        }
+        cf.complete(account.get().addBalance(currency, amount));
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
-        if (currency == null) return;
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        if (currency == null) {
+            cf.complete(false);
+            return cf;
+        }
         final Optional<Account> account = UltraEconomy.getAPI().getAccounts().uuid(player);
-        if (account.isEmpty()) return;
-        account.get().removeBalance(currency, amount);
+        if (account.isEmpty()) {
+            cf.complete(false);
+            return cf;
+        }
+        cf.complete(account.get().removeBalance(currency, amount));
+        return cf;
     }
 }

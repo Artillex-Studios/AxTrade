@@ -3,10 +3,12 @@ package com.artillexstudios.axtrade.hooks.currency;
 import com.artillexstudios.axapi.utils.StringUtils;
 import dev.unnm3d.rediseconomy.api.RedisEconomyAPI;
 import dev.unnm3d.rediseconomy.currency.Currency;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class RedisEconomyHook implements CurrencyHook {
     private Currency currency = null;
@@ -59,14 +61,26 @@ public class RedisEconomyHook implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
-        if (currency == null) return;
-        currency.depositPlayer(player, null, amount, null);
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        if (currency == null) {
+            cf.complete(false);
+            return cf;
+        }
+        EconomyResponse economyResponse = currency.depositPlayer(player, null, amount, null);
+        cf.complete(economyResponse.transactionSuccess());
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
-        if (currency == null) return;
-        currency.withdrawPlayer(player, null, amount, null);
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        if (currency == null) {
+            cf.complete(false);
+            return cf;
+        }
+        EconomyResponse economyResponse = currency.withdrawPlayer(player, null, amount, null);
+        cf.complete(economyResponse.transactionSuccess());
+        return cf;
     }
 }

@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class EcoBitsHook implements CurrencyHook {
     private Currency currency = null;
@@ -60,14 +61,26 @@ public class EcoBitsHook implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
-        if (currency == null) return;
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        if (currency == null) {
+            cf.complete(false);
+            return cf;
+        }
         CurrencyUtils.adjustBalance(Bukkit.getOfflinePlayer(player), currency, BigDecimal.valueOf(amount));
+        cf.complete(true);
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
-        if (currency == null) return;
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        if (currency == null) {
+            cf.complete(false);
+            return cf;
+        }
         CurrencyUtils.adjustBalance(Bukkit.getOfflinePlayer(player), currency, BigDecimal.valueOf(amount * -1));
+        cf.complete(true);
+        return cf;
     }
 }

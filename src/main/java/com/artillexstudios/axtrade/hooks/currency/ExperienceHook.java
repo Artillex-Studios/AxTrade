@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 
@@ -46,15 +47,21 @@ public class ExperienceHook implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final Player pl = Bukkit.getPlayer(player);
         changeExp(pl, (int) amount);
+        cf.complete(true);
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final Player pl = Bukkit.getPlayer(player);
         changeExp(pl, (int) (amount * -1));
+        cf.complete(true);
+        return cf;
     }
 
     // credit: https://gist.githubusercontent.com/Jikoo/30ec040443a4701b8980/raw/0745ca25a8aaaf749ba2f2164a809e998f6a37c4/Experience.java

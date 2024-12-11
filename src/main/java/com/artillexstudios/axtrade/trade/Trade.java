@@ -2,6 +2,7 @@ package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.ContainerUtils;
+import com.artillexstudios.axtrade.currency.CurrencyProcessor;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
 import com.artillexstudios.axtrade.utils.HistoryUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
@@ -53,12 +54,15 @@ public class Trade {
         SoundUtils.playSound(player1.getPlayer(), "aborted");
         SoundUtils.playSound(player2.getPlayer(), "aborted");
         end();
+        close();
     }
 
     public void end() {
-        if (ended) return;
         ended = true;
-        Scheduler.get().run(scheduledTask -> Trades.removeTrade(Trade.this));
+    }
+
+    public void close() {
+        Scheduler.get().run(scheduledTask -> Trades.removeTrade(this));
         player1.getPlayer().closeInventory();
         player1.getPlayer().updateInventory();
         player2.getPlayer().closeInventory();
@@ -80,72 +84,88 @@ public class Trade {
             }
         }
 
-        MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.completed", Map.of("%player%", player2.getPlayer().getName()));
-        MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.completed", Map.of("%player%", player1.getPlayer().getName()));
-        SoundUtils.playSound(player1.getPlayer(), "completed");
-        SoundUtils.playSound(player2.getPlayer(), "completed");
-
-        List<String> player1Currencies = new ArrayList<>();
-        for (Map.Entry<CurrencyHook, Double> entry : player1.getCurrencies().entrySet()) {
-            entry.getKey().takeBalance(player1.getPlayer().getUniqueId(), entry.getValue());
-            entry.getKey().giveBalance(player2.getPlayer().getUniqueId(), entry.getValue());
-            String currencyName = Utils.getFormattedCurrency(entry.getKey());
-            String currencyAm = NumberUtils.formatNumber(entry.getValue());
-            player1Currencies.add(currencyName + ": " + currencyAm);
-            if (CONFIG.getBoolean("enable-trade-summaries")) {
-                MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
-                MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+        close();
+        CurrencyProcessor currencyProcessor1 = new CurrencyProcessor(player1.getPlayer(), player1.getCurrencies().entrySet());
+        currencyProcessor1.run().thenAccept(success1 -> {
+            if (!success1) {
+                abort();
+                return;
             }
-        }
 
-        List<String> player2Currencies = new ArrayList<>();
-        for (Map.Entry<CurrencyHook, Double> entry : player2.getCurrencies().entrySet()) {
-            entry.getKey().takeBalance(player2.getPlayer().getUniqueId(), entry.getValue());
-            entry.getKey().giveBalance(player1.getPlayer().getUniqueId(), entry.getValue());
-            String currencyName = Utils.getFormattedCurrency(entry.getKey());
-            String currencyAm = NumberUtils.formatNumber(entry.getValue());
-            player2Currencies.add(currencyName + ": " + currencyAm);
-            if (CONFIG.getBoolean("enable-trade-summaries")) {
-                MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
-                MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
-            }
-        }
+            CurrencyProcessor currencyProcessor2 = new CurrencyProcessor(player2.getPlayer(), player2.getCurrencies().entrySet());
+            currencyProcessor2.run().thenAccept(success2 -> {
+                if (!success2) {
+                    abort();
+                    currencyProcessor1.reverse();
+                    return;
+                }
 
-        List<String> player1Items = new ArrayList<>();
-        player1.getTradeGui().getItems().forEach(itemStack -> {
-            if (itemStack == null) return;
-            Scheduler.get().runAt(player2.getPlayer().getLocation(), task -> {
-                ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
+                end();
+
+                MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.completed", Map.of("%player%", player2.getPlayer().getName()));
+                MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.completed", Map.of("%player%", player1.getPlayer().getName()));
+                SoundUtils.playSound(player1.getPlayer(), "completed");
+                SoundUtils.playSound(player2.getPlayer(), "completed");
+
+                List<String> player1Currencies = new ArrayList<>();
+                for (Map.Entry<CurrencyHook, Double> entry : player1.getCurrencies().entrySet()) {
+                    entry.getKey().giveBalance(player2.getPlayer().getUniqueId(), entry.getValue());
+                    String currencyName = Utils.getFormattedCurrency(entry.getKey());
+                    String currencyAm = NumberUtils.formatNumber(entry.getValue());
+                    player1Currencies.add(currencyName + ": " + currencyAm);
+                    if (CONFIG.getBoolean("enable-trade-summaries")) {
+                        MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+                        MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+                    }
+                }
+
+                List<String> player2Currencies = new ArrayList<>();
+                for (Map.Entry<CurrencyHook, Double> entry : player2.getCurrencies().entrySet()) {
+                    entry.getKey().giveBalance(player1.getPlayer().getUniqueId(), entry.getValue());
+                    String currencyName = Utils.getFormattedCurrency(entry.getKey());
+                    String currencyAm = NumberUtils.formatNumber(entry.getValue());
+                    player2Currencies.add(currencyName + ": " + currencyAm);
+                    if (CONFIG.getBoolean("enable-trade-summaries")) {
+                        MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+                        MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+                    }
+                }
+
+                List<String> player1Items = new ArrayList<>();
+                player1.getTradeGui().getItems().forEach(itemStack -> {
+                    if (itemStack == null) return;
+                    Scheduler.get().runAt(player2.getPlayer().getLocation(), task -> {
+                        ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
+                    });
+                    final String itemName = Utils.getFormattedItemName(itemStack);
+                    int itemAm = itemStack.getAmount();
+                    player1Items.add(itemAm + "x " + itemName);
+                    if (CONFIG.getBoolean("enable-trade-summaries")) {
+                        MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+                        MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+                    }
+                });
+
+                List<String> player2Items = new ArrayList<>();
+                player2.getTradeGui().getItems().forEach(itemStack -> {
+                    if (itemStack == null) return;
+                    Scheduler.get().runAt(player1.getPlayer().getLocation(), task -> {
+                        ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
+                    });
+                    final String itemName = Utils.getFormattedItemName(itemStack);
+                    int itemAm = itemStack.getAmount();
+                    player2Items.add(itemAm + "x " + itemName);
+                    if (CONFIG.getBoolean("enable-trade-summaries")) {
+                        MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+                        MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+                    }
+                });
+
+                HistoryUtils.writeToHistory(
+                        String.format("%s: [Currencies: %s] [Items: %s] | %s: [Currencies: %s] [Items: %s]",
+                                player1.getPlayer().getName(), player1Currencies.isEmpty() ? "---" : String.join(", ", player1Currencies), player1Items.isEmpty() ? "---" : String.join(", ", player1Items), player2.getPlayer().getName(), player2Currencies.isEmpty() ? "---" : String.join(", ", player2Currencies), player2Items.isEmpty() ? "---" : String.join(", ", player2Items)));
             });
-            final String itemName = Utils.getFormattedItemName(itemStack);
-            int itemAm = itemStack.getAmount();
-            player1Items.add(itemAm + "x " + itemName);
-            if (CONFIG.getBoolean("enable-trade-summaries")) {
-                MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
-                MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
-            }
         });
-
-        List<String> player2Items = new ArrayList<>();
-        player2.getTradeGui().getItems().forEach(itemStack -> {
-            if (itemStack == null) return;
-            Scheduler.get().runAt(player1.getPlayer().getLocation(), task -> {
-                ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
-            });
-            final String itemName = Utils.getFormattedItemName(itemStack);
-            int itemAm = itemStack.getAmount();
-            player2Items.add(itemAm + "x " + itemName);
-            if (CONFIG.getBoolean("enable-trade-summaries")) {
-                MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
-                MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
-            }
-        });
-
-        HistoryUtils.writeToHistory(
-                String.format("%s: [Currencies: %s] [Items: %s] | %s: [Currencies: %s] [Items: %s]",
-        player1.getPlayer().getName(), player1Currencies.isEmpty() ? "---" : String.join(", ", player1Currencies), player1Items.isEmpty() ? "---" : String.join(", ", player1Items), player2.getPlayer().getName(), player2Currencies.isEmpty() ? "---" : String.join(", ", player2Currencies), player2Items.isEmpty() ? "---" : String.join(", ", player2Items)));
-
-        end();
     }
 
     public long getPrepTime() {

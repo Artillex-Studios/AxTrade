@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.kingdoms.constants.player.KingdomPlayer;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 
@@ -46,14 +47,20 @@ public class KingdomsXHook implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final KingdomPlayer kingdomPlayer = KingdomPlayer.getKingdomPlayer(player);
         kingdomPlayer.getKingdom().addResourcePoints((long) amount);
+        cf.complete(true);
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final KingdomPlayer kingdomPlayer = KingdomPlayer.getKingdomPlayer(player);
         kingdomPlayer.getKingdom().addResourcePoints((long) (amount * -1));
+        cf.complete(true);
+        return cf;
     }
 }

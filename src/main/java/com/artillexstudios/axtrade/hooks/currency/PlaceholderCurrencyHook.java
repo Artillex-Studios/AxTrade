@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class PlaceholderCurrencyHook implements CurrencyHook {
     private final String name;
@@ -57,23 +58,33 @@ public class PlaceholderCurrencyHook implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final OfflinePlayer pl = Bukkit.getOfflinePlayer(player);
-        if (pl.getName() == null) return;
+        if (pl.getName() == null) {
+            cf.complete(false);
+            return cf;
+        }
         final String placeholder = section.getString("settings.give-command")
                 .replace("%amount%", parseNumber(amount))
                 .replace("%player%", pl.getName());
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholder);
+        cf.complete(Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholder));
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final OfflinePlayer pl = Bukkit.getOfflinePlayer(player);
-        if (pl.getName() == null) return;
+        if (pl.getName() == null) {
+            cf.complete(false);
+            return cf;
+        }
         final String placeholder = section.getString("settings.take-command")
                 .replace("%amount%", parseNumber(amount))
                 .replace("%player%", pl.getName());
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholder);
+        cf.complete(Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholder));
+        return cf;
     }
 
     private String parseNumber(double amount) {

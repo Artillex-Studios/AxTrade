@@ -5,6 +5,7 @@ import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 
@@ -47,12 +48,16 @@ public class PlayerPointsHook implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
-        econ.give(player, (int) amount);
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        cf.complete(econ.give(player, (int) amount));
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
-        econ.take(player, (int) Math.round(amount));
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        cf.complete(econ.take(player, (int) Math.round(amount)));
+        return cf;
     }
 }

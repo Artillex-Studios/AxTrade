@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 
@@ -46,14 +47,26 @@ public class TheOnlyMobCoins implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
-        if (MobCoinsAPI.getPlayerData(Bukkit.getPlayer(player)) == null) return;
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        if (MobCoinsAPI.getPlayerData(Bukkit.getPlayer(player)) == null) {
+            cf.complete(false);
+            return cf;
+        }
         MobCoinsAPI.getPlayerData(Bukkit.getPlayer(player)).addCoins(amount);
+        cf.complete(true);
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
-        if (MobCoinsAPI.getPlayerData(Bukkit.getPlayer(player)) == null) return;
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
+        if (MobCoinsAPI.getPlayerData(Bukkit.getPlayer(player)) == null) {
+            cf.complete(false);
+            return cf;
+        }
         MobCoinsAPI.getPlayerData(Bukkit.getPlayer(player)).reduceCoins(amount);
+        cf.complete(true);
+        return cf;
     }
 }

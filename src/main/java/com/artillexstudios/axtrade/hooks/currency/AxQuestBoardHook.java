@@ -4,6 +4,7 @@ import com.artillexstudios.axquestboard.api.AxQuestBoardAPI;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 
@@ -44,12 +45,18 @@ public class AxQuestBoardHook implements CurrencyHook {
     }
 
     @Override
-    public void giveBalance(@NotNull UUID player, double amount) {
+    public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         AxQuestBoardAPI.modifyPoints(player, (int) amount);
+        cf.complete(true);
+        return cf;
     }
 
     @Override
-    public void takeBalance(@NotNull UUID player, double amount) {
+    public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
+        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         AxQuestBoardAPI.modifyPoints(player, (int) amount * -1);
+        cf.complete(true);
+        return cf;
     }
 }
