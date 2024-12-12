@@ -6,8 +6,8 @@ import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 
@@ -16,7 +16,7 @@ public class TradePlayer {
     private TradePlayer otherPlayer;
     private TradeGui tradeGui;
     private final Trade trade;
-    private final HashMap<CurrencyHook, Double> currencies = new HashMap<>();
+    private final ConcurrentHashMap<CurrencyHook, Double> currencies = new ConcurrentHashMap<>();
 
     // confirmed
     // null > not confirmed
@@ -90,7 +90,7 @@ public class TradePlayer {
         SoundUtils.playSound(player, "countdown");
     }
 
-    public HashMap<CurrencyHook, Double> getCurrencies() {
+    public ConcurrentHashMap<CurrencyHook, Double> getCurrencies() {
         return currencies;
     }
 

@@ -38,8 +38,22 @@ public class Trade {
         player2.getTradeGui().update();
     }
 
+    public void end() {
+        ended = true;
+        Scheduler.get().run(scheduledTask -> Trades.removeTrade(this));
+        player1.getPlayer().closeInventory();
+        player1.getPlayer().updateInventory();
+        player2.getPlayer().closeInventory();
+        player2.getPlayer().updateInventory();
+    }
+
     public void abort() {
-        if (ended) return;
+        abort(false);
+    }
+
+    public void abort(boolean force) {
+        if (!force && ended) return;
+        end();
         player1.getTradeGui().getItems().forEach(itemStack -> {
             if (itemStack == null) return;
             player1.getPlayer().getInventory().addItem(itemStack);
@@ -53,54 +67,38 @@ public class Trade {
         MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", player1.getPlayer().getName()));
         SoundUtils.playSound(player1.getPlayer(), "aborted");
         SoundUtils.playSound(player2.getPlayer(), "aborted");
-        end();
-        close();
-    }
-
-    public void end() {
-        ended = true;
-    }
-
-    public void close() {
-        Scheduler.get().run(scheduledTask -> Trades.removeTrade(this));
-        player1.getPlayer().closeInventory();
-        player1.getPlayer().updateInventory();
-        player2.getPlayer().closeInventory();
-        player2.getPlayer().updateInventory();
     }
 
     public void complete() {
+        end();
         for (Map.Entry<CurrencyHook, Double> entry : player1.getCurrencies().entrySet()) {
             if (entry.getKey().getBalance(player1.getPlayer().getUniqueId()) < entry.getValue()) {
-                abort();
+                abort(true);
                 return;
             }
         }
 
         for (Map.Entry<CurrencyHook, Double> entry : player2.getCurrencies().entrySet()) {
             if (entry.getKey().getBalance(player2.getPlayer().getUniqueId()) < entry.getValue()) {
-                abort();
+                abort(true);
                 return;
             }
         }
 
-        close();
         CurrencyProcessor currencyProcessor1 = new CurrencyProcessor(player1.getPlayer(), player1.getCurrencies().entrySet());
         currencyProcessor1.run().thenAccept(success1 -> {
             if (!success1) {
-                abort();
+                abort(true);
                 return;
             }
 
             CurrencyProcessor currencyProcessor2 = new CurrencyProcessor(player2.getPlayer(), player2.getCurrencies().entrySet());
             currencyProcessor2.run().thenAccept(success2 -> {
                 if (!success2) {
-                    abort();
+                    abort(true);
                     currencyProcessor1.reverse();
                     return;
                 }
-
-                end();
 
                 MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.completed", Map.of("%player%", player2.getPlayer().getName()));
                 MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.completed", Map.of("%player%", player1.getPlayer().getName()));
