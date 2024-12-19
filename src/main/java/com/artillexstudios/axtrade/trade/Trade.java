@@ -2,12 +2,14 @@ package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.ContainerUtils;
+import com.artillexstudios.axtrade.api.events.AxTradeCompletedEvent;
 import com.artillexstudios.axtrade.currency.CurrencyProcessor;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
 import com.artillexstudios.axtrade.utils.HistoryUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
 import com.artillexstudios.axtrade.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -83,6 +85,17 @@ public class Trade {
                 abort(true);
                 return;
             }
+        }
+
+        AxTradeCompletedEvent event = new AxTradeCompletedEvent(
+            this.player1, this.player2
+        );
+
+        Bukkit.getPluginManager().callEvent(event);
+
+        if(event.isCancelled()) {
+            abort(true);
+            return;
         }
 
         CurrencyProcessor currencyProcessor1 = new CurrencyProcessor(player1.getPlayer(), player1.getCurrencies().entrySet());
