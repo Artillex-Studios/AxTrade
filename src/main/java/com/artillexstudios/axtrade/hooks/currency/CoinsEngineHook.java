@@ -66,6 +66,7 @@ public class CoinsEngineHook implements CurrencyHook {
             return cf;
         }
         CoinsEngineAPI.addBalance(Bukkit.getPlayer(player), currency, amount);
+        cf.complete(true);
         return cf;
     }
 
@@ -77,6 +78,7 @@ public class CoinsEngineHook implements CurrencyHook {
             return cf;
         }
         CoinsEngineAPI.removeBalance(Bukkit.getPlayer(player), currency, amount);
+        cf.complete(true);
         return cf;
     }
 }

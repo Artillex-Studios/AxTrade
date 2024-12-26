@@ -25,6 +25,7 @@ import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 
 public class LanguageManager {
     private static Config translations;
+    private static final Gson gson = new GsonBuilder().create();
 
     public static void reload() {
         final String lang = CONFIG.getString("language", "en_US").toLowerCase();
@@ -45,7 +46,6 @@ public class LanguageManager {
 
         try {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            final Gson gson = new GsonBuilder().create();
             final JsonObject object = gson.fromJson(response.body(), JsonObject.class);
 
             final String base64Content = object.get("content").getAsString();
