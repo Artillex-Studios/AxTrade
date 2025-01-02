@@ -8,6 +8,7 @@ import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.dumper.Du
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.general.GeneralSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.loader.LoaderSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.updater.UpdaterSettings;
+import com.artillexstudios.axapi.metrics.AxMetrics;
 import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axapi.utils.featureflags.FeatureFlags;
@@ -75,6 +76,8 @@ public final class AxTrade extends AxPlugin {
         Commands.registerCommand();
 
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD[AxTrade] Loaded plugin!"));
+
+        new AxMetrics(8).start();
 
         if (CONFIG.getBoolean("update-notifier.enabled", true)) new UpdateNotifier(this, 5943);
     }
