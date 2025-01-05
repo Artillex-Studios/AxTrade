@@ -36,6 +36,7 @@ public final class AxTrade extends AxPlugin {
     private static AxPlugin instance;
     private static ThreadedQueue<Runnable> threadedQueue;
     public static BukkitAudiences BUKKITAUDIENCES;
+    private static AxMetrics metrics;
 
     public static ThreadedQueue<Runnable> getThreadedQueue() {
         return threadedQueue;
@@ -77,9 +78,14 @@ public final class AxTrade extends AxPlugin {
 
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD[AxTrade] Loaded plugin!"));
 
-        new AxMetrics(8).start();
+        metrics = new AxMetrics(8);
+        metrics.start();
 
         if (CONFIG.getBoolean("update-notifier.enabled", true)) new UpdateNotifier(this, 5943);
+    }
+
+    public void disable() {
+        metrics.cancel();
     }
 
     public void updateFlags(FeatureFlags flags) {
