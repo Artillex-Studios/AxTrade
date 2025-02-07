@@ -1,7 +1,7 @@
 name: AxTrade
 version: '${project.version}'
 main: com.artillexstudios.axtrade.AxTrade
-api-version: '1.18'
+api-version: '1.19'
 folia-supported: true
 
 permissions:

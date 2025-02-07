@@ -2,7 +2,8 @@ package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.ContainerUtils;
-import com.artillexstudios.axtrade.api.events.AxTradeCompletedEvent;
+import com.artillexstudios.axtrade.api.events.AxTradeAbortEvent;
+import com.artillexstudios.axtrade.api.events.AxTradeCompleteEvent;
 import com.artillexstudios.axtrade.currency.CurrencyProcessor;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
 import com.artillexstudios.axtrade.utils.HistoryUtils;
@@ -55,12 +56,16 @@ public class Trade {
 
     public void abort(boolean force) {
         if (!force && ended) return;
+
+        AxTradeAbortEvent event = new AxTradeAbortEvent(this);
+        Bukkit.getPluginManager().callEvent(event);
+
         end();
-        player1.getTradeGui().getItems().forEach(itemStack -> {
+        player1.getTradeGui().getItems(false).forEach(itemStack -> {
             if (itemStack == null) return;
             player1.getPlayer().getInventory().addItem(itemStack);
         });
-        player2.getTradeGui().getItems().forEach(itemStack -> {
+        player2.getTradeGui().getItems(false).forEach(itemStack -> {
             if (itemStack == null) return;
             player2.getPlayer().getInventory().addItem(itemStack);
         });
@@ -87,13 +92,9 @@ public class Trade {
             }
         }
 
-        AxTradeCompletedEvent event = new AxTradeCompletedEvent(
-            this.player1, this.player2
-        );
-
+        AxTradeCompleteEvent event = new AxTradeCompleteEvent(this);
         Bukkit.getPluginManager().callEvent(event);
-
-        if(event.isCancelled()) {
+        if (event.isCancelled()) {
             abort(true);
             return;
         }
@@ -143,7 +144,7 @@ public class Trade {
                 }
 
                 List<String> player1Items = new ArrayList<>();
-                player1.getTradeGui().getItems().forEach(itemStack -> {
+                player1.getTradeGui().getItems(false).forEach(itemStack -> {
                     if (itemStack == null) return;
                     Scheduler.get().runAt(player2.getPlayer().getLocation(), task -> {
                         ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
@@ -158,7 +159,7 @@ public class Trade {
                 });
 
                 List<String> player2Items = new ArrayList<>();
-                player2.getTradeGui().getItems().forEach(itemStack -> {
+                player2.getTradeGui().getItems(false).forEach(itemStack -> {
                     if (itemStack == null) return;
                     Scheduler.get().runAt(player1.getPlayer().getLocation(), task -> {
                         ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());

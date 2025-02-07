@@ -5,6 +5,7 @@ import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -113,6 +114,15 @@ public class TradePlayer {
         if (currencyHook.getBalance(player.getUniqueId()) < amount) return Result.NOT_ENOUGH_CURRENCY;
         currencies.put(currencyHook, amount);
         return Result.SUCCESS;
+    }
+
+    public int getEmptySlots() {
+        int am = 0;
+        for (ItemStack item : player.getInventory().getStorageContents()) {
+            if (item != null) continue;
+            am++;
+        }
+        return am;
     }
 
     public enum Result {

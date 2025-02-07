@@ -5,6 +5,7 @@ import com.artillexstudios.axtrade.request.Requests;
 import com.artillexstudios.axtrade.trade.Trade;
 import com.artillexstudios.axtrade.trade.Trades;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -26,7 +27,6 @@ public class TradeListeners implements Listener {
     public void onQuit(@NotNull PlayerQuitEvent event) {
         handleQuitTrade(event);
         handleQuitRequest(event);
-        EntityInteractListener.onQuit(event.getPlayer());
     }
 
     public void handleQuitTrade(@NotNull PlayerQuitEvent event) {
@@ -54,25 +54,19 @@ public class TradeListeners implements Listener {
 
     @EventHandler
     public void onDrop(@NotNull PlayerDropItemEvent event) {
-        final Player player = event.getPlayer();
-        final Trade trade = Trades.getTrade(player);
-        if (trade == null) return;
-        event.setCancelled(true);
+        cancelIfTrading(event.getPlayer(), event);
     }
 
     @EventHandler
     public void onPickup(@NotNull EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        final Trade trade = Trades.getTrade(player);
-        if (trade == null) return;
-        event.setCancelled(true);
+        cancelIfTrading(player, event);
     }
 
     @EventHandler
     public void onMove(@NotNull PlayerMoveEvent event) {
         if (event.getTo() == null) return;
-        final Player player = event.getPlayer();
-        final Trade trade = Trades.getTrade(player);
+        final Trade trade = Trades.getTrade(event.getPlayer());
         if (trade == null) return;
         if (System.currentTimeMillis() - trade.getPrepTime() < 1_000L) return;
         if (event.getFrom().distanceSquared(event.getTo()) == 0) return;
@@ -81,8 +75,7 @@ public class TradeListeners implements Listener {
 
     @EventHandler
     public void onInteract(@NotNull PlayerInteractEvent event) {
-        final Player player = event.getPlayer();
-        final Trade trade = Trades.getTrade(player);
+        final Trade trade = Trades.getTrade(event.getPlayer());
         if (trade == null) return;
         if (System.currentTimeMillis() - trade.getPrepTime() < 1_000L) return;
         event.setCancelled(true);
@@ -91,10 +84,15 @@ public class TradeListeners implements Listener {
 
     @EventHandler
     public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
-        final Player player = event.getPlayer();
-        final Trade trade = Trades.getTrade(player);
+        final Trade trade = Trades.getTrade(event.getPlayer());
         if (trade == null) return;
         event.setCancelled(true);
         trade.abort();
+    }
+
+    private void cancelIfTrading(Player player, Cancellable event) {
+        Trade trade = Trades.getTrade(player);
+        if (trade == null) return;
+        event.setCancelled(true);
     }
 }

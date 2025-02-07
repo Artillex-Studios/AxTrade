@@ -28,6 +28,9 @@ shift-click-send-request: true
 # the trade summaries will not be sent after trades end to players if disabled
 enable-trade-summaries: true
 
+# when one of the player's inventory can't hold any more items, the plugin will not allow adding more items to the trade gui
+prevent-adding-items-when-inventory-full: true
+
 number-formatting:
   # modes:
   # 0 - formatted (customizable, look at the formatted part)
@@ -63,4 +66,4 @@ update-notifier:
   on-join: true
 
 # do not change this
-version: 4
+version: 5

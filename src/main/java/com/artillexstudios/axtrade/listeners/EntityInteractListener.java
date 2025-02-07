@@ -1,5 +1,6 @@
 package com.artillexstudios.axtrade.listeners;
 
+import com.artillexstudios.axapi.utils.Cooldown;
 import com.artillexstudios.axtrade.request.Requests;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,31 +8,24 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 
 public class EntityInteractListener implements Listener {
-    private static final HashMap<Player, Long> cd = new HashMap<>();
+    private static final Cooldown<Player> cooldown = new Cooldown<>();
 
     @EventHandler (ignoreCancelled = true)
     public void onInteract(@NotNull PlayerInteractEntityEvent event) {
         if (!CONFIG.getBoolean("shift-click-send-request", true)) return;
+
         final Player player = event.getPlayer();
         if (!player.hasPermission("axtrade.trade")) return;
-
-        if (cd.containsKey(player) && System.currentTimeMillis() - cd.get(player) < 100L) return;
-
+        if (cooldown.hasCooldown(player)) return;
         if (!player.isSneaking()) return;
         if (!(event.getRightClicked() instanceof Player sendTo)) return;
-
-        cd.put(player, System.currentTimeMillis());
         if (!sendTo.isOnline()) return;
 
+        cooldown.addCooldown(player, 100L);
         Requests.addRequest(player, sendTo);
-    }
-
-    public static void onQuit(Player player) {
-        cd.remove(player);
+        event.setCancelled(true);
     }
 }

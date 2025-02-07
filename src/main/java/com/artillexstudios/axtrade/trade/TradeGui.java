@@ -14,17 +14,25 @@ import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.StorageGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Tag;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 import static com.artillexstudios.axtrade.AxTrade.GUIS;
 import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
@@ -36,7 +44,6 @@ public class TradeGui extends GuiFrame {
     protected final List<Integer> slots = getSlots("own-slots");
     protected final List<Integer> otherSlots = getSlots("partner-slots");
     private boolean inSign = false;
-//    private final ItemStack fullSlot;
 
     public TradeGui(@NotNull Trade trade, @NotNull TradePlayer player) {
         super(GUIS, player.getPlayer(), trade);
@@ -47,103 +54,12 @@ public class TradeGui extends GuiFrame {
                 .title(Component.empty())
                 .disableItemDrop()
                 .create();
+
         setGui(gui);
-
-//        fullSlot = new ItemBuilder(GUIS.getSection("full-slot")).get();
-//        NBTUtils.writeToNBT(fullSlot, "axtrade-full-slot", true);
-
-        gui.setDefaultTopClickAction(event -> {
-            final ItemStack it = event.getClick() == ClickType.NUMBER_KEY ? event.getView().getBottomInventory().getItem(event.getHotbarButton()) : event.getCurrentItem();
-//            if (it != null && NBTUtils.containsNBT(it, "axtrade-full-slot")) {
-//                event.setCancelled(true);
-//                return;
-//            }
-            if (BlackListUtils.isBlackListed(it)) {
-                event.setCancelled(true);
-                MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
-                return;
-            }
-
-            if (event.getCurrentItem() != null && event.getClick().isRightClick() && event.getCurrentItem().getType().toString().endsWith("SHULKER_BOX")) {
-                event.setCancelled(true);
-                player.cancel();
-                trade.update();
-                inSign = true;
-                trade.prepTime = System.currentTimeMillis();
-                event.getWhoClicked().closeInventory();
-
-                final BaseGui shulkerGui = Gui.storage().rows(3).title(StringUtils.format(Utils.getFormattedItemName(event.getCurrentItem()))).disableAllInteractions().create();
-                shulkerGui.getInventory().setContents(ShulkerUtils.getShulkerContents(event.getCurrentItem()));
-                shulkerGui.setCloseGuiAction(e -> Scheduler.get().run(t -> {
-                    if (trade.isEnded()) return;
-                    trade.prepTime = System.currentTimeMillis();
-                    gui.open(player.getPlayer());
-                    inSign = false;
-                    trade.update();
-                    updateTitle();
-                }));
-                shulkerGui.open(player.getPlayer());
-                return;
-            }
-
-            if (!slots.contains(event.getSlot())) {
-                event.setCancelled(true);
-                if (event.getCursor() == null) return;
-                player.getPlayer().getInventory().addItem(event.getCursor().clone());
-                event.getCursor().setAmount(0);
-                return;
-            }
-
-            player.cancel();
-            Scheduler.get().run(scheduledTask -> trade.update());
-        });
-
-        gui.setDragAction(event -> {
-            boolean ownInv = true;
-            for (int s : event.getRawSlots()) {
-                if (s > 53) continue;
-                ownInv = false;
-                break;
-            }
-
-            Scheduler.get().run(scheduledTask -> trade.update());
-            if (ownInv) return;
-
-            if (!new HashSet<>(slots).containsAll(event.getInventorySlots())) {
-                event.setCancelled(true);
-                return;
-            }
-
-            player.cancel();
-        });
-
-        gui.setPlayerInventoryAction(event -> {
-            final ItemStack it = event.getClick() == ClickType.NUMBER_KEY ? event.getView().getBottomInventory().getItem(event.getHotbarButton()) : event.getCurrentItem();
-            if (BlackListUtils.isBlackListed(it)) {
-                event.setCancelled(true);
-                MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
-                return;
-            }
-
-            if (event.getCurrentItem() != null && event.isShiftClick() && event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && !slots.contains(event.getView().getTopInventory().firstEmpty())) {
-                event.setCancelled(true);
-                for (int i : slots) {
-                    if (gui.getInventory().getItem(i) == null) {
-                        gui.getInventory().setItem(i, event.getCurrentItem().clone());
-                        event.getCurrentItem().setAmount(0);
-                        break;
-                    }
-                }
-            }
-
-            player.cancel();
-            Scheduler.get().run(scheduledTask -> trade.update());
-        });
-
-        gui.setCloseGuiAction(event -> {
-            if (inSign) return;
-            trade.abort();
-        });
+        gui.setDefaultTopClickAction(this::handleClickTop);
+        gui.setDragAction(this::handleDrag);
+        gui.setPlayerInventoryAction(this::handleClickBottom);
+        gui.setCloseGuiAction(this::handleClose);
 
         if (trade.isEnded()) return;
 
@@ -152,8 +68,6 @@ public class TradeGui extends GuiFrame {
         updateTitle();
         opened = true;
     }
-
-//    private final HashSet<Integer> lockedSlot = new HashSet<>();
 
     public void update() {
         if (player.hasConfirmed()) {
@@ -184,42 +98,7 @@ public class TradeGui extends GuiFrame {
             if (currencyStr == null) continue;
 
             super.createItem("own." + currencyItem, event -> {
-                event.setCancelled(true);
-                player.cancel();
-                trade.update();
-                inSign = true;
-                trade.prepTime = System.currentTimeMillis();
-                event.getWhoClicked().closeInventory();
-
-                var lines = StringUtils.formatList(LANG.getStringList("currency-editor-sign"));
-                lines.set(0, Component.empty());
-
-                var sign = new SignInput.Builder().setLines(lines).setHandler((player1, result) -> {
-                    if (trade.isEnded()) return;
-                    trade.prepTime = System.currentTimeMillis();
-                    String am = PlainTextComponentSerializer.plainText().serialize(result[0]);
-                    TradePlayer.Result addResult = player.setCurrency(currencyStr, am);
-                    if (addResult == TradePlayer.Result.SUCCESS) {
-                        MESSAGEUTILS.sendLang(player1, "currency-editor.success");
-                    } else {
-                        switch (addResult) {
-                            case NOT_ENOUGH_CURRENCY:
-                                MESSAGEUTILS.sendLang(player1, "currency-editor.not-enough");
-                                break;
-                            default:
-                                MESSAGEUTILS.sendLang(player1, "currency-editor.failed");
-                                break;
-                        }
-                    }
-                    Scheduler.get().run(scheduledTask -> {
-                        if (trade.isEnded()) return;
-                        gui.open(player.getPlayer());
-                        inSign = false;
-                        trade.update();
-                        updateTitle();
-                    });
-                }).build(player.getPlayer());
-                sign.open();
+                handleCurrencyClick(currencyStr, event);
             }, Map.of("%amount%", NumberUtils.formatNumber(player.getCurrency(currencyStr))));
         }
 
@@ -239,47 +118,190 @@ public class TradeGui extends GuiFrame {
             gui.removeItem(slot);
         }
 
-//        for (Integer i : lockedSlot) {
-//            gui.removeItem(i);
-//        }
-
-        // full inventory checker - start
-//        var fullSlots = new ArrayList<>(slots);
-//
-//        int empty = 0;
-//        for (ItemStack stack : player.getOtherPlayer().getPlayer().getInventory().getStorageContents()) {
-//            if (stack == null) empty++;
-//        }
-//
-//        for (int i = 0; i < slots.size() - empty; i++) {
-//            int slot = fullSlots.remove(fullSlots.size() - 1);
-//            gui.updateItem(slot, fullSlot); // todo: make configurable item, add special nbt, cancel on click
-//            lockedSlot.add(slot);
-//        }
-        // full inventory checker - end
-
         if (!opened) return;
-        var otherItems = player.getOtherPlayer().getTradeGui().getItems();
+
+        List<ItemStack> otherItems = player.getOtherPlayer().getTradeGui().getItems(true);
         int n = 0;
         for (int slot : otherSlots) {
             if (otherItems.get(n) != null)
                 gui.updateItem(slot, new GuiItem(otherItems.get(n), event -> event.setCancelled(true)));
-//            if (otherItems.size() <= n) break;
-//            final ItemStack item = otherItems.get(n);
-//            if (item != null && !NBTUtils.containsNBT(item, "axtrade-full-slot")) {
-//                gui.updateItem(slot, new GuiItem(item, event -> event.setCancelled(true)));
-//            }
             n++;
         }
     }
 
-    public List<ItemStack> getItems() {
+    private void handleClickTop(InventoryClickEvent event) {
+        ItemStack it = getItem(event);
+
+        if (BlackListUtils.isBlackListed(it)) {
+            event.setCancelled(true);
+            MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
+            return;
+        }
+
+        // prevent move with number key
+        if (event.getCurrentItem() == null && it != null && checkFull(event)) return;
+
+        if (event.getCurrentItem() != null && event.getClick().isRightClick() && Tag.SHULKER_BOXES.isTagged(event.getCurrentItem().getType())) {
+            handleShulkerClick(event);
+            return;
+        }
+
+        if (!slots.contains(event.getSlot())) {
+            event.setCancelled(true);
+            if (event.getCursor() == null) return;
+            player.getPlayer().getInventory().addItem(event.getCursor().clone());
+            event.getCursor().setAmount(0);
+            return;
+        }
+
+        player.cancel();
+        Scheduler.get().run(scheduledTask -> trade.update());
+    }
+
+    private void handleClickBottom(InventoryClickEvent event) {
+        ItemStack it = getItem(event);
+
+        if (BlackListUtils.isBlackListed(it)) {
+            event.setCancelled(true);
+            MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
+            return;
+        }
+
+        if (event.getCurrentItem() != null) {
+            if (checkFull(event)) return;
+
+            if (event.isShiftClick() && event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && !slots.contains(event.getView().getTopInventory().firstEmpty())) {
+                event.setCancelled(true);
+                for (int i : slots) {
+                    if (gui.getInventory().getItem(i) == null) {
+                        gui.getInventory().setItem(i, event.getCurrentItem().clone());
+                        event.getCurrentItem().setAmount(0);
+                        break;
+                    }
+                }
+            }
+        }
+
+        player.cancel();
+        Scheduler.get().run(scheduledTask -> trade.update());
+    }
+
+    private void handleDrag(InventoryDragEvent event) {
+        boolean ownInv = true;
+        for (int s : event.getRawSlots()) {
+            if (s > 53) continue;
+            ownInv = false;
+            break;
+        }
+
+        Scheduler.get().run(scheduledTask -> trade.update());
+        if (ownInv) return;
+
+        if (!new HashSet<>(slots).containsAll(event.getInventorySlots())) {
+            event.setCancelled(true);
+            return;
+        }
+
+        player.cancel();
+    }
+
+    private void handleClose(InventoryCloseEvent event) {
+        if (inSign) return;
+        trade.abort();
+    }
+
+    private boolean checkFull(Cancellable event) {
+        if (!CONFIG.getBoolean("prevent-adding-items-when-inventory-full", true)) return false;
+
+        // get items in gui
+        int filledSlots = getItems(false).size();
+        // get how many empty inventory slots the other player has
+        int emptySlots = player.getOtherPlayer().getEmptySlots();
+
+        if (filledSlots >= emptySlots) {
+            event.setCancelled(true);
+            MESSAGEUTILS.sendLang(player.getPlayer(), "trade.inventory-full");
+            return true;
+        }
+        return false;
+    }
+
+    private void handleCurrencyClick(String currencyStr, InventoryClickEvent event) {
+        event.setCancelled(true);
+        player.cancel();
+        trade.update();
+        inSign = true;
+        trade.prepTime = System.currentTimeMillis();
+        event.getWhoClicked().closeInventory();
+
+        var lines = StringUtils.formatList(LANG.getStringList("currency-editor-sign"));
+        lines.set(0, Component.empty());
+
+        var sign = new SignInput.Builder().setLines(lines).setHandler((player1, result) -> {
+            if (trade.isEnded()) return;
+            trade.prepTime = System.currentTimeMillis();
+            String am = PlainTextComponentSerializer.plainText().serialize(result[0]);
+            TradePlayer.Result addResult = player.setCurrency(currencyStr, am);
+            if (addResult == TradePlayer.Result.SUCCESS) {
+                MESSAGEUTILS.sendLang(player1, "currency-editor.success");
+            } else {
+                switch (addResult) {
+                    case NOT_ENOUGH_CURRENCY:
+                        MESSAGEUTILS.sendLang(player1, "currency-editor.not-enough");
+                        break;
+                    default:
+                        MESSAGEUTILS.sendLang(player1, "currency-editor.failed");
+                        break;
+                }
+            }
+            Scheduler.get().run(scheduledTask -> {
+                if (trade.isEnded()) return;
+                gui.open(player.getPlayer());
+                inSign = false;
+                trade.update();
+                updateTitle();
+            });
+        }).build(player.getPlayer());
+        sign.open();
+    }
+
+    public void handleShulkerClick(InventoryClickEvent event) {
+        event.setCancelled(true);
+        player.cancel();
+        trade.update();
+        inSign = true;
+        trade.prepTime = System.currentTimeMillis();
+        event.getWhoClicked().closeInventory();
+
+        BaseGui shulkerGui = Gui.storage().rows(3).title(StringUtils.format(Utils.getFormattedItemName(event.getCurrentItem()))).disableAllInteractions().create();
+        shulkerGui.getInventory().setContents(ShulkerUtils.getShulkerContents(event.getCurrentItem()));
+        shulkerGui.setCloseGuiAction(e -> Scheduler.get().run(t -> {
+            if (trade.isEnded()) return;
+            trade.prepTime = System.currentTimeMillis();
+            gui.open(player.getPlayer());
+            inSign = false;
+            trade.update();
+            updateTitle();
+        }));
+        shulkerGui.open(player.getPlayer());
+    }
+
+    @Nullable
+    private ItemStack getItem(InventoryClickEvent event) {
+        if (event.getClick() == ClickType.NUMBER_KEY && event.getClickedInventory() != null) {
+            // when using a number key, the game will move it from the another inventory, so use the opposite of the clicked inventory
+            Inventory inventory = event.getClickedInventory().getType() == InventoryType.PLAYER ? event.getView().getTopInventory() : event.getView().getBottomInventory();
+            return inventory.getItem(event.getHotbarButton());
+        }
+        return event.getCurrentItem();
+    }
+
+    public List<ItemStack> getItems(boolean includeAir) {
         final List<ItemStack> items = new ArrayList<>();
         for (int slot : slots) {
-            items.add(gui.getInventory().getItem(slot));
-//            final ItemStack item = gui.getInventory().getItem(slot);
-//            if (item != null && NBTUtils.containsNBT(item, "axtrade-full-slot")) continue;
-//            items.add(item);
+            ItemStack item = gui.getInventory().getItem(slot);
+            if (!includeAir && item == null) continue;
+            items.add(item);
         }
         return items;
     }

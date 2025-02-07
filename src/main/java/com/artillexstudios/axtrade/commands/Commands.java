@@ -6,6 +6,7 @@ import com.artillexstudios.axtrade.AxTrade;
 import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.lang.LanguageManager;
 import com.artillexstudios.axtrade.request.Requests;
+import com.artillexstudios.axtrade.trade.Trade;
 import com.artillexstudios.axtrade.trade.Trades;
 import com.artillexstudios.axtrade.utils.CommandMessages;
 import com.artillexstudios.axtrade.utils.NumberUtils;
@@ -132,7 +133,7 @@ public class Commands implements OrphanCommand {
 
         LanguageManager.reload();
 
-        new HookManager().updateHooks();
+        HookManager.updateHooks();
         NumberUtils.reload();
 
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╚ &#AAFFDDSuccessful reload!"));
@@ -149,11 +150,12 @@ public class Commands implements OrphanCommand {
         Trades.addTrade(sender, other);
     }
 
-//    @Subcommand("test")
-//    @CommandPermission(value = "axtrade.admin")
-//    public void test(@NotNull Player sender) {
-//        Trades.addTrade(sender, sender);
-//    }
+    @Subcommand("preview")
+    @CommandPermission(value = "axtrade.admin")
+    public void preview(@NotNull Player sender) {
+        new Trade(sender, sender);
+        MESSAGEUTILS.sendLang(sender, "trade.preview-info");
+    }
 
     private static BukkitCommandHandler handler = null;
     public static void registerCommand() {

@@ -16,6 +16,7 @@ admin-help:
   - " &7- &f/axtrade deny <player> &7| &#00FFDDDeny trade request"
   - " &7- &f/axtrade reload &7| &#00FFDDReload plugin"
   - " &7- &f/axtrade force <player> &7| &#00FFDDForce start a trade"
+  - " &7- &f/axtrade preview &7| &#00FFDDOpens read only gui (meant for testing)"
   - " "
 
 reload:
@@ -27,6 +28,8 @@ trade:
   completed: "&#CCFFEEYour trade with &#00FFDD%player% &#CCFFEEwas completed!"
   aborted: "&#CCFFEEYour trade with &#00FFDD%player% &#CCFFEEwas aborted!"
   blacklisted-item: "&#CCFFEEThis item is blacklisted!"
+  inventory-full: "&#CCFFEEYou can't put any more items in the gui, because your trade partner has no more empty slots."
+  preview-info: "&#CCFFEEYou are opening the preview gui, this is meant for testing your configuration, clicking buttons will cause errors and might not work."
 
 toggle:
   enabled: "&#CCFFEEYou have enabled trade requests!"
@@ -110,4 +113,4 @@ commands:
 update-notifier: "&#AAFFCCThere is a new version of the plugin available! &#DDDDDD(&#FFFFFFcurrent: &#FF0000%current% &#DDDDDD| &#FFFFFFlatest: &#00FF00%latest%&#DDDDDD)"
 
 # do not change this
-version: 6
+version: 7
