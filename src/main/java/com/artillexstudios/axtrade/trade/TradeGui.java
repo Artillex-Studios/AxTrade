@@ -86,11 +86,15 @@ public class TradeGui extends GuiFrame {
         if (player.getOtherPlayer().hasConfirmed()) {
             super.createItem("partner.confirm-item.slot", "partner.confirm-item.cancel", event -> {
                 event.setCancelled(true);
-            }, Map.of(), player.getOtherPlayer().getConfirmed());
+            }, Map.of(
+                    "%partner_name%", player.getOtherPlayer().getPlayer().getName()
+            ), player.getOtherPlayer().getConfirmed());
         } else {
             super.createItem("partner.confirm-item.slot", "partner.confirm-item.accept", event -> {
                 event.setCancelled(true);
-            }, Map.of());
+            }, Map.of(
+                    "%partner_name%", player.getOtherPlayer().getPlayer().getName()
+            ));
         }
 
         for (String currencyItem : GUIS.getSection("own").getRoutesAsStrings(false)) {
