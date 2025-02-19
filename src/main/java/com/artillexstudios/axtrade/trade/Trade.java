@@ -9,6 +9,7 @@ import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
 import com.artillexstudios.axtrade.utils.HistoryUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
+import com.artillexstudios.axtrade.utils.TaxUtils;
 import com.artillexstudios.axtrade.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -121,25 +122,45 @@ public class Trade {
 
                 List<String> player1Currencies = new ArrayList<>();
                 for (Map.Entry<CurrencyHook, Double> entry : player1.getCurrencies().entrySet()) {
-                    entry.getKey().giveBalance(player2.getPlayer().getUniqueId(), entry.getValue());
+                    double amountAfterTax = TaxUtils.getTotalAfterTax(entry.getValue(), entry.getKey());
+                    if (!entry.getKey().usesDouble()) amountAfterTax = Math.floor(amountAfterTax);
+
+                    entry.getKey().giveBalance(player2.getPlayer().getUniqueId(), amountAfterTax);
+
                     String currencyName = Utils.getFormattedCurrency(entry.getKey());
-                    String currencyAm = NumberUtils.formatNumber(entry.getValue());
-                    player1Currencies.add(currencyName + ": " + currencyAm);
+                    String fullCurrencyAmount = NumberUtils.formatNumber(entry.getValue());
+                    String taxedCurrencyAmount = NumberUtils.formatNumber(amountAfterTax);
+
+                    if (amountAfterTax == entry.getValue())
+                        player1Currencies.add(currencyName + ": " + taxedCurrencyAmount);
+                    else
+                        player1Currencies.add(currencyName + ": " + taxedCurrencyAmount + " (+ tax: " + NumberUtils.formatNumber(entry.getValue() - amountAfterTax) + ")");
+
                     if (CONFIG.getBoolean("enable-trade-summaries")) {
-                        MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
-                        MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+                        MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", taxedCurrencyAmount, "%currency%", currencyName));
+                        MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", fullCurrencyAmount, "%currency%", currencyName));
                     }
                 }
 
                 List<String> player2Currencies = new ArrayList<>();
                 for (Map.Entry<CurrencyHook, Double> entry : player2.getCurrencies().entrySet()) {
-                    entry.getKey().giveBalance(player1.getPlayer().getUniqueId(), entry.getValue());
+                    double amountAfterTax = TaxUtils.getTotalAfterTax(entry.getValue(), entry.getKey());
+
+                    if (!entry.getKey().usesDouble()) amountAfterTax = Math.floor(amountAfterTax);
+                    entry.getKey().giveBalance(player1.getPlayer().getUniqueId(), amountAfterTax);
+
                     String currencyName = Utils.getFormattedCurrency(entry.getKey());
-                    String currencyAm = NumberUtils.formatNumber(entry.getValue());
-                    player2Currencies.add(currencyName + ": " + currencyAm);
+                    String fullCurrencyAmount = NumberUtils.formatNumber(entry.getValue());
+                    String taxedCurrencyAmount = NumberUtils.formatNumber(amountAfterTax);
+
+                    if (amountAfterTax == entry.getValue())
+                        player2Currencies.add(currencyName + ": " + taxedCurrencyAmount);
+                    else
+                        player2Currencies.add(currencyName + ": " + taxedCurrencyAmount + " (+ tax: " + NumberUtils.formatNumber(entry.getValue() - amountAfterTax) + ")");
+
                     if (CONFIG.getBoolean("enable-trade-summaries")) {
-                        MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
-                        MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", currencyAm, "%currency%", currencyName));
+                        MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", fullCurrencyAmount, "%currency%", currencyName));
+                        MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", taxedCurrencyAmount, "%currency%", currencyName));
                     }
                 }
 

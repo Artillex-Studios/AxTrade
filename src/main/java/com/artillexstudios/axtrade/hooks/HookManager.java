@@ -1,5 +1,6 @@
 package com.artillexstudios.axtrade.hooks;
 
+import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.block.implementation.Section;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.hooks.currency.AxQuestBoardHook;
 import com.artillexstudios.axtrade.hooks.currency.BeastTokensHook;
@@ -53,7 +54,7 @@ public class HookManager {
 
         if (HOOKS.getBoolean("currencies.CoinsEngine.register", true) && Bukkit.getPluginManager().getPlugin("CoinsEngine") != null) {
             for (Map<Object, Object> curr : HOOKS.getMapList("currencies.CoinsEngine.enabled")) {
-                currency.add(new CoinsEngineHook((String) curr.get("currency-name"), (String) curr.get("name")));
+                currency.add(new CoinsEngineHook(curr));
             }
             Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into CoinsEngine!"));
         }
@@ -65,7 +66,7 @@ public class HookManager {
 
         if (HOOKS.getBoolean("currencies.UltraEconomy.register", true) && Bukkit.getPluginManager().getPlugin("UltraEconomy") != null) {
             for (Map<Object, Object> curr : HOOKS.getMapList("currencies.UltraEconomy.enabled")) {
-                currency.add(new UltraEconomyHook((String) curr.get("currency-name"), (String) curr.get("name")));
+                currency.add(new UltraEconomyHook(curr));
             }
             Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into UltraEconomy!"));
         }
@@ -102,7 +103,7 @@ public class HookManager {
 
         if (HOOKS.getBoolean("currencies.RedisEconomy.register", true) && Bukkit.getPluginManager().getPlugin("RedisEconomy") != null) {
             for (Map<Object, Object> curr : HOOKS.getMapList("currencies.RedisEconomy.enabled")) {
-                currency.add(new RedisEconomyHook((String) curr.get("currency-name"), (String) curr.get("name")));
+                currency.add(new RedisEconomyHook(curr));
             }
             Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into RedisEconomy!"));
         }
@@ -114,7 +115,7 @@ public class HookManager {
 
         if (HOOKS.getBoolean("currencies.EcoBits.register", true) && Bukkit.getPluginManager().getPlugin("EcoBits") != null) {
             for (Map<Object, Object> curr : HOOKS.getMapList("currencies.EcoBits.enabled")) {
-                currency.add(new EcoBitsHook((String) curr.get("currency-name"), (String) curr.get("name")));
+                currency.add(new EcoBitsHook(curr));
             }
             Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into EcoBits!"));
         }
@@ -131,7 +132,17 @@ public class HookManager {
     @SuppressWarnings("unused")
     public static void registerCurrencyHook(@NotNull Plugin plugin, @NotNull CurrencyHook currencyHook) {
         currency.add(currencyHook);
-        Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into " + plugin.getName() + "! Note: You must set the currency provider to CUSTOM or it will be overridden after reloading!"));
+
+        Section section = HOOKS.getSection("currencies." + currencyHook.getName());
+        if (section == null) {
+            section = HOOKS.getBackingDocument().createSection("currencies." + currencyHook.getName());
+            section.set("enabled", true);
+            section.set("name", currencyHook.getName());
+            section.set("tax", 0);
+            HOOKS.save();
+        }
+
+        Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into " + plugin.getName() + "! Note: Check the currencies.yml for settings!"));
     }
 
     @NotNull

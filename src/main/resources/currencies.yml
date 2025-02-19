@@ -26,6 +26,8 @@ currencies:
   Experience:
     register: true
     name: "exp"
+    # optional: tax (example: 5 is 5% tax)
+    tax: 0
   Vault:
     register: true
     name: "money"

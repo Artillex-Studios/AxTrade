@@ -7,18 +7,24 @@ import me.TechsCode.UltraEconomy.objects.Currency;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class UltraEconomyHook implements CurrencyHook {
     private Currency currency = null;
+    private final Map<String, Object> settings;
     private final String internal;
-    private final String name;
 
-    public UltraEconomyHook(String internal, String name) {
-        this.internal = internal;
-        this.name = name;
+    public UltraEconomyHook(Map<Object, Object> settings) {
+        Map<String, Object> map = new HashMap<>();
+        for (Map.Entry<Object, Object> entry : settings.entrySet()) {
+            map.put((String) entry.getKey(), entry.getValue());
+        }
+        this.settings = map;
+        this.internal = (String) settings.get("currency-name");
     }
 
     @Override
@@ -37,8 +43,8 @@ public class UltraEconomyHook implements CurrencyHook {
     }
 
     @Override
-    public String getDisplayName() {
-        return name;
+    public Map<String, Object> getSettings() {
+        return settings;
     }
 
     @Override

@@ -2,15 +2,20 @@ package com.artillexstudios.axtrade.hooks.currency;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
+import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 
 public interface CurrencyHook {
     void setup();
 
     String getName();
 
-    String getDisplayName();
+    default Map<String, Object> getSettings() {
+        return HOOKS.getSection("currencies." + getName()).getStringRouteMappedValues(true);
+    }
 
     boolean worksOffline();
 

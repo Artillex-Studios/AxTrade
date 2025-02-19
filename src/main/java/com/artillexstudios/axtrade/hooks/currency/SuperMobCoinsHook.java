@@ -4,6 +4,7 @@ import me.swanis.mobcoins.MobCoinsAPI;
 import me.swanis.mobcoins.profile.Profile;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -21,8 +22,8 @@ public class SuperMobCoinsHook implements CurrencyHook {
     }
 
     @Override
-    public String getDisplayName() {
-        return HOOKS.getString("currencies.SuperMobCoins.name");
+    public Map<String, Object> getSettings() {
+        return HOOKS.getSection("currencies." + getName()).getStringRouteMappedValues(true);
     }
 
     @Override

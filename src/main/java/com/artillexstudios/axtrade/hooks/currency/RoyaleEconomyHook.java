@@ -3,6 +3,7 @@ package com.artillexstudios.axtrade.hooks.currency;
 import me.qKing12.RoyaleEconomy.RoyaleEconomy;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -20,8 +21,8 @@ public class RoyaleEconomyHook implements CurrencyHook {
     }
 
     @Override
-    public String getDisplayName() {
-        return HOOKS.getString("currencies.RoyaleEconomy.name");
+    public Map<String, Object> getSettings() {
+        return HOOKS.getSection("currencies." + getName()).getStringRouteMappedValues(true);
     }
 
     @Override

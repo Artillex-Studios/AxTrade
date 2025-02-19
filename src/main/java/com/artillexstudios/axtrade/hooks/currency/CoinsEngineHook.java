@@ -6,17 +6,23 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class CoinsEngineHook implements CurrencyHook {
     private Currency currency = null;
+    private final Map<String, Object> settings;
     private final String internal;
-    private final String name;
 
-    public CoinsEngineHook(String internal, String name) {
-        this.internal = internal;
-        this.name = name;
+    public CoinsEngineHook(Map<Object, Object> settings) {
+        Map<String, Object> map = new HashMap<>();
+        for (Map.Entry<Object, Object> entry : settings.entrySet()) {
+            map.put((String) entry.getKey(), entry.getValue());
+        }
+        this.settings = map;
+        this.internal = (String) settings.get("currency-name");
     }
 
     @Override
@@ -33,8 +39,8 @@ public class CoinsEngineHook implements CurrencyHook {
     }
 
     @Override
-    public String getDisplayName() {
-        return name;
+    public Map<String, Object> getSettings() {
+        return settings;
     }
 
     @Override

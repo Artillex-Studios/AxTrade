@@ -4,9 +4,12 @@ import com.artillexstudios.axapi.gui.SignInput;
 import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axtrade.hooks.HookManager;
+import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
 import com.artillexstudios.axtrade.utils.BlackListUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.ShulkerUtils;
+import com.artillexstudios.axtrade.utils.TaxUtils;
 import com.artillexstudios.axtrade.utils.Utils;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
@@ -75,25 +78,33 @@ public class TradeGui extends GuiFrame {
                 event.setCancelled(true);
                 player.cancel();
                 trade.update();
-            }, Map.of(), player.getConfirmed());
+            }, Map.of(
+                    "%own-name%", player.getPlayer().getName(),
+                    "%partner-name%", player.getOtherPlayer().getPlayer().getName()
+            ), player.getConfirmed());
         } else {
             super.createItem("own.confirm-item.slot", "own.confirm-item.accept", event -> {
                 event.setCancelled(true);
                 player.confirm();
-            }, Map.of());
+            }, Map.of(
+                    "%own-name%", player.getPlayer().getName(),
+                    "%partner-name%", player.getOtherPlayer().getPlayer().getName()
+            ));
         }
 
         if (player.getOtherPlayer().hasConfirmed()) {
             super.createItem("partner.confirm-item.slot", "partner.confirm-item.cancel", event -> {
                 event.setCancelled(true);
             }, Map.of(
-                    "%partner_name%", player.getOtherPlayer().getPlayer().getName()
+                    "%own-name%", player.getPlayer().getName(),
+                    "%partner-name%", player.getOtherPlayer().getPlayer().getName()
             ), player.getOtherPlayer().getConfirmed());
         } else {
             super.createItem("partner.confirm-item.slot", "partner.confirm-item.accept", event -> {
                 event.setCancelled(true);
             }, Map.of(
-                    "%partner_name%", player.getOtherPlayer().getPlayer().getName()
+                    "%own-name%", player.getPlayer().getName(),
+                    "%partner-name%", player.getOtherPlayer().getPlayer().getName()
             ));
         }
 
@@ -101,20 +112,31 @@ public class TradeGui extends GuiFrame {
             final String currencyStr = GUIS.getString("own." + currencyItem + ".currency", null);
             if (currencyStr == null) continue;
 
+            CurrencyHook currencyHook = HookManager.getCurrencyHook(currencyStr);
+            if (currencyHook == null) continue;
             super.createItem("own." + currencyItem, event -> {
                 handleCurrencyClick(currencyStr, event);
-            }, Map.of("%amount%", NumberUtils.formatNumber(player.getCurrency(currencyStr))));
+            }, Map.of(
+                    "%amount%", NumberUtils.formatNumber(player.getCurrency(currencyStr)),
+                    "%tax-amount%", NumberUtils.formatNumber(TaxUtils.getTotalAfterTax(player.getCurrency(currencyStr), currencyHook)),
+                    "%tax-percent%", NumberUtils.formatNumber(TaxUtils.getTaxPercent(currencyHook).doubleValue()),
+                    "%tax-fee%", NumberUtils.formatNumber(TaxUtils.getTotalTax(player.getCurrency(currencyStr), currencyHook))
+            ));
         }
 
         for (String currencyItem : GUIS.getSection("partner").getRoutesAsStrings(false)) {
             final String currencyStr = GUIS.getString("partner." + currencyItem + ".currency", null);
             if (currencyStr == null) continue;
 
+            CurrencyHook currencyHook = HookManager.getCurrencyHook(currencyStr);
+            if (currencyHook == null) continue;
             super.createItem("partner." + currencyItem, event -> {
                 event.setCancelled(true);
             }, Map.of(
                     "%amount%", NumberUtils.formatNumber(player.getOtherPlayer().getCurrency(currencyStr)),
-                    "%player%", player.getOtherPlayer().getPlayer().getName()
+                    "%tax-amount%", NumberUtils.formatNumber(TaxUtils.getTotalAfterTax(player.getOtherPlayer().getCurrency(currencyStr), currencyHook)),
+                    "%tax-percent%", NumberUtils.formatNumber(TaxUtils.getTaxPercent(currencyHook).doubleValue()),
+                    "%tax-fee%", NumberUtils.formatNumber(TaxUtils.getTotalTax(player.getOtherPlayer().getCurrency(currencyStr), currencyHook))
             ));
         }
 

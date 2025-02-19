@@ -7,6 +7,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -31,8 +32,8 @@ public class PlaceholderCurrencyHook implements CurrencyHook {
     }
 
     @Override
-    public String getDisplayName() {
-        return section.getString("name", "---");
+    public Map<String, Object> getSettings() {
+        return section.getStringRouteMappedValues(true);
     }
 
     @Override

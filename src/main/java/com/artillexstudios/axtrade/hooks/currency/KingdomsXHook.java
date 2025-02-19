@@ -3,6 +3,7 @@ package com.artillexstudios.axtrade.hooks.currency;
 import org.jetbrains.annotations.NotNull;
 import org.kingdoms.constants.player.KingdomPlayer;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -20,8 +21,8 @@ public class KingdomsXHook implements CurrencyHook {
     }
 
     @Override
-    public String getDisplayName() {
-        return HOOKS.getString("currencies.KingdomsX.name");
+    public Map<String, Object> getSettings() {
+        return HOOKS.getSection("currencies." + getName()).getStringRouteMappedValues(true);
     }
 
     @Override

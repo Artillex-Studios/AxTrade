@@ -4,6 +4,7 @@ import me.realized.tokenmanager.api.TokenManager;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -23,8 +24,8 @@ public class TokenManagerHook implements CurrencyHook {
     }
 
     @Override
-    public String getDisplayName() {
-        return HOOKS.getString("currencies.TokenManager.name");
+    public Map<String, Object> getSettings() {
+        return HOOKS.getSection("currencies." + getName()).getStringRouteMappedValues(true);
     }
 
     @Override

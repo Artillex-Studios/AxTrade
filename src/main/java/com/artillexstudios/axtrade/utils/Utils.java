@@ -14,6 +14,6 @@ public class Utils {
 
     @NotNull
     public static String getFormattedCurrency(@NotNull CurrencyHook currencyHook) {
-        return currencyHook.getDisplayName();
+        return currencyHook.getSettings().getOrDefault("name", currencyHook.getName()).toString();
     }
 }

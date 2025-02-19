@@ -32,6 +32,9 @@ partner-slots:
 own:
   confirm-item:
     slot: 0
+    # you can use these placeholders:
+    # %own-name%"
+    # %partner-name%
     accept:
       material: "RED_CONCRETE"
       # if you want, you can add head textures, like this:
@@ -58,6 +61,11 @@ own:
     currency: "Vault"
     material: "GOLD_NUGGET"
     name: "&#00ffdd&lᴍᴏɴᴇʏ"
+    # you can use these placeholders:
+    #  %amount% (the amount the player set)
+    #  %tax-amount% (amount after tax)
+    #  %tax-percent% (the % of tax on the currency)
+    #  %tax-fee% (amount taken because of tax)
     lore:
       - "&7Your offer"
       - ""
@@ -80,6 +88,9 @@ own:
 partner:
   confirm-item:
     slot: 8
+    # you can also use these placeholders:
+    # %own-name%"
+    # %partner-name%
     accept:
       material: "RED_CONCRETE"
       # if you want, you can add head textures, like this:
@@ -101,6 +112,11 @@ partner:
     currency: "Vault"
     material: "GOLD_NUGGET"
     name: "&#00ffdd&lᴍᴏɴᴇʏ"
+    # you can use these placeholders:
+    #  %amount% (the amount the player set)
+    #  %tax-amount% (amount after tax)
+    #  %tax-percent% (the % of tax on the currency)
+    #  %tax-fee% (amount taken because of tax)
     lore:
       - "&7%player%'s offer"
       - ""

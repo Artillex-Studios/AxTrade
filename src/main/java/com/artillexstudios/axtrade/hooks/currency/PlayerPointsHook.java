@@ -4,6 +4,7 @@ import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -23,8 +24,8 @@ public class PlayerPointsHook implements CurrencyHook {
     }
 
     @Override
-    public String getDisplayName() {
-        return HOOKS.getString("currencies.PlayerPoints.name");
+    public Map<String, Object> getSettings() {
+        return HOOKS.getSection("currencies." + getName()).getStringRouteMappedValues(true);
     }
 
     @Override

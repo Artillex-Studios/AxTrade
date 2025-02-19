@@ -8,17 +8,23 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class EcoBitsHook implements CurrencyHook {
     private Currency currency = null;
+    private final Map<String, Object> settings;
     private final String internal;
-    private final String name;
 
-    public EcoBitsHook(String internal, String name) {
-        this.internal = internal;
-        this.name = name;
+    public EcoBitsHook(Map<Object, Object> settings) {
+        Map<String, Object> map = new HashMap<>();
+        for (Map.Entry<Object, Object> entry : settings.entrySet()) {
+            map.put((String) entry.getKey(), entry.getValue());
+        }
+        this.settings = map;
+        this.internal = (String) settings.get("currency-name");
     }
 
     @Override
@@ -35,8 +41,8 @@ public class EcoBitsHook implements CurrencyHook {
     }
 
     @Override
-    public String getDisplayName() {
-        return name;
+    public Map<String, Object> getSettings() {
+        return settings;
     }
 
     @Override
