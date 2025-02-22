@@ -99,14 +99,14 @@ partner:
       name: "&#00ffdd&lᴡᴀɪᴛɪɴɢ ғᴏʀ ᴏᴛʜᴇʀ ᴘʟᴀʏᴇʀ"
       lore:
         - ""
-        - " &7- &fThe other player has not yet confirmed the trade!"
+        - " &7- &f%partner-name% has not yet confirmed the trade!"
         - ""
     cancel:
       material: "LIME_CONCRETE"
       name: "&#00ffdd&lᴡᴀɪᴛɪɴɢ"
       lore:
         - ""
-        - " &7- &fThe other player has confirmed the trade!"
+        - " &7- &f%partner-name% has confirmed the trade!"
   currency1:
     slot: 6
     currency: "Vault"
@@ -118,7 +118,7 @@ partner:
     #  %tax-percent% (the % of tax on the currency)
     #  %tax-fee% (amount taken because of tax)
     lore:
-      - "&7%player%'s offer"
+      - "&7%partner-name%'s offer"
       - ""
       - " &7- &fAmount: &#00ffdd%amount%$"
       - ""
@@ -129,7 +129,7 @@ partner:
     material: "EXPERIENCE_BOTTLE"
     name: "&#00ffdd&lᴇxᴘᴇʀɪᴇɴᴄᴇ"
     lore:
-      - "&7%player%'s offer"
+      - "&7%partner-name%'s offer"
       - ""
       - " &7- &fAmount: &#00ffdd%amount% EXP"
       - ""

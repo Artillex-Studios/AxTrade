@@ -123,7 +123,6 @@ public class Trade {
                 List<String> player1Currencies = new ArrayList<>();
                 for (Map.Entry<CurrencyHook, Double> entry : player1.getCurrencies().entrySet()) {
                     double amountAfterTax = TaxUtils.getTotalAfterTax(entry.getValue(), entry.getKey());
-                    if (!entry.getKey().usesDouble()) amountAfterTax = Math.floor(amountAfterTax);
 
                     entry.getKey().giveBalance(player2.getPlayer().getUniqueId(), amountAfterTax);
 
@@ -146,7 +145,6 @@ public class Trade {
                 for (Map.Entry<CurrencyHook, Double> entry : player2.getCurrencies().entrySet()) {
                     double amountAfterTax = TaxUtils.getTotalAfterTax(entry.getValue(), entry.getKey());
 
-                    if (!entry.getKey().usesDouble()) amountAfterTax = Math.floor(amountAfterTax);
                     entry.getKey().giveBalance(player1.getPlayer().getUniqueId(), amountAfterTax);
 
                     String currencyName = Utils.getFormattedCurrency(entry.getKey());

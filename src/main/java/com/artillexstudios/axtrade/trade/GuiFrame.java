@@ -55,12 +55,11 @@ public class GuiFrame {
         final Pair<String, String> selfTextures = NMSHandlers.getNmsHandler().textures(player.getPlayer());
         final Pair<String, String> otherTextures = NMSHandlers.getNmsHandler().textures(trade.getOtherPlayer(player.getPlayer()));
 
-        final HashMap<String, String> map = new HashMap<>(Map.of(
-                "%own-head%", selfTextures == null ? "" : selfTextures.getKey(),
-                "%partner-head%", otherTextures == null ? "" : otherTextures.getKey()
-        ));
-
-        map.putAll(replacements);
+        final HashMap<String, String> map = new HashMap<>(replacements);
+        map.put("%own-head%", selfTextures == null ? "" : selfTextures.getKey());
+        map.put("%partner-head%", otherTextures == null ? "" : otherTextures.getKey());
+        map.put("%own-name%", player.getPlayer().getName());
+        map.put("%partner-name%", trade.getOtherPlayer(player).getPlayer().getName());
 
         return ItemBuilderUtil.newBuilder(file.getSection(key), map, player).get();
     }

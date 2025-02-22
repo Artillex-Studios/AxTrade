@@ -8,14 +8,14 @@ public class TaxUtils {
         Number tax = getTaxPercent(currencyHook);
         double taxMulti = getMultiplierFormat(tax.doubleValue());
         if (taxMulti == 1D) return original;
-        return original * taxMulti;
+        return floorIfUnsupported(original * taxMulti, currencyHook);
     }
 
     public static double getTotalTax(double original, CurrencyHook currencyHook) {
         Number tax = getTaxPercent(currencyHook);
         double taxMulti = getMultiplierFormat(tax.doubleValue());
         if (taxMulti == 1D) return 0;
-        return original - original * taxMulti;
+        return ceilIfUnsupported(original - original * taxMulti, currencyHook);
     }
 
     public static Number getTaxPercent(CurrencyHook currencyHook) {
@@ -25,5 +25,15 @@ public class TaxUtils {
 
     public static double getMultiplierFormat(double original) {
         return (100D - original) / 100D;
+    }
+
+    private static double floorIfUnsupported(double amount, CurrencyHook currencyHook) {
+        if (currencyHook.usesDouble()) return amount;
+        return Math.floor(amount);
+    }
+
+    private static double ceilIfUnsupported(double amount, CurrencyHook currencyHook) {
+        if (currencyHook.usesDouble()) return amount;
+        return Math.ceil(amount);
     }
 }

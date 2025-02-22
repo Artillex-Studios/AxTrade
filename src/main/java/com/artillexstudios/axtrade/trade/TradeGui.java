@@ -78,18 +78,12 @@ public class TradeGui extends GuiFrame {
                 event.setCancelled(true);
                 player.cancel();
                 trade.update();
-            }, Map.of(
-                    "%own-name%", player.getPlayer().getName(),
-                    "%partner-name%", player.getOtherPlayer().getPlayer().getName()
-            ), player.getConfirmed());
+            }, Map.of(), player.getConfirmed());
         } else {
             super.createItem("own.confirm-item.slot", "own.confirm-item.accept", event -> {
                 event.setCancelled(true);
                 player.confirm();
-            }, Map.of(
-                    "%own-name%", player.getPlayer().getName(),
-                    "%partner-name%", player.getOtherPlayer().getPlayer().getName()
-            ));
+            }, Map.of());
         }
 
         if (player.getOtherPlayer().hasConfirmed()) {
