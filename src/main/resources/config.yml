@@ -31,6 +31,9 @@ enable-trade-summaries: true
 # when one of the player's inventory can't hold any more items, the plugin will not allow adding more items to the trade gui
 prevent-adding-items-when-inventory-full: true
 
+# if enabled, players will not be able to trade if they have the same ip address
+disallow-same-ip-trade: false
+
 number-formatting:
   # modes:
   # 0 - formatted (customizable, look at the formatted part)
@@ -66,4 +69,4 @@ update-notifier:
   on-join: true
 
 # do not change this
-version: 5
+version: 6

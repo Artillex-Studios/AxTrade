@@ -1,9 +1,9 @@
 package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axapi.config.Config;
-import com.artillexstudios.axapi.nms.NMSHandlers;
+import com.artillexstudios.axapi.nms.wrapper.ServerPlayerWrapper;
 import com.artillexstudios.axapi.utils.NumberUtils;
-import com.artillexstudios.axapi.utils.Pair;
+import com.artillexstudios.axapi.utils.PlayerTextures;
 import com.artillexstudios.axtrade.utils.ItemBuilderUtil;
 import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.guis.BaseGui;
@@ -52,12 +52,12 @@ public class GuiFrame {
     protected ItemStack buildItem(@NotNull String key, Map<String, String> replacements) {
         if (file.getSection(key) == null) return air;
 
-        final Pair<String, String> selfTextures = NMSHandlers.getNmsHandler().textures(player.getPlayer());
-        final Pair<String, String> otherTextures = NMSHandlers.getNmsHandler().textures(trade.getOtherPlayer(player.getPlayer()));
+        final PlayerTextures selfTextures = ServerPlayerWrapper.wrap(player.getPlayer()).textures();
+        final PlayerTextures otherTextures = ServerPlayerWrapper.wrap(trade.getOtherPlayer(player.getPlayer())).textures();
 
         final HashMap<String, String> map = new HashMap<>(replacements);
-        map.put("%own-head%", selfTextures == null ? "" : selfTextures.getKey());
-        map.put("%partner-head%", otherTextures == null ? "" : otherTextures.getKey());
+        map.put("%own-head%", selfTextures.texture() == null ? "" : selfTextures.texture());
+        map.put("%partner-head%", otherTextures.texture() == null ? "" : otherTextures.texture());
         map.put("%own-name%", player.getPlayer().getName());
         map.put("%partner-name%", trade.getOtherPlayer(player).getPlayer().getName());
 

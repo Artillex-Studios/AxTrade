@@ -2,7 +2,7 @@ package com.artillexstudios.axtrade;
 
 import com.artillexstudios.axapi.AxPlugin;
 import com.artillexstudios.axapi.config.Config;
-import com.artillexstudios.axapi.data.ThreadedQueue;
+import com.artillexstudios.axapi.executor.ThreadedQueue;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.dvs.versioning.BasicVersioning;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.dumper.DumperSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.general.GeneralSettings;
@@ -78,14 +78,14 @@ public final class AxTrade extends AxPlugin {
 
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD[AxTrade] Loaded plugin!"));
 
-        metrics = new AxMetrics(8);
+        metrics = new AxMetrics(this, 8);
         metrics.start();
 
         if (CONFIG.getBoolean("update-notifier.enabled", true)) new UpdateNotifier(this, 5943);
     }
 
     public void disable() {
-        metrics.cancel();
+        if (metrics != null) metrics.cancel();
     }
 
     public void updateFlags(FeatureFlags flags) {

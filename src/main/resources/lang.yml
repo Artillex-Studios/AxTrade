@@ -68,6 +68,8 @@ request:
   too-far: "&#CCFFEEYou are too far from &#00FFDD%player% &#CCFFEEto send a trade request!"
   not-accepting: "&#CCFFEEThis player is not accepting trades!"
   disallowed-gamemode: "&#CCFFEEEither you or the other player is in a disallowed gamemode!"
+  same-ip: "&#CCFFEEYou can't trade with an account that has the same ip as you!"
+  below-required-amount: "&#CCFFEEYou are required to trade at least &f%amount% %currency%&#CCFFEE!"
   blacklisted-world: "&#CCFFEETrades are disabled in this world!"
   expired: "&#CCFFEEYour trade request to &#00FFDD%player% &#CCFFEEhas expired!"
   disabled-trading: "&#CCFFEEYou have disabled trades! Use &#00FFDD/trade toggle &#CCFFEEto enable."
@@ -113,4 +115,4 @@ commands:
 update-notifier: "&#AAFFCCThere is a new version of the plugin available! &#DDDDDD(&#FFFFFFcurrent: &#FF0000%current% &#DDDDDD| &#FFFFFFlatest: &#00FF00%latest%&#DDDDDD)"
 
 # do not change this
-version: 7
+version: 8

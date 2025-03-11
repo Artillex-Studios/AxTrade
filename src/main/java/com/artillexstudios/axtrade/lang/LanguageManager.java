@@ -34,7 +34,7 @@ public class LanguageManager {
         translations = new Config(file);
         if (exists && !translations.getBackingDocument().isEmpty(true)) return;
 
-        final List<String> versions = Version.getServerVersion().versions;
+        final List<String> versions = Version.getServerVersion().versions();
         final String version = versions.get(versions.size() - 1);
         final String url = "https://api.github.com/repos/InventivetalentDev/minecraft-assets/contents/assets/minecraft/lang/" + lang + ".json?ref=" + version;
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FF00╠ &#AAFFAADownloading &f" + lang + " &#AAFFAAlanguage files.."));

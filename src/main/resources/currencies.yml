@@ -28,6 +28,8 @@ currencies:
     name: "exp"
     # optional: tax (example: 5 is 5% tax)
     tax: 0
+    # optional: minimum amount of currency needed in a trade, otherwise players can't accept the trade
+    required: 0
   Vault:
     register: true
     name: "money"

@@ -26,6 +26,12 @@ public class Requests {
     public static void addRequest(@NotNull Player sender, @NotNull Player receiver) {
         final Map<String, String> replacements = Map.of("%player%", receiver.getName());
 
+        boolean disallowSameIp = CONFIG.getBoolean("disallow-same-ip-trade", false);
+        if (disallowSameIp && sender.getAddress() != null && receiver.getAddress() != null && sender.getAddress().getAddress().equals(receiver.getAddress().getAddress())) {
+            MESSAGEUTILS.sendLang(sender, "request.same-ip", replacements);
+            return;
+        }
+
         var disallowed = CONFIG.getStringList("disallowed-gamemodes");
         if (disallowed.contains(sender.getGameMode().name()) || disallowed.contains(receiver.getGameMode().name())) {
             MESSAGEUTILS.sendLang(sender, "request.disallowed-gamemode", replacements);

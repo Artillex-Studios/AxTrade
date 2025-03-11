@@ -4,13 +4,16 @@ import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
+import com.artillexstudios.axtrade.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
+import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
 public class TradePlayer {
     private final Player player;
@@ -55,6 +58,18 @@ public class TradePlayer {
     }
 
     public void confirm() {
+        for (CurrencyHook currencyHook : HookManager.getCurrency()) {
+            Number minimum = (Number) currencyHook.getSettings().getOrDefault("required", 0);
+            if (minimum.doubleValue() <= 0) continue;
+            if (getCurrency(currencyHook.getName()) + otherPlayer.getCurrency(currencyHook.getName()) < minimum.doubleValue()) {
+                MESSAGEUTILS.sendLang(player, "request.below-required-amount", Map.of(
+                        "%amount%", NumberUtils.formatNumber(minimum.doubleValue()),
+                        "%currency%", Utils.getFormattedCurrency(currencyHook)
+                ));
+                return;
+            }
+        }
+
         this.confirmed = CONFIG.getInt("trade-confirm-seconds", 10);
         trade.update();
         SoundUtils.playSound(player, "accept");

@@ -3,6 +3,7 @@ package com.artillexstudios.axtrade.trade;
 import com.artillexstudios.axapi.gui.SignInput;
 import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.scheduler.Scheduler;
+import com.artillexstudios.axapi.utils.Cooldown;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
@@ -18,6 +19,7 @@ import dev.triumphteam.gui.guis.StorageGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Tag;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
@@ -41,6 +43,7 @@ import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
 public class TradeGui extends GuiFrame {
+    private static final Cooldown<Player> confirmCooldown = new Cooldown<>();
     protected final Trade trade;
     private final TradePlayer player;
     protected final StorageGui gui;
@@ -76,12 +79,16 @@ public class TradeGui extends GuiFrame {
         if (player.hasConfirmed()) {
             super.createItem("own.confirm-item.slot", "own.confirm-item.cancel", event -> {
                 event.setCancelled(true);
+                if (confirmCooldown.hasCooldown(player.getPlayer())) return;
+                confirmCooldown.addCooldown(player.getPlayer(), 250L);
                 player.cancel();
                 trade.update();
             }, Map.of(), player.getConfirmed());
         } else {
             super.createItem("own.confirm-item.slot", "own.confirm-item.accept", event -> {
                 event.setCancelled(true);
+                if (confirmCooldown.hasCooldown(player.getPlayer())) return;
+                confirmCooldown.addCooldown(player.getPlayer(), 250L);
                 player.confirm();
             }, Map.of());
         }
