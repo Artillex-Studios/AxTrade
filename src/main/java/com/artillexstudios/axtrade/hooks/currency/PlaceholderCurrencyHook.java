@@ -60,32 +60,26 @@ public class PlaceholderCurrencyHook implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final OfflinePlayer pl = Bukkit.getOfflinePlayer(player);
         if (pl.getName() == null) {
-            cf.complete(false);
-            return cf;
+            return CompletableFuture.completedFuture(false);
         }
         final String placeholder = section.getString("settings.give-command")
                 .replace("%amount%", parseNumber(amount))
                 .replace("%player%", pl.getName());
-        cf.complete(Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholder));
-        return cf;
+        return CompletableFuture.completedFuture(Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholder));
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final OfflinePlayer pl = Bukkit.getOfflinePlayer(player);
         if (pl.getName() == null) {
-            cf.complete(false);
-            return cf;
+            return CompletableFuture.completedFuture(false);
         }
         final String placeholder = section.getString("settings.take-command")
                 .replace("%amount%", parseNumber(amount))
                 .replace("%player%", pl.getName());
-        cf.complete(Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholder));
-        return cf;
+        return CompletableFuture.completedFuture(Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholder));
     }
 
     private String parseNumber(double amount) {

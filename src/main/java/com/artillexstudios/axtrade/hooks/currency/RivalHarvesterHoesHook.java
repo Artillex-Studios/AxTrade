@@ -48,17 +48,13 @@ public class RivalHarvesterHoesHook implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         Main.instance.getEconomy().giveEconomyAmount(Bukkit.getOfflinePlayer(player), amount);
-        cf.complete(true);
-        return cf;
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         Main.instance.getEconomy().removeEconomyAmount(Bukkit.getOfflinePlayer(player), amount);
-        cf.complete(true);
-        return cf;
+        return CompletableFuture.completedFuture(true);
     }
 }

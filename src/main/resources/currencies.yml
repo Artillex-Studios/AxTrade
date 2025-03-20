@@ -82,6 +82,9 @@ currencies:
     enabled:
       - currency-name: "crystals"
         name: "crystals"
+  RivalCredits:
+    register: true
+    name: "credits"
 
 # do not change this
-version: 8
+version: 9

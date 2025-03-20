@@ -1,6 +1,7 @@
 package com.artillexstudios.axtrade.hooks.currency;
 
-import me.qKing12.RoyaleEconomy.RoyaleEconomy;
+import me.rivaldev.credits.CreditAPI;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.artillexstudios.axtrade.AxTrade.HOOKS;
 
-public class RoyaleEconomyHook implements CurrencyHook {
+public class RivalCreditsHook implements CurrencyHook {
 
     @Override
     public void setup() {
@@ -17,7 +18,7 @@ public class RoyaleEconomyHook implements CurrencyHook {
 
     @Override
     public String getName() {
-        return "RoyaleEconomy";
+        return "RivalCredits";
     }
 
     @Override
@@ -42,18 +43,18 @@ public class RoyaleEconomyHook implements CurrencyHook {
 
     @Override
     public double getBalance(@NotNull UUID player) {
-        return RoyaleEconomy.apiHandler.balance.getBalance(player.toString());
+        return CreditAPI.getInstance().getCredits(Bukkit.getOfflinePlayer(player));
     }
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        RoyaleEconomy.apiHandler.balance.addBalance(player.toString(), amount);
+        CreditAPI.getInstance().addCredits(Bukkit.getOfflinePlayer(player), amount);
         return CompletableFuture.completedFuture(true);
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        RoyaleEconomy.apiHandler.balance.removeBalance(player.toString(), amount);
+        CreditAPI.getInstance().removeCredits(Bukkit.getOfflinePlayer(player), amount);
         return CompletableFuture.completedFuture(true);
     }
 }

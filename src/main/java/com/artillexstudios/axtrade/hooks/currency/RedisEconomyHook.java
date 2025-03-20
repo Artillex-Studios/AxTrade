@@ -70,25 +70,19 @@ public class RedisEconomyHook implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         if (currency == null) {
-            cf.complete(false);
-            return cf;
+            return CompletableFuture.completedFuture(false);
         }
         EconomyResponse economyResponse = currency.depositPlayer(player, null, amount, null);
-        cf.complete(economyResponse.transactionSuccess());
-        return cf;
+        return CompletableFuture.completedFuture(economyResponse.transactionSuccess());
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         if (currency == null) {
-            cf.complete(false);
-            return cf;
+            return CompletableFuture.completedFuture(false);
         }
         EconomyResponse economyResponse = currency.withdrawPlayer(player, null, amount, null);
-        cf.complete(economyResponse.transactionSuccess());
-        return cf;
+        return CompletableFuture.completedFuture(economyResponse.transactionSuccess());
     }
 }

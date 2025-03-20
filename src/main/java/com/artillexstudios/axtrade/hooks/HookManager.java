@@ -12,6 +12,7 @@ import com.artillexstudios.axtrade.hooks.currency.KingdomsXHook;
 import com.artillexstudios.axtrade.hooks.currency.PlaceholderCurrencyHook;
 import com.artillexstudios.axtrade.hooks.currency.PlayerPointsHook;
 import com.artillexstudios.axtrade.hooks.currency.RedisEconomyHook;
+import com.artillexstudios.axtrade.hooks.currency.RivalCreditsHook;
 import com.artillexstudios.axtrade.hooks.currency.RivalHarvesterHoesHook;
 import com.artillexstudios.axtrade.hooks.currency.RoyaleEconomyHook;
 import com.artillexstudios.axtrade.hooks.currency.SuperMobCoinsHook;
@@ -118,6 +119,11 @@ public class HookManager {
                 currency.add(new EcoBitsHook(curr));
             }
             Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into EcoBits!"));
+        }
+
+        if (HOOKS.getBoolean("currencies.RivalCredits.register", true) && Bukkit.getPluginManager().getPlugin("RivalCredits") != null) {
+            currency.add(new RivalCreditsHook());
+            Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Hooked into RivalCredits!"));
         }
 
         for (String str : HOOKS.getSection("placeholder-currencies").getRoutesAsStrings(false)) {

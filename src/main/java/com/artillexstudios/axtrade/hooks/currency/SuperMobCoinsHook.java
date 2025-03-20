@@ -48,19 +48,15 @@ public class SuperMobCoinsHook implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final Profile profile = MobCoinsAPI.getProfileManager().getProfile(player);
         profile.setMobCoins((long) (profile.getMobCoins() + amount));
-        cf.complete(true);
-        return cf;
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final Profile profile = MobCoinsAPI.getProfileManager().getProfile(player);
         profile.setMobCoins((long) (profile.getMobCoins() - amount));
-        cf.complete(true);
-        return cf;
+        return CompletableFuture.completedFuture(true);
     }
 }

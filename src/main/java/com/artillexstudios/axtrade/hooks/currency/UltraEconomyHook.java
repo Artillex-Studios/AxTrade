@@ -71,33 +71,25 @@ public class UltraEconomyHook implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         if (currency == null) {
-            cf.complete(false);
-            return cf;
+            return CompletableFuture.completedFuture(false);
         }
         final Optional<Account> account = UltraEconomy.getAPI().getAccounts().uuid(player);
         if (account.isEmpty()) {
-            cf.complete(false);
-            return cf;
+            return CompletableFuture.completedFuture(false);
         }
-        cf.complete(account.get().addBalance(currency, amount));
-        return cf;
+        return CompletableFuture.completedFuture(account.get().addBalance(currency, amount));
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         if (currency == null) {
-            cf.complete(false);
-            return cf;
+            return CompletableFuture.completedFuture(false);
         }
         final Optional<Account> account = UltraEconomy.getAPI().getAccounts().uuid(player);
         if (account.isEmpty()) {
-            cf.complete(false);
-            return cf;
+            return CompletableFuture.completedFuture(false);
         }
-        cf.complete(account.get().removeBalance(currency, amount));
-        return cf;
+        return CompletableFuture.completedFuture(account.get().removeBalance(currency, amount));
     }
 }

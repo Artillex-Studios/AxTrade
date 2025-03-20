@@ -55,17 +55,13 @@ public class VaultHook implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         EconomyResponse response = econ.depositPlayer(Bukkit.getOfflinePlayer(player), amount);
-        cf.complete(response.transactionSuccess());
-        return cf;
+        return CompletableFuture.completedFuture(response.transactionSuccess());
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         EconomyResponse response = econ.withdrawPlayer(Bukkit.getOfflinePlayer(player), amount);
-        cf.complete(response.transactionSuccess());
-        return cf;
+        return CompletableFuture.completedFuture(response.transactionSuccess());
     }
 }

@@ -49,25 +49,19 @@ public class TheOnlyMobCoins implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         if (MobCoinsAPI.getPlayerData(Bukkit.getPlayer(player)) == null) {
-            cf.complete(false);
-            return cf;
+            return CompletableFuture.completedFuture(false);
         }
         MobCoinsAPI.getPlayerData(Bukkit.getPlayer(player)).addCoins(amount);
-        cf.complete(true);
-        return cf;
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         if (MobCoinsAPI.getPlayerData(Bukkit.getPlayer(player)) == null) {
-            cf.complete(false);
-            return cf;
+            return CompletableFuture.completedFuture(false);
         }
         MobCoinsAPI.getPlayerData(Bukkit.getPlayer(player)).reduceCoins(amount);
-        cf.complete(true);
-        return cf;
+        return CompletableFuture.completedFuture(true);
     }
 }

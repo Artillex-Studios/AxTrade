@@ -49,19 +49,15 @@ public class KingdomsXHook implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final KingdomPlayer kingdomPlayer = KingdomPlayer.getKingdomPlayer(player);
         kingdomPlayer.getKingdom().addResourcePoints((long) amount);
-        cf.complete(true);
-        return cf;
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final KingdomPlayer kingdomPlayer = KingdomPlayer.getKingdomPlayer(player);
         kingdomPlayer.getKingdom().addResourcePoints((long) (amount * -1));
-        cf.complete(true);
-        return cf;
+        return CompletableFuture.completedFuture(true);
     }
 }

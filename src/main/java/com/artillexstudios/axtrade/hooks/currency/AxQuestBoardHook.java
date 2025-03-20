@@ -48,16 +48,14 @@ public class AxQuestBoardHook implements CurrencyHook {
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
         CompletableFuture<Boolean> cf = new CompletableFuture<>();
-        AxQuestBoardAPI.modifyPoints(player, (int) amount);
-        cf.complete(true);
+        AxQuestBoardAPI.giveQuestPoints(player, (int) amount).thenAccept(cf::complete);
         return cf;
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
         CompletableFuture<Boolean> cf = new CompletableFuture<>();
-        AxQuestBoardAPI.modifyPoints(player, (int) amount * -1);
-        cf.complete(true);
+        AxQuestBoardAPI.giveQuestPoints(player, (int) -amount).thenAccept(cf::complete);
         return cf;
     }
 }

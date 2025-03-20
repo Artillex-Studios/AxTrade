@@ -50,15 +50,11 @@ public class TokenManagerHook implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
-        cf.complete(eco.addTokens(Bukkit.getPlayer(player), (long) amount));
-        return cf;
+        return CompletableFuture.completedFuture(eco.addTokens(Bukkit.getPlayer(player), (long) amount));
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
-        cf.complete(eco.removeTokens(Bukkit.getPlayer(player), (long) amount));
-        return cf;
+        return CompletableFuture.completedFuture(eco.removeTokens(Bukkit.getPlayer(player), (long) amount));
     }
 }

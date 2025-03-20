@@ -50,15 +50,11 @@ public class PlayerPointsHook implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
-        cf.complete(econ.give(player, (int) amount));
-        return cf;
+        return CompletableFuture.completedFuture(econ.give(player, (int) amount));
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
-        cf.complete(econ.take(player, (int) Math.round(amount)));
-        return cf;
+        return CompletableFuture.completedFuture(econ.take(player, (int) Math.round(amount)));
     }
 }

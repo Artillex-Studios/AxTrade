@@ -49,20 +49,16 @@ public class ExperienceHook implements CurrencyHook {
 
     @Override
     public CompletableFuture<Boolean> giveBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final Player pl = Bukkit.getPlayer(player);
         changeExp(pl, (int) amount);
-        cf.complete(true);
-        return cf;
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override
     public CompletableFuture<Boolean> takeBalance(@NotNull UUID player, double amount) {
-        CompletableFuture<Boolean> cf = new CompletableFuture<>();
         final Player pl = Bukkit.getPlayer(player);
         changeExp(pl, (int) (amount * -1));
-        cf.complete(true);
-        return cf;
+        return CompletableFuture.completedFuture(true);
     }
 
     // credit: https://gist.githubusercontent.com/Jikoo/30ec040443a4701b8980/raw/0745ca25a8aaaf749ba2f2164a809e998f6a37c4/Experience.java
