@@ -44,11 +44,17 @@ public class Trade {
 
     public void end() {
         ended = true;
-        Scheduler.get().run(scheduledTask -> Trades.removeTrade(this));
-        player1.getPlayer().closeInventory();
-        player1.getPlayer().updateInventory();
-        player2.getPlayer().closeInventory();
-        player2.getPlayer().updateInventory();
+        Scheduler.get().run(task -> Trades.removeTrade(this));
+
+        Scheduler.get().runAt(player1.getPlayer().getLocation(), task -> {
+            player1.getPlayer().closeInventory();
+            player1.getPlayer().updateInventory();
+        });
+
+        Scheduler.get().runAt(player2.getPlayer().getLocation(), task -> {
+            player2.getPlayer().closeInventory();
+            player2.getPlayer().updateInventory();
+        });
     }
 
     public void abort() {

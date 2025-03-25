@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 import static com.artillexstudios.axtrade.AxTrade.GUIS;
@@ -147,7 +148,9 @@ public class TradeGui extends GuiFrame {
 
         if (!opened) return;
 
-        List<ItemStack> otherItems = player.getOtherPlayer().getTradeGui().getItems(true);
+        TradeGui otherGui = player.getOtherPlayer().getTradeGui();
+        if (otherGui == null) return;
+        List<ItemStack> otherItems = otherGui.getItems(true);
         int n = 0;
         for (int slot : otherSlots) {
             if (otherItems.get(n) != null)
@@ -182,7 +185,7 @@ public class TradeGui extends GuiFrame {
         }
 
         player.cancel();
-        Scheduler.get().run(scheduledTask -> trade.update());
+        Scheduler.get().runAt(player.getPlayer().getLocation(), scheduledTask -> trade.update());
     }
 
     private void handleClickBottom(InventoryClickEvent event) {
@@ -210,7 +213,7 @@ public class TradeGui extends GuiFrame {
         }
 
         player.cancel();
-        Scheduler.get().run(scheduledTask -> trade.update());
+        Scheduler.get().runAt(player.getPlayer().getLocation(), scheduledTask -> trade.update());
     }
 
     private void handleDrag(InventoryDragEvent event) {
@@ -221,7 +224,7 @@ public class TradeGui extends GuiFrame {
             break;
         }
 
-        Scheduler.get().run(scheduledTask -> trade.update());
+        Scheduler.get().runAt(player.getPlayer().getLocation(), scheduledTask -> trade.update());
         if (ownInv) return;
 
         if (!new HashSet<>(slots).containsAll(event.getInventorySlots())) {
@@ -272,16 +275,13 @@ public class TradeGui extends GuiFrame {
             if (addResult == TradePlayer.Result.SUCCESS) {
                 MESSAGEUTILS.sendLang(player1, "currency-editor.success");
             } else {
-                switch (addResult) {
-                    case NOT_ENOUGH_CURRENCY:
-                        MESSAGEUTILS.sendLang(player1, "currency-editor.not-enough");
-                        break;
-                    default:
-                        MESSAGEUTILS.sendLang(player1, "currency-editor.failed");
-                        break;
+                if (Objects.requireNonNull(addResult) == TradePlayer.Result.NOT_ENOUGH_CURRENCY) {
+                    MESSAGEUTILS.sendLang(player1, "currency-editor.not-enough");
+                } else {
+                    MESSAGEUTILS.sendLang(player1, "currency-editor.failed");
                 }
             }
-            Scheduler.get().run(scheduledTask -> {
+            Scheduler.get().runAt(player.getPlayer().getLocation(), scheduledTask -> {
                 if (trade.isEnded()) return;
                 gui.open(player.getPlayer());
                 inSign = false;
@@ -302,7 +302,7 @@ public class TradeGui extends GuiFrame {
 
         BaseGui shulkerGui = Gui.storage().rows(3).title(StringUtils.format(Utils.getFormattedItemName(event.getCurrentItem()))).disableAllInteractions().create();
         shulkerGui.getInventory().setContents(ShulkerUtils.getShulkerContents(event.getCurrentItem()));
-        shulkerGui.setCloseGuiAction(e -> Scheduler.get().run(t -> {
+        shulkerGui.setCloseGuiAction(e -> Scheduler.get().runAt(player.getPlayer().getLocation(), t -> {
             if (trade.isEnded()) return;
             trade.prepTime = System.currentTimeMillis();
             gui.open(player.getPlayer());
