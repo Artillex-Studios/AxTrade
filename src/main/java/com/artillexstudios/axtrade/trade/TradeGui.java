@@ -236,7 +236,7 @@ public class TradeGui extends GuiFrame {
     }
 
     private void handleClose(InventoryCloseEvent event) {
-        if (inSign) return;
+        if (inSign || trade == null || trade.isEnded()) return;
         trade.abort();
     }
 
