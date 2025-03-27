@@ -47,7 +47,6 @@ public class Trade {
         Scheduler.get().run(task -> Trades.removeTrade(this));
 
         if (player1 != null && player1.getPlayer().isOnline()) {
-            player1.getPlayer().getLocation();
             Scheduler.get().runAt(player1.getPlayer().getLocation(), scheduledTask -> {
                 player1.getPlayer().closeInventory();
                 player1.getPlayer().updateInventory();
@@ -55,7 +54,6 @@ public class Trade {
         }
 
         if (player2 != null && player2.getPlayer().isOnline()) {
-            player2.getPlayer().getLocation();
             Scheduler.get().runAt(player2.getPlayer().getLocation(), scheduledTask -> {
                 player2.getPlayer().closeInventory();
                 player2.getPlayer().updateInventory();
