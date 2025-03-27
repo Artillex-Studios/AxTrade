@@ -71,9 +71,6 @@ public class TradeGui extends GuiFrame {
         if (trade.isEnded()) return;
 
         update();
-        gui.open(player.getPlayer());
-        updateTitle();
-        opened = true;
     }
 
     public void update() {
@@ -95,16 +92,12 @@ public class TradeGui extends GuiFrame {
         }
 
         if (player.getOtherPlayer().hasConfirmed()) {
-            super.createItem("partner.confirm-item.slot", "partner.confirm-item.cancel", event -> {
-                event.setCancelled(true);
-            }, Map.of(
+            super.createItem("partner.confirm-item.slot", "partner.confirm-item.cancel", event -> event.setCancelled(true), Map.of(
                     "%own-name%", player.getPlayer().getName(),
                     "%partner-name%", player.getOtherPlayer().getPlayer().getName()
             ), player.getOtherPlayer().getConfirmed());
         } else {
-            super.createItem("partner.confirm-item.slot", "partner.confirm-item.accept", event -> {
-                event.setCancelled(true);
-            }, Map.of(
+            super.createItem("partner.confirm-item.slot", "partner.confirm-item.accept", event -> event.setCancelled(true), Map.of(
                     "%own-name%", player.getPlayer().getName(),
                     "%partner-name%", player.getOtherPlayer().getPlayer().getName()
             ));
@@ -116,9 +109,7 @@ public class TradeGui extends GuiFrame {
 
             CurrencyHook currencyHook = HookManager.getCurrencyHook(currencyStr);
             if (currencyHook == null) continue;
-            super.createItem("own." + currencyItem, event -> {
-                handleCurrencyClick(currencyStr, event);
-            }, Map.of(
+            super.createItem("own." + currencyItem, event -> handleCurrencyClick(currencyStr, event), Map.of(
                     "%amount%", NumberUtils.formatNumber(player.getCurrency(currencyStr)),
                     "%tax-amount%", NumberUtils.formatNumber(TaxUtils.getTotalAfterTax(player.getCurrency(currencyStr), currencyHook)),
                     "%tax-percent%", NumberUtils.formatNumber(TaxUtils.getTaxPercent(currencyHook).doubleValue()),
@@ -132,9 +123,7 @@ public class TradeGui extends GuiFrame {
 
             CurrencyHook currencyHook = HookManager.getCurrencyHook(currencyStr);
             if (currencyHook == null) continue;
-            super.createItem("partner." + currencyItem, event -> {
-                event.setCancelled(true);
-            }, Map.of(
+            super.createItem("partner." + currencyItem, event -> event.setCancelled(true), Map.of(
                     "%amount%", NumberUtils.formatNumber(player.getOtherPlayer().getCurrency(currencyStr)),
                     "%tax-amount%", NumberUtils.formatNumber(TaxUtils.getTotalAfterTax(player.getOtherPlayer().getCurrency(currencyStr), currencyHook)),
                     "%tax-percent%", NumberUtils.formatNumber(TaxUtils.getTaxPercent(currencyHook).doubleValue()),
@@ -281,12 +270,11 @@ public class TradeGui extends GuiFrame {
                     MESSAGEUTILS.sendLang(player1, "currency-editor.failed");
                 }
             }
-            Scheduler.get().runAt(player.getPlayer().getLocation(), scheduledTask -> {
+            Scheduler.get().runAt(player.getPlayer().getLocation(), task -> {
                 if (trade.isEnded()) return;
-                gui.open(player.getPlayer());
+                open();
                 inSign = false;
                 trade.update();
-                updateTitle();
             });
         }).build(player.getPlayer());
         sign.open();
@@ -305,10 +293,9 @@ public class TradeGui extends GuiFrame {
         shulkerGui.setCloseGuiAction(e -> Scheduler.get().runAt(player.getPlayer().getLocation(), t -> {
             if (trade.isEnded()) return;
             trade.prepTime = System.currentTimeMillis();
-            gui.open(player.getPlayer());
+            open();
             inSign = false;
             trade.update();
-            updateTitle();
         }));
         shulkerGui.open(player.getPlayer());
     }
@@ -345,5 +332,11 @@ public class TradeGui extends GuiFrame {
         if (topInv.equals(gui.getInventory())) {
             NMSHandlers.getNmsHandler().setTitle(player.getPlayer().getOpenInventory().getTopInventory(), title);
         }
+    }
+
+    public void open() {
+        gui.open(player.getPlayer());
+        updateTitle();
+        opened = true;
     }
 }
