@@ -48,7 +48,7 @@ public class Trade {
 
         if (player1 != null && player1.getPlayer().isOnline()) {
             player1.getPlayer().getLocation();
-            Scheduler.get().runAt(player1.getPlayer().getLocation(), task -> {
+            Scheduler.get().runAt(player1.getPlayer().getLocation(), scheduledTask -> {
                 player1.getPlayer().closeInventory();
                 player1.getPlayer().updateInventory();
             });
@@ -56,7 +56,7 @@ public class Trade {
 
         if (player2 != null && player2.getPlayer().isOnline()) {
             player2.getPlayer().getLocation();
-            Scheduler.get().runAt(player2.getPlayer().getLocation(), task -> {
+            Scheduler.get().runAt(player2.getPlayer().getLocation(), scheduledTask -> {
                 player2.getPlayer().closeInventory();
                 player2.getPlayer().updateInventory();
             });
@@ -181,9 +181,7 @@ public class Trade {
                 List<String> player1Items = new ArrayList<>();
                 player1.getTradeGui().getItems(false).forEach(itemStack -> {
                     if (itemStack == null) return;
-                    Scheduler.get().runAt(player2.getPlayer().getLocation(), task -> {
-                        ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
-                    });
+                    Scheduler.get().runAt(player2.getPlayer().getLocation(), scheduledTask -> ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation()));
                     final String itemName = Utils.getFormattedItemName(itemStack);
                     int itemAm = itemStack.getAmount();
                     player1Items.add(itemAm + "x " + itemName);
@@ -196,7 +194,7 @@ public class Trade {
                 List<String> player2Items = new ArrayList<>();
                 player2.getTradeGui().getItems(false).forEach(itemStack -> {
                     if (itemStack == null) return;
-                    Scheduler.get().runAt(player1.getPlayer().getLocation(), task -> ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation()));
+                    Scheduler.get().runAt(player1.getPlayer().getLocation(), scheduledTask -> ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation()));
                     final String itemName = Utils.getFormattedItemName(itemStack);
                     int itemAm = itemStack.getAmount();
                     player2Items.add(itemAm + "x " + itemName);

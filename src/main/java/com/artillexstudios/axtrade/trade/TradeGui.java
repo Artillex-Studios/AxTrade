@@ -270,7 +270,7 @@ public class TradeGui extends GuiFrame {
                     MESSAGEUTILS.sendLang(player1, "currency-editor.failed");
                 }
             }
-            Scheduler.get().runAt(player.getPlayer().getLocation(), task -> {
+            Scheduler.get().runAt(player.getPlayer().getLocation(), scheduledTask -> {
                 if (trade.isEnded()) return;
                 open();
                 inSign = false;

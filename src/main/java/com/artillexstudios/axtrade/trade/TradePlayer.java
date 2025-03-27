@@ -36,7 +36,7 @@ public class TradePlayer {
     public void setOtherPlayer(TradePlayer otherPlayer) {
         this.otherPlayer = otherPlayer;
 
-        Scheduler.get().runAt(otherPlayer.getPlayer().getLocation(), task -> {
+        Scheduler.get().runAt(otherPlayer.getPlayer().getLocation(), scheduledTask -> {
             this.tradeGui = new TradeGui(trade, this);
             this.tradeGui.open();
         });
