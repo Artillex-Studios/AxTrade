@@ -297,7 +297,7 @@ public class TradeGui extends GuiFrame {
             inSign = false;
             trade.update();
         }));
-        shulkerGui.open(player.getPlayer());
+        Scheduler.get().runAt(player.getPlayer().getLocation(), scheduledTask -> shulkerGui.open(player.getPlayer()));
     }
 
     @Nullable
@@ -335,8 +335,10 @@ public class TradeGui extends GuiFrame {
     }
 
     public void open() {
-        gui.open(player.getPlayer());
-        updateTitle();
-        opened = true;
+        Scheduler.get().runAt(player.getPlayer().getLocation(), scheduledTask -> {
+            gui.open(player.getPlayer());
+            updateTitle();
+            opened = true;
+        });
     }
 }
