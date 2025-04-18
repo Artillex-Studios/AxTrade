@@ -1,6 +1,6 @@
 package com.artillexstudios.axtrade.hooks.currency;
 
-import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.block.implementation.Section;
+import com.artillexstudios.axapi.libs.boostedyaml.block.implementation.Section;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

@@ -1,6 +1,6 @@
 package com.artillexstudios.axtrade.hooks;
 
-import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.block.implementation.Section;
+import com.artillexstudios.axapi.libs.boostedyaml.block.implementation.Section;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.hooks.currency.AxQuestBoardHook;
 import com.artillexstudios.axtrade.hooks.currency.BeastTokensHook;

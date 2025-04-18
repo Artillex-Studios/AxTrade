@@ -6,7 +6,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxTrade</artifactId>
-    <version>1.15.1</version>
+    <version>1.16.0</version>
     <packaging>jar</packaging>
 
     <name>AxTrade</name>
@@ -116,14 +116,14 @@
         <dependency>
             <groupId>com.artillexstudios.axapi</groupId>
             <artifactId>axapi</artifactId>
-            <version>1.4.561</version>
+            <version>1.4.633</version>
             <scope>compile</scope>
             <classifier>all</classifier>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.19.4-R0.1-SNAPSHOT</version>
+            <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -157,6 +157,12 @@
             <artifactId>AxQuestBoardAPI</artifactId>
             <version>3</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.Realizedd</groupId>
@@ -228,6 +234,12 @@
             <artifactId>AxShulkers</artifactId>
             <version>1.5.6</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.Emibergo02</groupId>
