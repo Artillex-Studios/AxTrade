@@ -6,7 +6,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxTrade</artifactId>
-    <version>1.16.0</version>
+    <version>1.16.1</version>
     <packaging>jar</packaging>
 
     <name>AxTrade</name>
@@ -114,17 +114,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.artillexstudios.axapi</groupId>
-            <artifactId>axapi</artifactId>
-            <version>1.4.633</version>
-            <scope>compile</scope>
-            <classifier>all</classifier>
-        </dependency>
-        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.artillexstudios.axapi</groupId>
+            <artifactId>axapi</artifactId>
+            <version>1.4.635</version>
+            <scope>compile</scope>
+            <classifier>all</classifier>
         </dependency>
         <dependency>
             <groupId>dev.triumphteam</groupId>
