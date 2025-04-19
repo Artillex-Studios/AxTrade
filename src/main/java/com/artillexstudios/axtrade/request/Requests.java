@@ -1,6 +1,6 @@
 package com.artillexstudios.axtrade.request;
 
-import com.artillexstudios.axapi.nms.NMSHandlers;
+import com.artillexstudios.axapi.nms.wrapper.ServerPlayerWrapper;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.api.events.AxTradeRequestEvent;
 import com.artillexstudios.axtrade.trade.Trades;
@@ -101,11 +101,12 @@ public class Requests {
         if (LANG.getSection("request.sent-receiver") == null) // this is for backwards compatibility
             MESSAGEUTILS.sendLang(receiver, "request.sent-receiver", replacements2);
         else {
-            NMSHandlers.getNmsHandler().sendMessage(receiver, StringUtils.format(CONFIG.getString("prefix") + LANG.getString("request.sent-receiver.info"), replacements2));
-            NMSHandlers.getNmsHandler().sendMessage(receiver, StringUtils.format(LANG.getString("request.sent-receiver.accept.message"), replacements2)
+            ServerPlayerWrapper receiverWrap = ServerPlayerWrapper.wrap(receiver);
+            receiverWrap.message(StringUtils.format(CONFIG.getString("prefix") + LANG.getString("request.sent-receiver.info"), replacements2));
+            receiverWrap.message(StringUtils.format(LANG.getString("request.sent-receiver.accept.message"), replacements2)
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, StringUtils.format(LANG.getString("request.sent-receiver.accept.hover"), replacements2)))
                     .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/trade accept " + sender.getName())));
-            NMSHandlers.getNmsHandler().sendMessage(receiver, StringUtils.format(LANG.getString("request.sent-receiver.deny.message"), replacements2)
+            receiverWrap.message(StringUtils.format(LANG.getString("request.sent-receiver.deny.message"), replacements2)
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, StringUtils.format(LANG.getString("request.sent-receiver.deny.hover"), replacements2)))
                     .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/trade deny " + sender.getName())));
         }
