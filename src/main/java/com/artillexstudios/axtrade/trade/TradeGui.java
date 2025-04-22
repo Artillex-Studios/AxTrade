@@ -267,7 +267,7 @@ public class TradeGui extends GuiFrame {
         var sign = new SignInput.Builder().setLines(lines).setHandler((player1, result) -> {
             if (trade.isEnded()) return;
             trade.prepTime = System.currentTimeMillis();
-            String am = PlainTextComponentSerializer.plainText().serialize(result[0]);
+            String am = result[0];
             TradePlayer.Result addResult = player.setCurrency(currencyStr, am);
             if (addResult == TradePlayer.Result.SUCCESS) {
                 MESSAGEUTILS.sendLang(player1, "currency-editor.success");
