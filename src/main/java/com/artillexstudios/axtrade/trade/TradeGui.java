@@ -17,7 +17,6 @@ import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.StorageGui;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -159,7 +158,7 @@ public class TradeGui extends GuiFrame {
     private void handleClickTop(InventoryClickEvent event) {
         ItemStack it = getItem(event);
 
-        if (BlackListUtils.isBlackListed(it)) {
+        if (BlackListUtils.isBlacklisted(it)) {
             event.setCancelled(true);
             MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
             return;
@@ -188,7 +187,7 @@ public class TradeGui extends GuiFrame {
     private void handleClickBottom(InventoryClickEvent event) {
         ItemStack it = getItem(event);
 
-        if (BlackListUtils.isBlackListed(it)) {
+        if (BlackListUtils.isBlacklisted(it)) {
             event.setCancelled(true);
             MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
             return;
@@ -315,10 +314,15 @@ public class TradeGui extends GuiFrame {
 
     @Nullable
     private ItemStack getItem(InventoryClickEvent event) {
-        if (event.getClick() == ClickType.NUMBER_KEY && event.getClickedInventory() != null) {
-            // when using a number key, the game will move it from the another inventory, so use the opposite of the clicked inventory
-            Inventory inventory = event.getClickedInventory().getType() == InventoryType.PLAYER ? event.getView().getTopInventory() : event.getView().getBottomInventory();
-            return inventory.getItem(event.getHotbarButton());
+        if (event.getClickedInventory() != null) {
+            if (event.getClick() == ClickType.SWAP_OFFHAND && event.getClickedInventory().getType() != InventoryType.PLAYER) {
+                return player.getPlayer().getInventory().getItemInOffHand();
+            }
+            if (event.getClick() == ClickType.NUMBER_KEY) {
+                // when using a number key, the game will move it from the another inventory, so use the opposite of the clicked inventory
+                Inventory inventory = event.getClickedInventory().getType() == InventoryType.PLAYER ? event.getView().getTopInventory() : event.getView().getBottomInventory();
+                return inventory.getItem(event.getHotbarButton());
+            }
         }
         return event.getCurrentItem();
     }
