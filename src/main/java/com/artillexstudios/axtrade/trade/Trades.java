@@ -35,6 +35,6 @@ public class Trades {
 
     @Nullable
     public static Trade getTrade(Player player) {
-        return trades.stream().filter(trade -> trade.player1.getPlayer().equals(player) || trade.player2.getPlayer().equals(player)).findAny().orElse(null);
+        return trades.stream().filter(trade -> trade != null && (trade.player1.getPlayer().equals(player) || trade.player2.getPlayer().equals(player))).findAny().orElse(null);
     }
 }
