@@ -106,6 +106,8 @@ public class TradePlayer {
     }
 
     public void tick() {
+        if (confirmed == null) return;
+
         confirmed -= 1;
         trade.update();
         SoundUtils.playSound(player, "countdown");
