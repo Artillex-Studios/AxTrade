@@ -1,5 +1,6 @@
 package com.artillexstudios.axtrade.api.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -13,6 +14,7 @@ public class AxTradeRequestEvent extends Event implements Cancellable {
     private boolean isCancelled = false;
 
     public AxTradeRequestEvent(Player sender, Player receiver) {
+        super(!Bukkit.isPrimaryThread());
         this.sender = sender;
         this.receiver = receiver;
     }

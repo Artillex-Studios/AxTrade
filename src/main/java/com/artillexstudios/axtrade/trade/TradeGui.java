@@ -7,7 +7,7 @@ import com.artillexstudios.axapi.utils.Cooldown;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
-import com.artillexstudios.axtrade.utils.BlackListUtils;
+import com.artillexstudios.axtrade.utils.BlacklistUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.ShulkerUtils;
 import com.artillexstudios.axtrade.utils.TaxUtils;
@@ -79,7 +79,7 @@ public class TradeGui extends GuiFrame {
             super.createItem("own.confirm-item.slot", "own.confirm-item.cancel", event -> {
                 event.setCancelled(true);
                 if (confirmCooldown.hasCooldown(player.getPlayer())) return;
-                confirmCooldown.addCooldown(player.getPlayer(), 250L);
+                confirmCooldown.addCooldown(player.getPlayer(), 50L);
                 player.cancel();
                 trade.update();
             }, Map.of(), player.getConfirmed());
@@ -87,7 +87,7 @@ public class TradeGui extends GuiFrame {
             super.createItem("own.confirm-item.slot", "own.confirm-item.accept", event -> {
                 event.setCancelled(true);
                 if (confirmCooldown.hasCooldown(player.getPlayer())) return;
-                confirmCooldown.addCooldown(player.getPlayer(), 250L);
+                confirmCooldown.addCooldown(player.getPlayer(), 50L);
                 player.confirm();
             }, Map.of());
         }
@@ -156,9 +156,13 @@ public class TradeGui extends GuiFrame {
     }
 
     private void handleClickTop(InventoryClickEvent event) {
+        if (confirmCooldown.hasCooldown(player.getPlayer())) {
+            event.setCancelled(true);
+            return;
+        }
         ItemStack it = getItem(event);
 
-        if (BlackListUtils.isBlacklisted(it)) {
+        if (BlacklistUtils.isBlacklisted(it)) {
             event.setCancelled(true);
             MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
             return;
@@ -187,7 +191,7 @@ public class TradeGui extends GuiFrame {
     private void handleClickBottom(InventoryClickEvent event) {
         ItemStack it = getItem(event);
 
-        if (BlackListUtils.isBlacklisted(it)) {
+        if (BlacklistUtils.isBlacklisted(it)) {
             event.setCancelled(true);
             MESSAGEUTILS.sendLang(player.getPlayer(), "trade.blacklisted-item");
             return;

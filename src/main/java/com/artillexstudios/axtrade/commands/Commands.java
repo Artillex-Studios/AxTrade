@@ -147,6 +147,7 @@ public class Commands implements OrphanCommand {
     @Subcommand("preview")
     @CommandPermission(value = "axtrade.admin")
     public void preview(@NotNull Player sender) {
+        Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#33FF33[AxTrade] Opening trade preview for " + sender.getName() + ", any errors under this should be ignored!"));
         new Trade(sender, sender);
         MESSAGEUTILS.sendLang(sender, "trade.preview-info");
     }
@@ -156,7 +157,7 @@ public class Commands implements OrphanCommand {
         if (handler == null) {
             handler = BukkitCommandHandler.create(AxTrade.getInstance());
             handler.getTranslator().add(new CommandMessages());
-            handler.setLocale(new Locale("en", "US"));
+            handler.setLocale(Locale.of("en", "US"));
         }
         handler.unregisterAllCommands();
         handler.register(Orphans.path(CONFIG.getStringList("command-aliases").toArray(String[]::new)).handler(new Commands()));
