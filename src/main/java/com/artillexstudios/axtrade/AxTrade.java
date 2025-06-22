@@ -88,7 +88,7 @@ public final class AxTrade extends AxPlugin {
         if (metrics != null) metrics.cancel();
     }
 
-    public void updateFlags(FeatureFlags flags) {
-        flags.USE_LEGACY_HEX_FORMATTER.set(true);
+    public void updateFlags() {
+        FeatureFlags.USE_LEGACY_HEX_FORMATTER.set(true);
     }
 }

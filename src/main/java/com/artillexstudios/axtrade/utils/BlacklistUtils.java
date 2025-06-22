@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 
-public class BlackListUtils {
+public class BlacklistUtils {
 
     public static boolean isBlacklisted(@Nullable ItemStack it) {
         if (it == null || it.getType() == Material.AIR) return false;

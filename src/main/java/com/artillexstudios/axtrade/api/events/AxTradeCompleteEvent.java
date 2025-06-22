@@ -1,6 +1,7 @@
 package com.artillexstudios.axtrade.api.events;
 
 import com.artillexstudios.axtrade.trade.Trade;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -12,6 +13,7 @@ public class AxTradeCompleteEvent extends Event implements Cancellable {
     private boolean isCancelled = false;
 
     public AxTradeCompleteEvent(Trade trade) {
+        super(!Bukkit.isPrimaryThread());
         this.trade = trade;
     }
 
