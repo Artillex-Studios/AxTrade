@@ -3,7 +3,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxTrade</artifactId>
-    <version>1.18.1</version>
+    <version>1.18.2</version>
     <packaging>jar</packaging>
 
     <name>AxTrade</name>
@@ -51,10 +51,6 @@
                                 <relocation>
                                     <pattern>dev.triumphteam.gui</pattern>
                                     <shadedPattern>com.artillexstudios.axtrade.libs.gui</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.kyori</pattern>
-                                    <shadedPattern>com.artillexstudios.axtrade.libs.kyori</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>revxrsal.commands</pattern>
@@ -119,7 +115,7 @@
         <dependency>
             <groupId>com.artillexstudios.axapi</groupId>
             <artifactId>axapi</artifactId>
-            <version>1.4.720</version>
+            <version>1.4.732</version>
             <scope>compile</scope>
             <classifier>all</classifier>
         </dependency>
