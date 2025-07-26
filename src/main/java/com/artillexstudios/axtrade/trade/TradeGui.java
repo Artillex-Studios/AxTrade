@@ -7,6 +7,7 @@ import com.artillexstudios.axapi.utils.Cooldown;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
+import com.artillexstudios.axtrade.safety.SafetyManager;
 import com.artillexstudios.axtrade.utils.BlacklistUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.ShulkerUtils;
@@ -42,7 +43,7 @@ import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
 public class TradeGui extends GuiFrame {
-    private static final Cooldown<Player> confirmCooldown = new Cooldown<>();
+    private static final Cooldown<Player> confirmCooldown = Cooldown.create();
     protected final Trade trade;
     private final TradePlayer player;
     protected final StorageGui gui;
@@ -258,6 +259,10 @@ public class TradeGui extends GuiFrame {
 
     private void handleCurrencyClick(String currencyStr, InventoryClickEvent event) {
         event.setCancelled(true);
+        if (!SafetyManager.CURRENCY_SELECTOR.get()) {
+            MESSAGEUTILS.sendLang(player.getPlayer(), "safety");
+            return;
+        }
         player.cancel();
         trade.update();
         inSign = true;

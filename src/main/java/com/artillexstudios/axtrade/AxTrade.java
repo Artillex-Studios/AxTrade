@@ -17,6 +17,7 @@ import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.lang.LanguageManager;
 import com.artillexstudios.axtrade.listeners.EntityInteractListener;
 import com.artillexstudios.axtrade.listeners.TradeListeners;
+import com.artillexstudios.axtrade.safety.SafetyManager;
 import com.artillexstudios.axtrade.trade.TradeTicker;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.UpdateNotifier;
@@ -73,6 +74,7 @@ public final class AxTrade extends AxPlugin {
         NumberUtils.reload();
 
         TradeTicker.start();
+        SafetyManager.start();
 
         Commands.registerCommand();
 
@@ -86,9 +88,12 @@ public final class AxTrade extends AxPlugin {
 
     public void disable() {
         if (metrics != null) metrics.cancel();
+        SafetyManager.stop();
     }
 
     public void updateFlags() {
         FeatureFlags.USE_LEGACY_HEX_FORMATTER.set(true);
+        FeatureFlags.PLACEHOLDER_API_HOOK.set(true);
+        FeatureFlags.PLACEHOLDER_API_IDENTIFIER.set("axtrade");
     }
 }

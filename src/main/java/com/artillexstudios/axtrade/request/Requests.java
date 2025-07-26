@@ -3,6 +3,7 @@ package com.artillexstudios.axtrade.request;
 import com.artillexstudios.axapi.nms.wrapper.ServerPlayerWrapper;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.api.events.AxTradeRequestEvent;
+import com.artillexstudios.axtrade.safety.SafetyManager;
 import com.artillexstudios.axtrade.trade.Trades;
 import com.artillexstudios.axtrade.utils.SoundUtils;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -24,6 +25,11 @@ public class Requests {
     private static final ArrayList<Request> requests = new ArrayList<>();
 
     public static void addRequest(@NotNull Player sender, @NotNull Player receiver) {
+        if (!SafetyManager.TRADING.get()) {
+            MESSAGEUTILS.sendLang(sender, "safety");
+            return;
+        }
+
         final Map<String, String> replacements = Map.of("%player%", receiver.getName());
 
         boolean disallowSameIp = CONFIG.getBoolean("disallow-same-ip-trade", false);

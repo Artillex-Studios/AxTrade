@@ -17,13 +17,15 @@ public class BlacklistUtils {
         if (it == null || it.getType() == Material.AIR) return false;
         if (checkLegacy(it)) return true;
         try {
-            List<Map<String, Object>> list = CONFIG.getMapList("blacklist-items");
-            if (list == null || list.isEmpty()) return false;
-            WrappedItemStack wrap = WrappedItemStack.wrap(it);
-            for (Map<String, Object> map : list) {
-                ItemMatcher matcher = new ItemMatcher(wrap, map);
-                boolean result = matcher.isMatching();
-                if (result) return true;
+            for (ItemStack stack : ShulkerUtils.getShulkerContents(it)) {
+                List<Map<String, Object>> list = CONFIG.getMapList("blacklist-items");
+                if (list == null || list.isEmpty()) return false;
+                WrappedItemStack wrap = WrappedItemStack.wrap(stack);
+                for (Map<String, Object> map : list) {
+                    ItemMatcher matcher = new ItemMatcher(wrap, map);
+                    boolean result = matcher.isMatching();
+                    if (result) return true;
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();

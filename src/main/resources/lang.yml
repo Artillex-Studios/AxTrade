@@ -113,6 +113,7 @@ commands:
   invalid-selector: "&#FF0000You can not use this selector in this command!"
 
 update-notifier: "&#AAFFCCThere is a new version of the plugin available! &#DDDDDD(&#FFFFFFcurrent: &#FF0000%current% &#DDDDDD| &#FFFFFFlatest: &#00FF00%latest%&#DDDDDD)"
+safety: "&#FF0000This feature has been disabled for safety reasons and updating the plugin is required, please contact the server administrators."
 
 # do not change this
-version: 8
+version: 9
