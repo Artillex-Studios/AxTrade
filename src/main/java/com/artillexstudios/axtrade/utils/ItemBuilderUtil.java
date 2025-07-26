@@ -20,7 +20,7 @@ public class ItemBuilderUtil {
 
     @NotNull
     public static ItemBuilder newBuilder(@NotNull Section section, Map<String, String> replacements, @Nullable Player player) {
-        final ItemBuilder builder = new ItemBuilder(section);
+        final ItemBuilder builder = ItemBuilder.create(section);
 
         section.getOptionalString("name").ifPresent((name) -> {
             if (ClassUtils.INSTANCE.classExists("me.clip.placeholderapi.PlaceholderAPI")) {
@@ -49,6 +49,6 @@ public class ItemBuilderUtil {
     @NotNull
     @Contract("_ -> new")
     public static ItemBuilder newBuilder(@NotNull ItemStack itemStack) {
-        return new ItemBuilder(itemStack);
+        return ItemBuilder.create(itemStack);
     }
 }

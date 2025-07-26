@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 
 public class EntityInteractListener implements Listener {
-    private static final Cooldown<Player> cooldown = new Cooldown<>();
+    private static final Cooldown<Player> cooldown = Cooldown.create();
 
     @EventHandler (ignoreCancelled = true)
     public void onInteract(@NotNull PlayerInteractEntityEvent event) {

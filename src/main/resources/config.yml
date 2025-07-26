@@ -74,6 +74,13 @@ blacklist-items:
     material: BARRIER
     name: "*Another custom item*"
 
+# should doing any of these actions abort if done while trading?
+# we recommend leaving these enabled to prevent potential bugs
+abort:
+  move: true
+  interact: true
+  command: true
+
 # should be plugin notify you if there is a new update?
 update-notifier:
   # if enabled, it will display the message in the console
@@ -81,5 +88,9 @@ update-notifier:
   # if enabled, it will broadcast the update message to all players who have the <plugin-name>.update-notify permission
   on-join: true
 
+# in case an exploit is found, if enabled, the plugin will disable some (or all) features to prevent people from abusing them on your server
+# requires a restart to change
+enable-safety: true
+
 # do not change this
-version: 7
+version: 8
