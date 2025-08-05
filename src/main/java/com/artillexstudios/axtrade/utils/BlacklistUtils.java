@@ -14,12 +14,13 @@ import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 public class BlacklistUtils {
 
     public static boolean isBlacklisted(@Nullable ItemStack it) {
-        if (it == null || it.getType() == Material.AIR) return false;
+        if (it == null || it.getType().isAir()) return false;
         if (checkLegacy(it)) return true;
         try {
+            List<Map<String, Object>> list = CONFIG.getMapList("blacklist-items");
+            if (list == null || list.isEmpty()) return false;
             for (ItemStack stack : ShulkerUtils.getShulkerContents(it)) {
-                List<Map<String, Object>> list = CONFIG.getMapList("blacklist-items");
-                if (list == null || list.isEmpty()) return false;
+                if (stack == null || stack.getType().isAir()) continue;
                 WrappedItemStack wrap = WrappedItemStack.wrap(stack);
                 for (Map<String, Object> map : list) {
                     ItemMatcher matcher = new ItemMatcher(wrap, map);
