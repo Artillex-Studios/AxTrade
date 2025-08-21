@@ -3,7 +3,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxTrade</artifactId>
-    <version>1.19.2</version>
+    <version>1.19.2-a</version>
     <packaging>jar</packaging>
 
     <name>AxTrade</name>
