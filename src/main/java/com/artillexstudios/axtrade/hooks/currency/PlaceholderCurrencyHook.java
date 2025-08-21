@@ -23,7 +23,7 @@ public class PlaceholderCurrencyHook implements CurrencyHook {
 
     @Override
     public void setup() {
-        df = new DecimalFormat("#.##");
+        df = new DecimalFormat("#.####");
     }
 
     @Override
