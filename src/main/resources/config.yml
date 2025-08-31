@@ -35,7 +35,7 @@ prevent-adding-items-when-inventory-full: true
 disallow-same-ip-trade: false
 
 # if enabled, vanished players cannot trade or be traded with
-prevent-vanished-trading: true
+prevent-vanished-trading: false
 
 number-formatting:
   # modes:
