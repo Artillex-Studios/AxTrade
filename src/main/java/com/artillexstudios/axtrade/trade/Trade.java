@@ -66,10 +66,12 @@ public class Trade {
             if (itemStack == null) return;
             player1.getPlayer().getInventory().addItem(itemStack);
         });
-        player2.getTradeGui().getItems(false).forEach(itemStack -> {
-            if (itemStack == null) return;
-            player2.getPlayer().getInventory().addItem(itemStack);
-        });
+        if (player2.getTradeGui() != null) {
+            player2.getTradeGui().getItems(false).forEach(itemStack -> {
+                if (itemStack == null) return;
+                player2.getPlayer().getInventory().addItem(itemStack);
+            });
+        }
         HistoryUtils.writeToHistory(String.format("Aborted: %s - %s", player1.getPlayer().getName(), player2.getPlayer().getName()));
         MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.aborted", Map.of("%player%", player2.getPlayer().getName()));
         MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", player1.getPlayer().getName()));

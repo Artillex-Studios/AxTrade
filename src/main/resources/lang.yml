@@ -2,21 +2,21 @@
 
 player-help:
   - " "
-  - "&#00FFDD&lAxTrade &7»"
-  - " &7- &f/axtrade <player> &7| &#00FFDDSend trade request"
-  - " &7- &f/axtrade accept <player> &7| &#00FFDDAccept trade request"
-  - " &7- &f/axtrade deny <player> &7| &#00FFDDDeny trade request"
+  - "<gradient:#00FFDD:#55FFFF><b>AxTrade</b></gradient> <#22FFDD>Help"
+  - " <#22FFDD>➤ <white>/axtrade <player> <#DDDDDD>| <#77FFFF>Send trade request"
+  - " <#22FFDD>➤ <white>/axtrade accept <player> <#DDDDDD>| <#77FFFF>Accept trade request"
+  - " <#22FFDD>➤ <white>/axtrade deny <player> <#DDDDDD>| <#77FFFF>Deny trade request"
   - " "
 
 admin-help:
   - " "
-  - "&#00FFDD&lAxTrade &7»"
-  - " &7- &f/axtrade <player> &7| &#00FFDDSend trade request"
-  - " &7- &f/axtrade accept <player> &7| &#00FFDDAccept trade request"
-  - " &7- &f/axtrade deny <player> &7| &#00FFDDDeny trade request"
-  - " &7- &f/axtrade reload &7| &#00FFDDReload plugin"
-  - " &7- &f/axtrade force <player> &7| &#00FFDDForce start a trade"
-  - " &7- &f/axtrade preview &7| &#00FFDDOpens read only gui (meant for testing)"
+  - "<gradient:#00FFDD:#55FFFF><b>AxTrade</b></gradient> <#22FFDD>Help"
+  - " <#22FFDD>➤ <white>/axtrade <player> <#DDDDDD>| <#77FFFF>Send trade request"
+  - " <#22FFDD>➤ <white>/axtrade accept <player> <#DDDDDD>| <#77FFFF>Accept trade request"
+  - " <#22FFDD>➤ <white>/axtrade deny <player> <#DDDDDD>| <#77FFFF>Deny trade request"
+  - " <#22FFDD>➤ <white>/axtrade reload <#DDDDDD>| <#77FFFF>Reload plugin"
+  - " <#22FFDD>➤ <white>/axtrade force <player> <#DDDDDD>| <#77FFFF>Force start a trade"
+  - " <#22FFDD>➤ <white>/axtrade preview <#DDDDDD>| <#77FFFF>Opens read only gui (meant for testing)"
   - " "
 
 reload:

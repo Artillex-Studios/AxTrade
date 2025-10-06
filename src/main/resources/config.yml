@@ -1,6 +1,6 @@
 # DOCUMENTATION: https://docs.artillex-studios.com/axtrade.html
 
-prefix: "&#00ffdd&lAxTrade &7» "
+prefix: "<gradient:#00FFDD:#55FFFF><b>AxTrade</b></gradient> &7» "
 
 # format: language_COUNTRY
 # after changing this, the server will download the default item names
