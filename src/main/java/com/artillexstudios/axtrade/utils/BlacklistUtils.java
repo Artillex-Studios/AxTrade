@@ -19,7 +19,7 @@ public class BlacklistUtils {
         try {
             List<Map<String, Object>> list = CONFIG.getMapList("blacklist-items");
             if (list == null || list.isEmpty()) return false;
-            for (ItemStack stack : ShulkerUtils.getShulkerContents(it)) {
+            for (ItemStack stack : ShulkerUtils.getShulkerContents(it, true)) {
                 if (stack == null || stack.getType().isAir()) continue;
                 WrappedItemStack wrap = WrappedItemStack.wrap(stack);
                 for (Map<String, Object> map : list) {

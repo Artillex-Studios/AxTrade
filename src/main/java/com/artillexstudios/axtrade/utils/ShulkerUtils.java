@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public class ShulkerUtils {
 
     @NotNull
-    public static ItemStack[] getShulkerContents(ItemStack item) {
+    public static ItemStack[] getShulkerContents(ItemStack item, boolean includeSelf) {
         if (item == null) return new ItemStack[0];
         if (HookManager.getAxShulkersHook() != null) {
             ItemStack[] items = HookManager.getAxShulkersHook().getItems(item);
@@ -17,6 +17,12 @@ public class ShulkerUtils {
         }
         if (!(item.getItemMeta() instanceof BlockStateMeta meta)) return new ItemStack[]{item};
         if (!(meta.getBlockState() instanceof Container container)) return new ItemStack[]{item};
-        return container.getInventory().getStorageContents();
+        ItemStack[] storage = container.getInventory().getStorageContents();
+        if (!includeSelf) return storage;
+
+        ItemStack[] items = new ItemStack[storage.length + 1];
+        System.arraycopy(storage, 0, items, 0, storage.length);
+        items[storage.length - 1] = item;
+        return items;
     }
 }

@@ -41,7 +41,12 @@ public enum SafetyManager {
 
     private static void check() {
         String str = "https://api.artillex-studios.com/safety/?plugin=%s&version=%s&mc=%s".formatted(instance.getName(), instance.getDescription().getVersion(), Version.getProtocolVersion());
-        String body = Requests.get(str, Map.of()).body();
+        String body;
+        try {
+            body = Requests.get(str, Map.of()).body();
+        } catch (Exception ignored) {
+            return;
+        }
 
         JsonArray disabled = gson.fromJson(body, JsonArray.class);
         for (SafetyManager value : SafetyManager.values()) {
