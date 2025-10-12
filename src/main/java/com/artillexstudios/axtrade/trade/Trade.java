@@ -12,7 +12,10 @@ import com.artillexstudios.axtrade.utils.SoundUtils;
 import com.artillexstudios.axtrade.utils.TaxUtils;
 import com.artillexstudios.axtrade.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,21 +65,35 @@ public class Trade {
         Bukkit.getPluginManager().callEvent(event);
 
         end();
-        player1.getTradeGui().getItems(false).forEach(itemStack -> {
-            if (itemStack == null) return;
-            player1.getPlayer().getInventory().addItem(itemStack);
-        });
-        if (player2.getTradeGui() != null) {
-            player2.getTradeGui().getItems(false).forEach(itemStack -> {
-                if (itemStack == null) return;
-                player2.getPlayer().getInventory().addItem(itemStack);
-            });
-        }
+
+        refundTrade(player1);
+        refundTrade(player2);
+
         HistoryUtils.writeToHistory(String.format("Aborted: %s - %s", player1.getPlayer().getName(), player2.getPlayer().getName()));
         MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.aborted", Map.of("%player%", player2.getPlayer().getName()));
         MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", player1.getPlayer().getName()));
         SoundUtils.playSound(player1.getPlayer(), "aborted");
         SoundUtils.playSound(player2.getPlayer(), "aborted");
+    }
+
+    private void refundTrade(TradePlayer tradePlayer) {
+        tradePlayer.getTradeGui().getItems(false).forEach(itemStack -> {
+            if (itemStack == null) return;
+            final Map<Integer, ItemStack> remaining = tradePlayer.getPlayer()
+                .getInventory()
+                .addItem(itemStack);
+
+            if(!remaining.isEmpty()) {
+                final Location location = tradePlayer.getPlayer().getLocation();
+                final World world = location.getWorld();
+
+                if(world != null) {
+                    for(final ItemStack remainingStack : remaining.values()) {
+                        world.dropItem(location, remainingStack);
+                    }
+                }
+            }
+        });
     }
 
     public void complete() {
