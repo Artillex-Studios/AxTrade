@@ -34,6 +34,10 @@ prevent-adding-items-when-inventory-full: true
 # if enabled, players will not be able to trade if they have the same ip address
 disallow-same-ip-trade: false
 
+# if true, the accept item will not show the countdown with the item amount
+# this can be useful for textured guis
+static-accept-item-amount: false
+
 number-formatting:
   # modes:
   # 0 - formatted (customizable, look at the formatted part)
@@ -93,4 +97,4 @@ update-notifier:
 enable-safety: true
 
 # do not change this
-version: 8
+version: 9
