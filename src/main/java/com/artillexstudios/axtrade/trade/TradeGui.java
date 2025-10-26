@@ -83,7 +83,7 @@ public class TradeGui extends GuiFrame {
                 confirmCooldown.addCooldown(player.getPlayer(), 50L);
                 player.cancel();
                 trade.update();
-            }, Map.of(), player.getConfirmed());
+            }, Map.of(), CONFIG.getBoolean("static-accept-item-amount", true) ? 1 : player.getConfirmed());
         } else {
             super.createItem("own.confirm-item.slot", "own.confirm-item.accept", event -> {
                 event.setCancelled(true);
@@ -99,7 +99,7 @@ public class TradeGui extends GuiFrame {
             }, Map.of(
                     "%own-name%", player.getPlayer().getName(),
                     "%partner-name%", player.getOtherPlayer().getPlayer().getName()
-            ), player.getOtherPlayer().getConfirmed());
+            ), CONFIG.getBoolean("static-accept-item-amount", true) ? 1 : player.getOtherPlayer().getConfirmed());
         } else {
             super.createItem("partner.confirm-item.slot", "partner.confirm-item.accept", event -> {
                 event.setCancelled(true);
