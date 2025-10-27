@@ -312,14 +312,14 @@ public class TradeGui extends GuiFrame {
         BaseGui shulkerGui = Gui.storage().rows(3).title(StringUtils.format(Utils.getFormattedItemName(event.getCurrentItem()))).disableAllInteractions().create();
         shulkerGui.getInventory().setContents(ShulkerUtils.getShulkerContents(event.getCurrentItem(), false));
         shulkerGui.setCloseGuiAction(e -> {
-            Scheduler.get().executeAt(player.getPlayer().getLocation(), () -> {
+            Scheduler.get().runLaterAt(player.getPlayer().getLocation(), () -> {
                 if (trade.isEnded()) return;
                 trade.prepTime = System.currentTimeMillis();
                 gui.open(player.getPlayer());
                 inSign = false;
                 trade.update();
                 updateTitle();
-            });
+            }, 1);
         });
         shulkerGui.open(player.getPlayer());
     }
