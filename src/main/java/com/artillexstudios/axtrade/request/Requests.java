@@ -56,6 +56,11 @@ public class Requests {
             return;
         }
 
+        if (CONFIG.getBoolean("prevent-vanished-trading", true) && (!sender.canSee(sender) || !receiver.canSee(receiver))) {
+            MESSAGEUTILS.sendLang(sender, "commands.invalid-player", replacements);
+            return;
+        }
+
         if (TOGGLED.getBoolean("toggled." + receiver.getUniqueId())) {
             MESSAGEUTILS.sendLang(sender, "request.not-accepting", replacements);
             return;
