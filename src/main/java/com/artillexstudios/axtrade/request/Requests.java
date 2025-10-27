@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
@@ -22,7 +23,7 @@ import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 import static com.artillexstudios.axtrade.AxTrade.TOGGLED;
 
 public class Requests {
-    private static final ArrayList<Request> requests = new ArrayList<>();
+    private static final List<Request> requests = new ArrayList<>();
 
     public static void addRequest(@NotNull Player sender, @NotNull Player receiver) {
         if (!SafetyManager.TRADING.get()) {
@@ -30,7 +31,7 @@ public class Requests {
             return;
         }
 
-        final Map<String, String> replacements = Map.of("%player%", receiver.getName());
+        Map<String, String> replacements = Map.of("%player%", receiver.getName());
 
         boolean disallowSameIp = CONFIG.getBoolean("disallow-same-ip-trade", false);
         if (disallowSameIp && sender.getAddress() != null && receiver.getAddress() != null && sender.getAddress().getAddress().equals(receiver.getAddress().getAddress())) {
@@ -81,9 +82,9 @@ public class Requests {
             return;
         }
 
-        final Request request = Requests.getRequest(sender, receiver);
+        Request request = Requests.getRequest(sender, receiver);
         if (request != null) {
-            if (!request.getSender().equals(sender)) {
+            if (request.isActive() && !request.getSender().equals(sender)) {
                 Trades.addTrade(sender, receiver);
                 requests.remove(request);
                 request.deactivate();
@@ -95,7 +96,7 @@ public class Requests {
             }
         }
 
-        final AxTradeRequestEvent apiEvent = new AxTradeRequestEvent(sender, receiver);
+        AxTradeRequestEvent apiEvent = new AxTradeRequestEvent(sender, receiver);
         Bukkit.getPluginManager().callEvent(apiEvent);
         if (apiEvent.isCancelled()) return;
 
@@ -120,26 +121,20 @@ public class Requests {
         SoundUtils.playSound(receiver, "requested");
     }
 
-    public static boolean hasRequest(Player p1, Player p2) {
-        for (Request rq : requests) {
-            if (!((rq.getSender() == p1 || rq.getSender() == p2) && (rq.getReceiver() == p1 || rq.getReceiver() == p2))) continue;
-            return true;
-        }
-
-        return false;
-    }
-
     @Nullable
     public static Request getRequest(Player p1, Player p2) {
         for (Request rq : requests) {
-            if (!((rq.getSender() == p1 || rq.getSender() == p2) && (rq.getReceiver() == p1 || rq.getReceiver() == p2))) continue;
-            return rq;
+            if (p1.equals(rq.getSender()) && p2.equals(rq.getReceiver())) return rq;
+            if (p2.equals(rq.getSender()) && p1.equals(rq.getReceiver())) return rq;
         }
-
         return null;
     }
 
-    public static ArrayList<Request> getRequests() {
+    public static boolean hasRequest(Player p1, Player p2) {
+        return getRequest(p1, p2) != null;
+    }
+
+    public static List<Request> getRequests() {
         return requests;
     }
 }
