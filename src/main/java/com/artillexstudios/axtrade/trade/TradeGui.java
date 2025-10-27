@@ -49,6 +49,7 @@ public class TradeGui extends GuiFrame {
     protected final StorageGui gui;
     protected final List<Integer> slots = getSlots("own-slots");
     protected final List<Integer> otherSlots = getSlots("partner-slots");
+    private String currentTitle = "";
     private boolean inSign = false;
 
     public TradeGui(@NotNull Trade trade, @NotNull TradePlayer player) {
@@ -349,16 +350,20 @@ public class TradeGui extends GuiFrame {
     }
 
     public void updateTitle() {
-        Component title = StringUtils.format(
-                GUIS.getString("title")
-                        .replace("%player%", player.getOtherPlayer().getPlayer().getName())
-                        .replace("%own-status%", player.hasConfirmed() ? LANG.getString("placeholders.ready") : LANG.getString("placeholders.waiting"))
-                        .replace("%partner-status%", player.getOtherPlayer().hasConfirmed() ? LANG.getString("placeholders.ready") : LANG.getString("placeholders.waiting"))
-        );
+        String newTitle = GUIS.getString("title")
+                .replace("%player%", player.getOtherPlayer().getPlayer().getName())
+                .replace("%own-status%", player.hasConfirmed() ? LANG.getString("placeholders.ready") : LANG.getString("placeholders.waiting"))
+                .replace("%partner-status%", player.getOtherPlayer().hasConfirmed() ? LANG.getString("placeholders.ready") : LANG.getString("placeholders.waiting"));
 
-        final Inventory topInv = player.getPlayer().getOpenInventory().getTopInventory();
-        if (topInv.equals(gui.getInventory())) {
-            NMSHandlers.getNmsHandler().setTitle(player.getPlayer().getOpenInventory().getTopInventory(), title);
-        }
+        // don't update title if it didn't change
+        if (currentTitle.equals(newTitle)) return;
+        this.currentTitle = newTitle;
+
+        Scheduler.get().runLater(task -> {
+            Inventory topInv = player.getPlayer().getOpenInventory().getTopInventory();
+            if (topInv.equals(gui.getInventory())) {
+                NMSHandlers.getNmsHandler().setTitle(player.getPlayer().getOpenInventory().getTopInventory(), StringUtils.format(newTitle));
+            }
+        }, 1);
     }
 }

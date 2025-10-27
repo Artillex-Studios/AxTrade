@@ -31,14 +31,14 @@ public class TradeListeners implements Listener {
     }
 
     public void handleQuitTrade(@NotNull PlayerQuitEvent event) {
-        final Player player = event.getPlayer();
-        final Trade trade = Trades.getTrade(player);
+        Player player = event.getPlayer();
+        Trade trade = Trades.getTrade(player);
         if (trade == null) return;
         trade.abort();
     }
 
     public void handleQuitRequest(@NotNull PlayerQuitEvent event) {
-        final Iterator<Request> iterator = Requests.getRequests().iterator();
+        Iterator<Request> iterator = Requests.getRequests().iterator();
         while (iterator.hasNext()) {
             Request request = iterator.next();
             if (request.getSender().equals(event.getPlayer())) {
@@ -67,7 +67,7 @@ public class TradeListeners implements Listener {
     @EventHandler
     public void onMove(@NotNull PlayerMoveEvent event) {
         if (event.getTo() == null) return;
-        final Trade trade = Trades.getTrade(event.getPlayer());
+        Trade trade = Trades.getTrade(event.getPlayer());
         if (trade == null) return;
         if (!CONFIG.getBoolean("abort.move", true)) return;
         if (System.currentTimeMillis() - trade.getPrepTime() < 1_000L) return;
@@ -77,7 +77,7 @@ public class TradeListeners implements Listener {
 
     @EventHandler
     public void onInteract(@NotNull PlayerInteractEvent event) {
-        final Trade trade = Trades.getTrade(event.getPlayer());
+        Trade trade = Trades.getTrade(event.getPlayer());
         if (trade == null) return;
         if (!CONFIG.getBoolean("abort.interact", true)) return;
         if (System.currentTimeMillis() - trade.getPrepTime() < 1_000L) return;
@@ -87,7 +87,7 @@ public class TradeListeners implements Listener {
 
     @EventHandler
     public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
-        final Trade trade = Trades.getTrade(event.getPlayer());
+        Trade trade = Trades.getTrade(event.getPlayer());
         if (trade == null) return;
         if (!CONFIG.getBoolean("abort.command", true)) return;
         event.setCancelled(true);

@@ -65,11 +65,13 @@ public class Trade {
         player1.getTradeGui().getItems(false).forEach(itemStack -> {
             if (itemStack == null) return;
             player1.getPlayer().getInventory().addItem(itemStack);
+            ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
         });
         if (player2.getTradeGui() != null) {
             player2.getTradeGui().getItems(false).forEach(itemStack -> {
                 if (itemStack == null) return;
                 player2.getPlayer().getInventory().addItem(itemStack);
+                ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
             });
         }
         HistoryUtils.writeToHistory(String.format("Aborted: %s - %s", player1.getPlayer().getName(), player2.getPlayer().getName()));

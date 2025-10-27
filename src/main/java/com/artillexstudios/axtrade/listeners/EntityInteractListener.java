@@ -17,7 +17,7 @@ public class EntityInteractListener implements Listener {
     public void onInteract(@NotNull PlayerInteractEntityEvent event) {
         if (!CONFIG.getBoolean("shift-click-send-request", true)) return;
 
-        final Player player = event.getPlayer();
+        Player player = event.getPlayer();
         if (!player.hasPermission("axtrade.trade")) return;
         if (cooldown.hasCooldown(player)) return;
         if (!player.isSneaking()) return;
