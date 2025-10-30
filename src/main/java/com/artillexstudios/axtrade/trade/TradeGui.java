@@ -295,6 +295,7 @@ public class TradeGui extends GuiFrame {
                 gui.open(player.getPlayer());
                 inSign = false;
                 trade.update();
+                currentTitle = "";
                 updateTitle();
             });
         }).build(player.getPlayer());
@@ -318,6 +319,7 @@ public class TradeGui extends GuiFrame {
                 gui.open(player.getPlayer());
                 inSign = false;
                 trade.update();
+                currentTitle = "";
                 updateTitle();
             }, 1);
         });
