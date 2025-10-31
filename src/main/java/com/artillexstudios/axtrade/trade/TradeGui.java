@@ -355,6 +355,7 @@ public class TradeGui extends GuiFrame {
     public void open() {
         Scheduler.get().runAt(player.getPlayer().getLocation(), scheduledTask -> {
             gui.open(player.getPlayer());
+            currentTitle = "";
             updateTitle();
             opened = true;
         });
