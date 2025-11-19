@@ -58,29 +58,73 @@ public class Trade {
     public void abort(boolean force) {
         if (!force && ended) return;
 
+        Player p1 = player1.getPlayer();
+        Player p2 = player2.getPlayer();
+
+        // Set ended=true immediately to prevent handleClose() from calling abort() again
+        ended = true;
+
         AxTradeAbortEvent event = new AxTradeAbortEvent(this);
         Bukkit.getPluginManager().callEvent(event);
 
-        end();
-        player1.getTradeGui().getItems(false).forEach(itemStack -> {
-            if (itemStack == null) return;
-            Scheduler.get().runAt(player1.getPlayer().getLocation(), task -> {
-                ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
-            });
-        });
-        if (player2.getTradeGui() != null) {
-            player2.getTradeGui().getItems(false).forEach(itemStack -> {
-                if (itemStack == null) return;
-                Scheduler.get().runAt(player2.getPlayer().getLocation(), task -> {
-                    ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
-                });
-            });
+        // Collect and clone items BEFORE closing GUI, then clear slots immediately to prevent duplication
+        List<org.bukkit.inventory.ItemStack> player1Items = new ArrayList<>();
+        TradeGui gui1 = player1.getTradeGui();
+        org.bukkit.inventory.Inventory inv1 = gui1.gui.getInventory();
+        for (int slot : gui1.slots) {
+            org.bukkit.inventory.ItemStack item = inv1.getItem(slot);
+            if (item != null) {
+                player1Items.add(item.clone());
+                inv1.setItem(slot, null); // Clear slot immediately after cloning
+            }
         }
+
+        List<org.bukkit.inventory.ItemStack> player2Items = new ArrayList<>();
+        if (player2.getTradeGui() != null) {
+            TradeGui gui2 = player2.getTradeGui();
+            org.bukkit.inventory.Inventory inv2 = gui2.gui.getInventory();
+            for (int slot : gui2.slots) {
+                org.bukkit.inventory.ItemStack item = inv2.getItem(slot);
+                if (item != null) {
+                    player2Items.add(item.clone());
+                    inv2.setItem(slot, null); // Clear slot immediately after cloning
+                }
+            }
+        }
+
+        // Return items synchronously BEFORE closing GUI
+        for (org.bukkit.inventory.ItemStack item : player1Items) {
+            java.util.HashMap<Integer, org.bukkit.inventory.ItemStack> leftover = p1.getInventory().addItem(item);
+            if (!leftover.isEmpty() && p1.isOnline()) {
+                // Drop items on ground if inventory is full
+                p1.getWorld().dropItemNaturally(p1.getLocation(), item);
+            }
+        }
+
+        for (org.bukkit.inventory.ItemStack item : player2Items) {
+            java.util.HashMap<Integer, org.bukkit.inventory.ItemStack> leftover = p2.getInventory().addItem(item);
+            if (!leftover.isEmpty() && p2.isOnline()) {
+                // Drop items on ground if inventory is full
+                p2.getWorld().dropItemNaturally(p2.getLocation(), item);
+            }
+        }
+
         HistoryUtils.writeToHistory(String.format("Aborted: %s - %s", player1.getPlayer().getName(), player2.getPlayer().getName()));
-        MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.aborted", Map.of("%player%", player2.getPlayer().getName()));
-        MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", player1.getPlayer().getName()));
-        SoundUtils.playSound(player1.getPlayer(), "aborted");
-        SoundUtils.playSound(player2.getPlayer(), "aborted");
+        if (p1.isOnline()) {
+            MESSAGEUTILS.sendLang(p1, "trade.aborted", Map.of("%player%", p2.getName()));
+            SoundUtils.playSound(p1, "aborted");
+        }
+        if (p2.isOnline()) {
+            MESSAGEUTILS.sendLang(p2, "trade.aborted", Map.of("%player%", p1.getName()));
+            SoundUtils.playSound(p2, "aborted");
+        }
+
+        // Close GUI and remove trade AFTER returning items
+        Scheduler.get().run(scheduledTask -> Trades.removeTrade(this));
+        p1.closeInventory();
+        p1.updateInventory();
+        p2.closeInventory();
+        p2.updateInventory();
     }
 
     public void complete() {
