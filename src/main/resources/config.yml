@@ -38,6 +38,9 @@ disallow-same-ip-trade: false
 # this can be useful for textured guis
 static-accept-item-amount: false
 
+# if enabled, vanished players cannot trade or be traded with
+prevent-vanished-trading: false
+
 number-formatting:
   # modes:
   # 0 - formatted (customizable, look at the formatted part)
