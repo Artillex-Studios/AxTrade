@@ -3,7 +3,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxTrade</artifactId>
-    <version>1.20.4</version>
+    <version>1.21.0</version>
     <packaging>jar</packaging>
 
     <name>AxTrade</name>
@@ -115,14 +115,14 @@
         <dependency>
             <groupId>com.artillexstudios.axapi</groupId>
             <artifactId>axapi</artifactId>
-            <version>1.4.803</version>
+            <version>1.4.830</version>
             <scope>compile</scope>
             <classifier>all</classifier>
         </dependency>
         <dependency>
             <groupId>dev.triumphteam</groupId>
             <artifactId>triumph-gui</artifactId>
-            <version>3.1.11</version>
+            <version>3.1.13</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
@@ -266,6 +266,18 @@
             <version>API</version>
             <systemPath>${project.basedir}/libs/RivalCreditsAPI.jar</systemPath>
             <scope>system</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.artillexstudios</groupId>
+            <artifactId>AxHoesAPI</artifactId>
+            <version>1</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
