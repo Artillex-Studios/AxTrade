@@ -11,13 +11,13 @@ import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -48,9 +48,8 @@ public class LanguageManager {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             final JsonObject object = gson.fromJson(response.body(), JsonObject.class);
 
-            final String base64Content = object.get("content").getAsString();
-
-            var gsonObject = gson.fromJson(new String(Base64Coder.decodeLines(base64Content)), JsonObject.class);
+            final String base64Content = object.get("content").getAsString().replace("\n", "");
+            var gsonObject = gson.fromJson(new String(Base64.getDecoder().decode(base64Content)), JsonObject.class);
 
             for (Map.Entry<String, JsonElement> e : gsonObject.entrySet()) {
                 if (e.getKey().startsWith("item.minecraft.")) {
@@ -70,6 +69,7 @@ public class LanguageManager {
             ex.printStackTrace();
         }
 
+        client.close();
     }
 
     public static String getTranslated(@NotNull Material material) {
