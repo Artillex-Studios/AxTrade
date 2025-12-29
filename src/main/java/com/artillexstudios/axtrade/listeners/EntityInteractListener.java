@@ -23,6 +23,7 @@ public class EntityInteractListener implements Listener {
         if (!player.isSneaking()) return;
         if (!(event.getRightClicked() instanceof Player sendTo)) return;
         if (!sendTo.isOnline()) return;
+        if (CONFIG.getBoolean("prevent-vanished-trading", true) && !sendTo.canSee(sendTo)) return;
 
         cooldown.addCooldown(player, 100L);
         Requests.addRequest(player, sendTo);
