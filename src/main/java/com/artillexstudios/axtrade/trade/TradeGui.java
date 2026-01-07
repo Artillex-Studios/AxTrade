@@ -239,6 +239,7 @@ public class TradeGui extends GuiFrame {
 
     private void handleClose(InventoryCloseEvent event) {
         if (inSign) return;
+        if (trade.isEnded()) return;
         trade.abort();
     }
 
