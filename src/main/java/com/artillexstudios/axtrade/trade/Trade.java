@@ -9,6 +9,7 @@ import com.artillexstudios.axtrade.utils.HistoryUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
 import com.artillexstudios.axtrade.utils.TaxUtils;
+import com.artillexstudios.axtrade.utils.VaultHelper;
 import com.artillexstudios.axtrade.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -61,40 +62,90 @@ public class Trade {
     public void abort(boolean force) {
         if (!force && ended) return;
 
+        Player p1 = player1.getPlayer();
+        Player p2 = player2.getPlayer();
+
+        ended = true;
+
         AxTradeAbortEvent event = new AxTradeAbortEvent(this);
         Bukkit.getPluginManager().callEvent(event);
 
-        end();
-        player1.getTradeGui().getItems(false).forEach(itemStack -> {
-            if (itemStack == null) return;
-            addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
-        });
-        if (player2.getTradeGui() != null) {
-            player2.getTradeGui().getItems(false).forEach(itemStack -> {
-                if (itemStack == null) return;
-                addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
-            });
+        // Collect and clear player1 items synchronously (PR #39 fix)
+        List<ItemStack> player1Items = new ArrayList<>();
+        TradeGui gui1 = player1.getTradeGui();
+        Inventory inv1 = gui1.gui.getInventory();
+        for (int slot : gui1.slots) {
+            ItemStack item = inv1.getItem(slot);
+            if (item != null) {
+                player1Items.add(item.clone());
+                inv1.setItem(slot, null);
+            }
         }
+
+        // Collect and clear player2 items synchronously (PR #39 fix)
+        List<ItemStack> player2Items = new ArrayList<>();
+        if (player2.getTradeGui() != null) {
+            TradeGui gui2 = player2.getTradeGui();
+            Inventory inv2 = gui2.gui.getInventory();
+            for (int slot : gui2.slots) {
+                ItemStack item = inv2.getItem(slot);
+                if (item != null) {
+                    player2Items.add(item.clone());
+                    inv2.setItem(slot, null);
+                }
+            }
+        }
+
+        // Return items synchronously (PR #39 fix)
+        addOrDropSync(p1.getInventory(), player1Items, p1.getLocation());
+        addOrDropSync(p2.getInventory(), player2Items, p2.getLocation());
+
         HistoryUtils.writeToHistory(String.format("Aborted: %s - %s", player1.getPlayer().getName(), player2.getPlayer().getName()));
-        MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.aborted", Map.of("%player%", player2.getPlayer().getName()));
-        MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", player1.getPlayer().getName()));
-        SoundUtils.playSound(player1.getPlayer(), "aborted");
-        SoundUtils.playSound(player2.getPlayer(), "aborted");
+        if (p1.isOnline()) {
+            MESSAGEUTILS.sendLang(p1, "trade.aborted", Map.of("%player%", VaultHelper.getDisplayName(p2)));
+            SoundUtils.playSound(p1, "aborted");
+        }
+        if (p2.isOnline()) {
+            MESSAGEUTILS.sendLang(p2, "trade.aborted", Map.of("%player%", VaultHelper.getDisplayName(p1)));
+            SoundUtils.playSound(p2, "aborted");
+        }
+
+        Scheduler.get().run(scheduledTask -> Trades.removeTrade(this));
+        p1.closeInventory();
+        p1.updateInventory();
+        p2.closeInventory();
+        p2.updateInventory();
     }
 
     public void complete() {
         end();
         for (Map.Entry<CurrencyHook, Double> entry : player1.getCurrencies().entrySet()) {
-            if (entry.getKey().getBalance(player1.getPlayer().getUniqueId()) < entry.getValue()) {
-                abort(true);
-                return;
+            if (entry.getKey() instanceof com.artillexstudios.axtrade.hooks.currency.ExperienceHook) {
+                com.artillexstudios.axtrade.hooks.currency.ExperienceHook expHook = (com.artillexstudios.axtrade.hooks.currency.ExperienceHook) entry.getKey();
+                if (!expHook.hasEnoughExperienceForLevels(player1.getPlayer().getUniqueId(), entry.getValue().intValue())) {
+                    abort(true);
+                    return;
+                }
+            } else {
+                if (entry.getKey().getBalance(player1.getPlayer().getUniqueId()) < entry.getValue()) {
+                    abort(true);
+                    return;
+                }
             }
         }
 
         for (Map.Entry<CurrencyHook, Double> entry : player2.getCurrencies().entrySet()) {
-            if (entry.getKey().getBalance(player2.getPlayer().getUniqueId()) < entry.getValue()) {
-                abort(true);
-                return;
+            if (entry.getKey() instanceof com.artillexstudios.axtrade.hooks.currency.ExperienceHook) {
+                com.artillexstudios.axtrade.hooks.currency.ExperienceHook expHook = (com.artillexstudios.axtrade.hooks.currency.ExperienceHook) entry.getKey();
+                if (!expHook.hasEnoughExperienceForLevels(player2.getPlayer().getUniqueId(), entry.getValue().intValue())) {
+                    abort(true);
+                    return;
+                }
+            } else {
+                if (entry.getKey().getBalance(player2.getPlayer().getUniqueId()) < entry.getValue()) {
+                    abort(true);
+                    return;
+                }
             }
         }
 
@@ -120,8 +171,8 @@ public class Trade {
                     return;
                 }
 
-                MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.completed", Map.of("%player%", player2.getPlayer().getName()));
-                MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.completed", Map.of("%player%", player1.getPlayer().getName()));
+                MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.completed", Map.of("%player%", VaultHelper.getDisplayName(player2.getPlayer())));
+                MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.completed", Map.of("%player%", VaultHelper.getDisplayName(player1.getPlayer())));
                 SoundUtils.playSound(player1.getPlayer(), "completed");
                 SoundUtils.playSound(player2.getPlayer(), "completed");
 
@@ -220,10 +271,23 @@ public class Trade {
         return ended;
     }
 
+    // Synchronous version for abort() to prevent item loss (PR #39 fix)
+    private void addOrDropSync(Inventory inventory, List<ItemStack> items, Location location) {
+        for (ItemStack item : items) {
+            HashMap<Integer, ItemStack> leftover = inventory.addItem(item);
+            if (!leftover.isEmpty() && location.getWorld() != null) {
+                for (ItemStack remaining : leftover.values()) {
+                    location.getWorld().dropItemNaturally(location, remaining);
+                }
+            }
+        }
+    }
+
+    // Asynchronous version for complete() (upstream refactoring)
     private void addOrDrop(Inventory inventory, List<ItemStack> items, Location location) {
         Location copy = location.clone();
         Scheduler.get().executeAt(copy, () -> {
-            for( ItemStack key : items) {
+            for (ItemStack key : items) {
                 HashMap<Integer, ItemStack> remaining = inventory.addItem(key);
                 remaining.forEach((k, v) -> copy.getWorld().dropItem(copy, v));
             }
