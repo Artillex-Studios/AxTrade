@@ -113,8 +113,9 @@ public class TradePlayer {
     public double getCurrency(String currency) {
         final CurrencyHook currencyHook = HookManager.getCurrencyHook(currency);
         if (currencyHook == null) return 0;
-        if (!currencies.containsKey(currencyHook)) return 0;
-        return currencies.get(currencyHook);
+        Double amount = currencies.get(currencyHook);
+        if (amount == null) return 0;
+        return amount;
     }
 
     public Result setCurrency(String currency, String am) {
@@ -125,6 +126,10 @@ public class TradePlayer {
         final CurrencyHook currencyHook = HookManager.getCurrencyHook(currency);
         if (currencyHook == null) return Result.CURRENCY_NOT_FOUND;
         amount = currencyHook.usesDouble() ? amount : Math.round(amount);
+        if (amount == 0) {
+            currencies.remove(currencyHook);
+            return Result.SUCCESS;
+        }
         if (amount < 0.1) return Result.TOO_LOW_VALUE;
         if (currencyHook.getBalance(player.getUniqueId()) < amount) return Result.NOT_ENOUGH_CURRENCY;
         currencies.put(currencyHook, amount);

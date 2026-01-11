@@ -1,7 +1,6 @@
 package com.artillexstudios.axtrade.trade;
 
 import com.artillexstudios.axapi.scheduler.Scheduler;
-import com.artillexstudios.axapi.utils.ContainerUtils;
 import com.artillexstudios.axtrade.api.events.AxTradeAbortEvent;
 import com.artillexstudios.axtrade.api.events.AxTradeCompleteEvent;
 import com.artillexstudios.axtrade.currency.CurrencyProcessor;
@@ -10,11 +9,16 @@ import com.artillexstudios.axtrade.utils.HistoryUtils;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
 import com.artillexstudios.axtrade.utils.TaxUtils;
+import com.artillexstudios.axtrade.utils.VaultHelper;
 import com.artillexstudios.axtrade.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,65 +65,51 @@ public class Trade {
         Player p1 = player1.getPlayer();
         Player p2 = player2.getPlayer();
 
-        // Set ended=true immediately to prevent handleClose() from calling abort() again
         ended = true;
 
         AxTradeAbortEvent event = new AxTradeAbortEvent(this);
         Bukkit.getPluginManager().callEvent(event);
 
-        // Collect and clone items BEFORE closing GUI, then clear slots immediately to prevent duplication
-        List<org.bukkit.inventory.ItemStack> player1Items = new ArrayList<>();
+        // Collect and clear player1 items synchronously (PR #39 fix)
+        List<ItemStack> player1Items = new ArrayList<>();
         TradeGui gui1 = player1.getTradeGui();
-        org.bukkit.inventory.Inventory inv1 = gui1.gui.getInventory();
+        Inventory inv1 = gui1.gui.getInventory();
         for (int slot : gui1.slots) {
-            org.bukkit.inventory.ItemStack item = inv1.getItem(slot);
+            ItemStack item = inv1.getItem(slot);
             if (item != null) {
                 player1Items.add(item.clone());
-                inv1.setItem(slot, null); // Clear slot immediately after cloning
+                inv1.setItem(slot, null);
             }
         }
 
-        List<org.bukkit.inventory.ItemStack> player2Items = new ArrayList<>();
+        // Collect and clear player2 items synchronously (PR #39 fix)
+        List<ItemStack> player2Items = new ArrayList<>();
         if (player2.getTradeGui() != null) {
             TradeGui gui2 = player2.getTradeGui();
-            org.bukkit.inventory.Inventory inv2 = gui2.gui.getInventory();
+            Inventory inv2 = gui2.gui.getInventory();
             for (int slot : gui2.slots) {
-                org.bukkit.inventory.ItemStack item = inv2.getItem(slot);
+                ItemStack item = inv2.getItem(slot);
                 if (item != null) {
                     player2Items.add(item.clone());
-                    inv2.setItem(slot, null); // Clear slot immediately after cloning
+                    inv2.setItem(slot, null);
                 }
             }
         }
 
-        // Return items synchronously BEFORE closing GUI
-        for (org.bukkit.inventory.ItemStack item : player1Items) {
-            java.util.HashMap<Integer, org.bukkit.inventory.ItemStack> leftover = p1.getInventory().addItem(item);
-            if (!leftover.isEmpty() && p1.isOnline()) {
-                // Drop items on ground if inventory is full
-                p1.getWorld().dropItemNaturally(p1.getLocation(), item);
-            }
-        }
-
-        for (org.bukkit.inventory.ItemStack item : player2Items) {
-            java.util.HashMap<Integer, org.bukkit.inventory.ItemStack> leftover = p2.getInventory().addItem(item);
-            if (!leftover.isEmpty() && p2.isOnline()) {
-                // Drop items on ground if inventory is full
-                p2.getWorld().dropItemNaturally(p2.getLocation(), item);
-            }
-        }
+        // Return items synchronously (PR #39 fix)
+        addOrDropSync(p1.getInventory(), player1Items, p1.getLocation());
+        addOrDropSync(p2.getInventory(), player2Items, p2.getLocation());
 
         HistoryUtils.writeToHistory(String.format("Aborted: %s - %s", player1.getPlayer().getName(), player2.getPlayer().getName()));
         if (p1.isOnline()) {
-            MESSAGEUTILS.sendLang(p1, "trade.aborted", Map.of("%player%", p2.getName()));
+            MESSAGEUTILS.sendLang(p1, "trade.aborted", Map.of("%player%", VaultHelper.getDisplayName(p2)));
             SoundUtils.playSound(p1, "aborted");
         }
         if (p2.isOnline()) {
-            MESSAGEUTILS.sendLang(p2, "trade.aborted", Map.of("%player%", p1.getName()));
+            MESSAGEUTILS.sendLang(p2, "trade.aborted", Map.of("%player%", VaultHelper.getDisplayName(p1)));
             SoundUtils.playSound(p2, "aborted");
         }
 
-        // Close GUI and remove trade AFTER returning items
         Scheduler.get().run(scheduledTask -> Trades.removeTrade(this));
         p1.closeInventory();
         p1.updateInventory();
@@ -130,16 +120,32 @@ public class Trade {
     public void complete() {
         end();
         for (Map.Entry<CurrencyHook, Double> entry : player1.getCurrencies().entrySet()) {
-            if (entry.getKey().getBalance(player1.getPlayer().getUniqueId()) < entry.getValue()) {
-                abort(true);
-                return;
+            if (entry.getKey() instanceof com.artillexstudios.axtrade.hooks.currency.ExperienceHook) {
+                com.artillexstudios.axtrade.hooks.currency.ExperienceHook expHook = (com.artillexstudios.axtrade.hooks.currency.ExperienceHook) entry.getKey();
+                if (!expHook.hasEnoughExperienceForLevels(player1.getPlayer().getUniqueId(), entry.getValue().intValue())) {
+                    abort(true);
+                    return;
+                }
+            } else {
+                if (entry.getKey().getBalance(player1.getPlayer().getUniqueId()) < entry.getValue()) {
+                    abort(true);
+                    return;
+                }
             }
         }
 
         for (Map.Entry<CurrencyHook, Double> entry : player2.getCurrencies().entrySet()) {
-            if (entry.getKey().getBalance(player2.getPlayer().getUniqueId()) < entry.getValue()) {
-                abort(true);
-                return;
+            if (entry.getKey() instanceof com.artillexstudios.axtrade.hooks.currency.ExperienceHook) {
+                com.artillexstudios.axtrade.hooks.currency.ExperienceHook expHook = (com.artillexstudios.axtrade.hooks.currency.ExperienceHook) entry.getKey();
+                if (!expHook.hasEnoughExperienceForLevels(player2.getPlayer().getUniqueId(), entry.getValue().intValue())) {
+                    abort(true);
+                    return;
+                }
+            } else {
+                if (entry.getKey().getBalance(player2.getPlayer().getUniqueId()) < entry.getValue()) {
+                    abort(true);
+                    return;
+                }
             }
         }
 
@@ -165,8 +171,8 @@ public class Trade {
                     return;
                 }
 
-                MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.completed", Map.of("%player%", player2.getPlayer().getName()));
-                MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.completed", Map.of("%player%", player1.getPlayer().getName()));
+                MESSAGEUTILS.sendLang(player1.getPlayer(), "trade.completed", Map.of("%player%", VaultHelper.getDisplayName(player2.getPlayer())));
+                MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.completed", Map.of("%player%", VaultHelper.getDisplayName(player1.getPlayer())));
                 SoundUtils.playSound(player1.getPlayer(), "completed");
                 SoundUtils.playSound(player2.getPlayer(), "completed");
 
@@ -215,9 +221,7 @@ public class Trade {
                 List<String> player1Items = new ArrayList<>();
                 player1.getTradeGui().getItems(false).forEach(itemStack -> {
                     if (itemStack == null) return;
-                    Scheduler.get().runAt(player2.getPlayer().getLocation(), task -> {
-                        ContainerUtils.INSTANCE.addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
-                    });
+                    addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
                     final String itemName = Utils.getFormattedItemName(itemStack);
                     int itemAm = itemStack.getAmount();
                     player1Items.add(itemAm + "x " + itemName);
@@ -230,9 +234,7 @@ public class Trade {
                 List<String> player2Items = new ArrayList<>();
                 player2.getTradeGui().getItems(false).forEach(itemStack -> {
                     if (itemStack == null) return;
-                    Scheduler.get().runAt(player1.getPlayer().getLocation(), task -> {
-                        ContainerUtils.INSTANCE.addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
-                    });
+                    addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
                     final String itemName = Utils.getFormattedItemName(itemStack);
                     int itemAm = itemStack.getAmount();
                     player2Items.add(itemAm + "x " + itemName);
@@ -267,5 +269,28 @@ public class Trade {
 
     public boolean isEnded() {
         return ended;
+    }
+
+    // Synchronous version for abort() to prevent item loss (PR #39 fix)
+    private void addOrDropSync(Inventory inventory, List<ItemStack> items, Location location) {
+        for (ItemStack item : items) {
+            HashMap<Integer, ItemStack> leftover = inventory.addItem(item);
+            if (!leftover.isEmpty() && location.getWorld() != null) {
+                for (ItemStack remaining : leftover.values()) {
+                    location.getWorld().dropItemNaturally(location, remaining);
+                }
+            }
+        }
+    }
+
+    // Asynchronous version for complete() (upstream refactoring)
+    private void addOrDrop(Inventory inventory, List<ItemStack> items, Location location) {
+        Location copy = location.clone();
+        Scheduler.get().executeAt(copy, () -> {
+            for (ItemStack key : items) {
+                HashMap<Integer, ItemStack> remaining = inventory.addItem(key);
+                remaining.forEach((k, v) -> copy.getWorld().dropItem(copy, v));
+            }
+        });
     }
 }
