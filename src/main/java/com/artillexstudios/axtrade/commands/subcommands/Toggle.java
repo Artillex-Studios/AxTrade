@@ -1,6 +1,8 @@
 package com.artillexstudios.axtrade.commands.subcommands;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import revxrsal.commands.bukkit.exception.SenderNotPlayerException;
 
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 import static com.artillexstudios.axtrade.AxTrade.TOGGLED;
@@ -8,14 +10,18 @@ import static com.artillexstudios.axtrade.AxTrade.TOGGLED;
 public enum Toggle {
     INSTANCE;
 
-    public void execute(Player sender) {
-        boolean toggled = TOGGLED.getBoolean("toggled." + sender.getUniqueId(), false);
+    public void execute(CommandSender sender, Player other) {
+        if (other != null) sender = other;
+        if (!(sender instanceof Player player)) {
+            throw new SenderNotPlayerException();
+        }
+        boolean toggled = TOGGLED.getBoolean("toggled." + player.getUniqueId(), false);
         if (toggled) {
-            TOGGLED.getBackingDocument().remove("toggled." + sender.getUniqueId());
-            MESSAGEUTILS.sendLang(sender, "toggle.enabled");
+            TOGGLED.getBackingDocument().remove("toggled." + player.getUniqueId());
+            MESSAGEUTILS.sendLang(player, "toggle.enabled");
         } else {
-            TOGGLED.set("toggled." + sender.getUniqueId(), true);
-            MESSAGEUTILS.sendLang(sender, "toggle.disabled");
+            TOGGLED.set("toggled." + player.getUniqueId(), true);
+            MESSAGEUTILS.sendLang(player, "toggle.disabled");
         }
         TOGGLED.save();
     }

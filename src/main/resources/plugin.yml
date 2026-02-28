@@ -11,6 +11,8 @@ permissions:
     default: true
   axtrade.toggle:
     default: true
+  axtrade.toggle.other:
+    default: op
 
 softdepend:
   - AxQuestBoard

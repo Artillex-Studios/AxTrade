@@ -1,6 +1,7 @@
 package com.artillexstudios.axtrade.safety;
 
 import com.artillexstudios.axapi.executor.ExceptionReportingScheduledThreadPool;
+import com.artillexstudios.axapi.utils.ExceptionUtils;
 import com.artillexstudios.axapi.utils.Version;
 import com.artillexstudios.axapi.utils.http.Requests;
 import com.artillexstudios.axtrade.AxTrade;
@@ -41,12 +42,7 @@ public enum SafetyManager {
 
     private static void check() {
         String str = "https://api.artillex-studios.com/safety/?plugin=%s&version=%s&mc=%s".formatted(instance.getName(), instance.getDescription().getVersion(), Version.getProtocolVersion());
-        String body;
-        try {
-            body = Requests.get(str, Map.of()).body();
-        } catch (Exception ignored) {
-            return;
-        }
+        String body = ExceptionUtils.catching(() -> Requests.get(str, Map.of()).body());
 
         JsonArray disabled = gson.fromJson(body, JsonArray.class);
         for (SafetyManager value : SafetyManager.values()) {
@@ -54,9 +50,7 @@ public enum SafetyManager {
         }
         safe = true;
         for (JsonElement jsonElement : disabled) {
-            try {
-                SafetyManager.valueOf(jsonElement.getAsString()).set(false);
-            } catch (Exception ignored) {}
+            ExceptionUtils.catching(() -> SafetyManager.valueOf(jsonElement.getAsString()).set(false));
             safe = false;
         }
         if (!safe) notifier.sendAlert();

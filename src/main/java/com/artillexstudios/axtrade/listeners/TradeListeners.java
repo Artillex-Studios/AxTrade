@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupArrowEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,6 +63,11 @@ public class TradeListeners implements Listener {
     public void onPickup(@NotNull EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         cancelIfTrading(player, event);
+    }
+
+    @EventHandler
+    public void onArrowPickup(@NotNull PlayerPickupArrowEvent event) {
+        cancelIfTrading(event.getPlayer(), event);
     }
 
     @EventHandler
