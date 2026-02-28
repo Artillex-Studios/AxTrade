@@ -2,7 +2,6 @@ package com.artillexstudios.axtrade.utils;
 
 import com.artillexstudios.axapi.items.WrappedItemStack;
 import com.artillexstudios.axapi.libs.boostedyaml.block.implementation.Section;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 

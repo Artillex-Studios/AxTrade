@@ -35,8 +35,8 @@ public class Commands implements OrphanCommand {
 
     @CommandPermission("axtrade.toggle")
     @Subcommand("toggle")
-    public void toggle(Player sender) {
-        Toggle.INSTANCE.execute(sender);
+    public void toggle(CommandSender sender, @Optional @CommandPermission("axtrade.toggle.other") Player other) {
+        Toggle.INSTANCE.execute(sender, other);
     }
 
     @Subcommand("reload")
