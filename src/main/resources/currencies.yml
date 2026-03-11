@@ -39,6 +39,7 @@ currencies:
   RoyaleEconomy:
     register: true
     name: "money"
+  # note: you will have to use the currency name "CoinsEngine-coins" for example when using a multi currency plugin!
   CoinsEngine:
     register: true
     enabled:
@@ -46,6 +47,15 @@ currencies:
         name: "coins"
       - currency-name: "money"
         name: "money"
+  # note: you will have to use the currency name "ExcellentEconomy-coins" for example when using a multi currency plugin!
+  ExcellentEconomy:
+    register: true
+    enabled:
+      - currency-name: "coins"
+        name: "coins"
+      - currency-name: "money"
+        name: "money"
+  # note: you will have to use the currency name "UltraEconomy-coins" for example when using a multi currency plugin!
   UltraEconomy:
     register: true
     enabled:
@@ -72,6 +82,7 @@ currencies:
   AxHoes:
     register: true
     name: "essence"
+  # note: you will have to use the currency name "RedisEconomy-coins" for example when using a multi currency plugin!
   RedisEconomy:
     register: true
     enabled:
@@ -80,6 +91,7 @@ currencies:
   BeastTokens:
     register: true
     name: "tokens"
+  # note: you will have to use the currency name "EcoBits-coins" for example when using a multi currency plugin!
   EcoBits:
     register: true
     enabled:
@@ -90,4 +102,4 @@ currencies:
     name: "credits"
 
 # do not change this
-version: 10
+version: 11
