@@ -3,7 +3,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxTrade</artifactId>
-    <version>1.22.0</version>
+    <version>1.23.0</version>
     <packaging>jar</packaging>
 
     <name>AxTrade</name>
@@ -201,6 +201,13 @@
             <artifactId>CoinsEngine</artifactId>
             <version>2.1.1</version>
             <systemPath>${project.basedir}/libs/CoinsEngine-2.1.1.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+        <dependency>
+            <groupId>su.nightexpress.excellenteconomy</groupId>
+            <artifactId>ExcellentEconomy</artifactId>
+            <version>2.7.0</version>
+            <systemPath>${project.basedir}/libs/ExcellentEconomy-2.7.0.jar</systemPath>
             <scope>system</scope>
         </dependency>
         <dependency>

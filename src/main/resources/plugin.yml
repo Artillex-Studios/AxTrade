@@ -17,6 +17,7 @@ permissions:
 softdepend:
   - AxQuestBoard
   - CoinsEngine
+  - ExcellentEconomy
   - Kingdoms
   - PlaceholderAPI
   - PlayerPoints
