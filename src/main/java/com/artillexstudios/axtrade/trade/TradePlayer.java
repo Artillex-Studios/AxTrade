@@ -139,8 +139,11 @@ public class TradePlayer {
     public int getEmptySlots() {
         int am = 0;
         for (ItemStack item : player.getInventory().getStorageContents()) {
-            if (item != null) continue;
-            am++;
+            if (item == null) {
+                am++; // 완전히 빈 슬롯
+            } else if (item.getAmount() < item.getMaxStackSize()) {
+                am++; // ✅ 부분 스택 슬롯도 공간 있음으로 카운트
+            }
         }
         return am;
     }
