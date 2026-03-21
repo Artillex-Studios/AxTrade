@@ -16,10 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 import static com.artillexstudios.axtrade.AxTrade.LANG;
@@ -222,8 +219,13 @@ public class Trade {
 
     private void addOrDrop(Inventory inventory, List<ItemStack> items, Location location) {
         Location copy = location.clone();
+        // ✅ Scheduler 실행 전에 미리 clone해서 타이밍 이슈 방지
+        List<ItemStack> safeItems = items.stream()
+                .filter(Objects::nonNull)
+                .map(ItemStack::clone)
+                .toList();
         Scheduler.get().executeAt(copy, () -> {
-            for( ItemStack key : items) {
+            for (ItemStack key : safeItems) {
                 HashMap<Integer, ItemStack> remaining = inventory.addItem(key);
                 remaining.forEach((k, v) -> copy.getWorld().dropItem(copy, v));
             }

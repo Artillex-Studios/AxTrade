@@ -346,7 +346,7 @@ public class TradeGui extends GuiFrame {
         for (int slot : slots) {
             ItemStack item = gui.getInventory().getItem(slot);
             if (!includeAir && item == null) continue;
-            items.add(item);
+            items.add(item != null ? item.clone() : null); // ✅ clone으로 레퍼런스 오염 방지
         }
         return items;
     }
