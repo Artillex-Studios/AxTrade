@@ -31,11 +31,16 @@ public class Trades {
     }
 
     public static boolean isTrading(Player player) {
-        return trades.stream().anyMatch(trade -> trade.player1.getPlayer().equals(player) || trade.player2.getPlayer().equals(player));
+        return getTrade(player) != null;
     }
 
     @Nullable
     public static Trade getTrade(Player player) {
-        return trades.stream().filter(trade -> trade != null && (trade.player1.getPlayer().equals(player) || trade.player2.getPlayer().equals(player))).findAny().orElse(null);
+        for (Trade trade : trades) {
+            if (trade.player1.getPlayer().equals(player) || trade.player2.getPlayer().equals(player)) {
+                return trade;
+            }
+        }
+        return null;
     }
 }

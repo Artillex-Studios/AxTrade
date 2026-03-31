@@ -47,7 +47,6 @@ public class Trade {
 
     public void end() {
         ended = true;
-        Scheduler.get().run(task -> Trades.removeTrade(this));
 
         if (player1 != null && player1.getPlayer().isOnline()) {
             Scheduler.get().runAt(player1.getPlayer().getLocation(), scheduledTask -> {
@@ -92,6 +91,7 @@ public class Trade {
         MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", player1.getPlayer().getName()));
         SoundUtils.playSound(player1.getPlayer(), "aborted");
         SoundUtils.playSound(player2.getPlayer(), "aborted");
+        Scheduler.get().run(task -> Trades.removeTrade(this));
     }
 
     public void complete() {
@@ -147,10 +147,11 @@ public class Trade {
                     String fullCurrencyAmount = NumberUtils.formatNumber(entry.getValue());
                     String taxedCurrencyAmount = NumberUtils.formatNumber(amountAfterTax);
 
-                    if (amountAfterTax == entry.getValue())
+                    if (amountAfterTax == entry.getValue()) {
                         player1Currencies.add(currencyName + ": " + taxedCurrencyAmount);
-                    else
+                    } else {
                         player1Currencies.add(currencyName + ": " + taxedCurrencyAmount + " (+ tax: " + NumberUtils.formatNumber(entry.getValue() - amountAfterTax) + ")");
+                    }
 
                     if (CONFIG.getBoolean("enable-trade-summaries")) {
                         MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.currency"), Map.of("%amount%", taxedCurrencyAmount, "%currency%", currencyName));
@@ -168,10 +169,11 @@ public class Trade {
                     String fullCurrencyAmount = NumberUtils.formatNumber(entry.getValue());
                     String taxedCurrencyAmount = NumberUtils.formatNumber(amountAfterTax);
 
-                    if (amountAfterTax == entry.getValue())
+                    if (amountAfterTax == entry.getValue()) {
                         player2Currencies.add(currencyName + ": " + taxedCurrencyAmount);
-                    else
+                    } else {
                         player2Currencies.add(currencyName + ": " + taxedCurrencyAmount + " (+ tax: " + NumberUtils.formatNumber(entry.getValue() - amountAfterTax) + ")");
+                    }
 
                     if (CONFIG.getBoolean("enable-trade-summaries")) {
                         MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.currency"), Map.of("%amount%", fullCurrencyAmount, "%currency%", currencyName));
@@ -207,7 +209,16 @@ public class Trade {
 
                 HistoryUtils.writeToHistory(
                         String.format("%s: [Currencies: %s] [Items: %s] | %s: [Currencies: %s] [Items: %s]",
-                                player1.getPlayer().getName(), player1Currencies.isEmpty() ? "---" : String.join(", ", player1Currencies), player1Items.isEmpty() ? "---" : String.join(", ", player1Items), player2.getPlayer().getName(), player2Currencies.isEmpty() ? "---" : String.join(", ", player2Currencies), player2Items.isEmpty() ? "---" : String.join(", ", player2Items)));
+                                player1.getPlayer().getName(),
+                                player1Currencies.isEmpty() ? "---" : String.join(", ", player1Currencies),
+                                player1Items.isEmpty() ? "---" : String.join(", ", player1Items),
+                                player2.getPlayer().getName(),
+                                player2Currencies.isEmpty() ? "---" : String.join(", ", player2Currencies),
+                                player2Items.isEmpty() ? "---" : String.join(", ", player2Items)
+                        )
+                );
+
+                Scheduler.get().run(scheduledTask -> Trades.removeTrade(this));
             });
         });
     }
@@ -235,7 +246,7 @@ public class Trade {
     private void addOrDrop(Inventory inventory, List<ItemStack> items, Location location) {
         Location copy = location.clone();
         Scheduler.get().executeAt(copy, () -> {
-            for( ItemStack key : items) {
+            for (ItemStack key : items) {
                 HashMap<Integer, ItemStack> remaining = inventory.addItem(key);
                 remaining.forEach((k, v) -> copy.getWorld().dropItem(copy, v));
             }
