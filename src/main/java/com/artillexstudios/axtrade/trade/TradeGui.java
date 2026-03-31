@@ -345,7 +345,7 @@ public class TradeGui extends GuiFrame {
         final List<ItemStack> items = new ArrayList<>();
         for (int slot : slots) {
             ItemStack item = gui.getInventory().getItem(slot);
-            if (!includeAir && item == null) continue;
+            if (!includeAir && (item == null || item.getType().isAir())) continue;
             items.add(item);
         }
         return items;
