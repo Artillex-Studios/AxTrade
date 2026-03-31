@@ -41,16 +41,26 @@ public class Trade {
     }
 
     public void update() {
-        player1.getTradeGui().update();
-        player2.getTradeGui().update();
+        if (player1.getTradeGui() != null) player1.getTradeGui().update();
+        if (player2.getTradeGui() != null) player2.getTradeGui().update();
     }
 
     public void end() {
         ended = true;
-        player1.getPlayer().closeInventory();
-        player1.getPlayer().updateInventory();
-        player2.getPlayer().closeInventory();
-        player2.getPlayer().updateInventory();
+
+        if (player1 != null && player1.getPlayer().isOnline()) {
+            Scheduler.get().runAt(player1.getPlayer().getLocation(), scheduledTask -> {
+                player1.getPlayer().closeInventory();
+                player1.getPlayer().updateInventory();
+            });
+        }
+
+        if (player2 != null && player2.getPlayer().isOnline()) {
+            Scheduler.get().runAt(player2.getPlayer().getLocation(), scheduledTask -> {
+                player2.getPlayer().closeInventory();
+                player2.getPlayer().updateInventory();
+            });
+        }
     }
 
     public void abort() {
@@ -64,10 +74,12 @@ public class Trade {
         Bukkit.getPluginManager().callEvent(event);
 
         end();
-        player1.getTradeGui().getItems(false).forEach(itemStack -> {
-            if (itemStack == null) return;
-            addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
-        });
+        if (player1.getTradeGui() != null) {
+            player1.getTradeGui().getItems(false).forEach(itemStack -> {
+                if (itemStack == null) return;
+                addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
+            });
+        }
         if (player2.getTradeGui() != null) {
             player2.getTradeGui().getItems(false).forEach(itemStack -> {
                 if (itemStack == null) return;
@@ -79,7 +91,7 @@ public class Trade {
         MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", player1.getPlayer().getName()));
         SoundUtils.playSound(player1.getPlayer(), "aborted");
         SoundUtils.playSound(player2.getPlayer(), "aborted");
-        Scheduler.get().run(scheduledTask -> Trades.removeTrade(this));
+        Scheduler.get().run(task -> Trades.removeTrade(this));
     }
 
     public void complete() {
