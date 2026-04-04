@@ -158,6 +158,12 @@ public class TradeGui extends GuiFrame {
     }
 
     private void handleClickTop(InventoryClickEvent event) {
+
+        int ownConfirmSlot = GUIS.getInt("own.confirm-item.slot");
+        int partnerConfirmSlot = GUIS.getInt("partner.confirm-item.slot");
+
+        if (event.getSlot() == ownConfirmSlot || event.getSlot() == partnerConfirmSlot) return;
+        
         if (confirmCooldown.hasCooldown(player.getPlayer())) {
             event.setCancelled(true);
             return;
@@ -199,23 +205,29 @@ public class TradeGui extends GuiFrame {
             return;
         }
 
+        boolean modifiesTrade = false;
+
         if (event.getCurrentItem() != null) {
             if (checkFull(event)) return;
 
-            if (event.isShiftClick() && event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && !slots.contains(event.getView().getTopInventory().firstEmpty())) {
+            if (event.isShiftClick()
+                    && event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY
+                    && !slots.contains(event.getView().getTopInventory().firstEmpty())) {
                 event.setCancelled(true);
                 for (int i : slots) {
                     if (gui.getInventory().getItem(i) == null) {
                         gui.getInventory().setItem(i, event.getCurrentItem().clone());
                         event.getCurrentItem().setAmount(0);
+                        modifiesTrade = true;
                         break;
                     }
                 }
             }
         }
-
-        player.cancel();
-        Scheduler.get().run(scheduledTask -> trade.update());
+        if (modifiesTrade) {
+            player.cancel();
+            Scheduler.get().run(scheduledTask -> trade.update());
+        }
     }
 
     private void handleDrag(InventoryDragEvent event) {
