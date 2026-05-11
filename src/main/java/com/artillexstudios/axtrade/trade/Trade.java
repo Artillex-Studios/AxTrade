@@ -233,7 +233,7 @@ public class Trade {
 
     private void addOrDrop(Inventory inventory, List<ItemStack> items, Location location) {
         Location copy = location.clone();
-        Scheduler.get().executeAt(copy, () -> {
+        Scheduler.get().runAt(copy, () -> {
             for (ItemStack key : items) {
                 HashMap<Integer, ItemStack> remaining = inventory.addItem(key);
                 remaining.forEach((k, v) -> copy.getWorld().dropItem(copy, v));
