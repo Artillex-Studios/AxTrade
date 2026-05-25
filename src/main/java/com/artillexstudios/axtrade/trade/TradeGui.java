@@ -310,8 +310,13 @@ public class TradeGui extends GuiFrame {
         trade.prepTime = System.currentTimeMillis();
         event.getWhoClicked().closeInventory();
 
-        BaseGui shulkerGui = Gui.storage().rows(3).title(StringUtils.format(Utils.getFormattedItemName(event.getCurrentItem()))).disableAllInteractions().create();
-        shulkerGui.getInventory().setContents(ShulkerUtils.getShulkerContents(event.getCurrentItem(), false));
+        BaseGui shulkerGui = Gui.storage()
+                .rows(3)
+                .title(StringUtils.format(Utils.getFormattedItemName(event.getCurrentItem())))
+                .disableAllInteractions()
+                .create();
+
+        shulkerGui.getInventory().setContents(ShulkerUtils.getStorageContents(event.getCurrentItem(), false).toArray(ItemStack[]::new));
         shulkerGui.setCloseGuiAction(e -> {
             Scheduler.get().runLaterAt(player.getPlayer().getLocation(), () -> {
                 if (trade.isEnded()) return;
