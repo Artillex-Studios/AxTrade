@@ -296,6 +296,7 @@ public class TradeGui extends GuiFrame {
                 inSign = false;
                 trade.update();
                 currentTitle = "";
+                player.cancel();
                 updateTitle();
             });
         }).build(player.getPlayer());

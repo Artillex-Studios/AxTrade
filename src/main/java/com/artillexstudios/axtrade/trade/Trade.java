@@ -79,7 +79,9 @@ public class Trade {
         MESSAGEUTILS.sendLang(player2.getPlayer(), "trade.aborted", Map.of("%player%", player1.getPlayer().getName()));
         SoundUtils.playSound(player1.getPlayer(), "aborted");
         SoundUtils.playSound(player2.getPlayer(), "aborted");
-        Scheduler.get().run(scheduledTask -> Trades.removeTrade(this));
+        Scheduler.get().run(scheduledTask -> {
+            Trades.removeTrade(this);
+        });
     }
 
     public void complete() {
