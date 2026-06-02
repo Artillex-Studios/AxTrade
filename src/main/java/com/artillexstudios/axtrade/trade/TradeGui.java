@@ -187,7 +187,7 @@ public class TradeGui extends GuiFrame {
         }
 
         player.cancel();
-        Scheduler.get().run(scheduledTask -> trade.update());
+        trade.update();
     }
 
     private void handleClickBottom(InventoryClickEvent event) {
@@ -215,7 +215,7 @@ public class TradeGui extends GuiFrame {
         }
 
         player.cancel();
-        Scheduler.get().run(scheduledTask -> trade.update());
+        trade.update();
     }
 
     private void handleDrag(InventoryDragEvent event) {
@@ -226,7 +226,7 @@ public class TradeGui extends GuiFrame {
             break;
         }
 
-        Scheduler.get().run(scheduledTask -> trade.update());
+        trade.update();
         if (ownInv) return;
 
         if (!new HashSet<>(slots).containsAll(event.getInventorySlots())) {
@@ -290,7 +290,7 @@ public class TradeGui extends GuiFrame {
                         break;
                 }
             }
-            Scheduler.get().run(scheduledTask -> {
+            Scheduler.get().run(player.getPlayer(), scheduledTask -> {
                 if (trade.isEnded()) return;
                 gui.open(player.getPlayer());
                 inSign = false;
@@ -298,7 +298,7 @@ public class TradeGui extends GuiFrame {
                 currentTitle = "";
                 player.cancel();
                 updateTitle();
-            });
+            }, () -> {});
         }).build(player.getPlayer());
         sign.open();
     }
@@ -319,7 +319,7 @@ public class TradeGui extends GuiFrame {
 
         shulkerGui.getInventory().setContents(ShulkerUtils.getStorageContents(event.getCurrentItem(), false).toArray(ItemStack[]::new));
         shulkerGui.setCloseGuiAction(e -> {
-            Scheduler.get().runLaterAt(player.getPlayer().getLocation(), () -> {
+            Scheduler.get().runLater(player.getPlayer(), scheduledTask -> {
                 if (trade.isEnded()) return;
                 trade.prepTime = System.currentTimeMillis();
                 gui.open(player.getPlayer());
@@ -327,7 +327,7 @@ public class TradeGui extends GuiFrame {
                 trade.update();
                 currentTitle = "";
                 updateTitle();
-            }, 1);
+            }, () -> {}, 1);
         });
         shulkerGui.open(player.getPlayer());
     }
@@ -367,11 +367,11 @@ public class TradeGui extends GuiFrame {
         if (currentTitle.equals(newTitle)) return;
         this.currentTitle = newTitle;
 
-        Scheduler.get().runLater(task -> {
+        Scheduler.get().runLater(player.getPlayer(), task -> {
             Inventory topInv = player.getPlayer().getOpenInventory().getTopInventory();
             if (topInv.equals(gui.getInventory())) {
                 NMSHandlers.getNmsHandler().setTitle(player.getPlayer().getOpenInventory().getTopInventory(), StringUtils.format(newTitle));
             }
-        }, 1);
+        }, () -> {}, 1);
     }
 }
