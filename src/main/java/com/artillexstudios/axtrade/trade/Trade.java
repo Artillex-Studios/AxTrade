@@ -13,7 +13,6 @@ import com.artillexstudios.axtrade.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -41,16 +40,14 @@ public class Trade {
     }
 
     public void update() {
-        player1.getTradeGui().update();
-        player2.getTradeGui().update();
+        update(player1);
+        update(player2);
     }
 
     public void end() {
         ended = true;
-        player1.getPlayer().closeInventory();
-        player1.getPlayer().updateInventory();
-        player2.getPlayer().closeInventory();
-        player2.getPlayer().updateInventory();
+        closeInventory(player1);
+        closeInventory(player2);
     }
 
     public void abort() {
@@ -66,12 +63,12 @@ public class Trade {
         end();
         player1.getTradeGui().getItems(false).forEach(itemStack -> {
             if (itemStack == null) return;
-            addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
+            addOrDrop(player1.getPlayer(), List.of(itemStack));
         });
         if (player2.getTradeGui() != null) {
             player2.getTradeGui().getItems(false).forEach(itemStack -> {
                 if (itemStack == null) return;
-                addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
+                addOrDrop(player2.getPlayer(), List.of(itemStack));
             });
         }
         HistoryUtils.writeToHistory(String.format("Aborted: %s - %s", player1.getPlayer().getName(), player2.getPlayer().getName()));
@@ -174,7 +171,7 @@ public class Trade {
                 List<String> player1Items = new ArrayList<>();
                 player1.getTradeGui().getItems(false).forEach(itemStack -> {
                     if (itemStack == null) return;
-                    addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
+                    addOrDrop(player2.getPlayer(), List.of(itemStack));
                     final String itemName = Utils.getFormattedItemName(itemStack);
                     int itemAm = itemStack.getAmount();
                     player1Items.add(itemAm + "x " + itemName);
@@ -187,7 +184,7 @@ public class Trade {
                 List<String> player2Items = new ArrayList<>();
                 player2.getTradeGui().getItems(false).forEach(itemStack -> {
                     if (itemStack == null) return;
-                    addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
+                    addOrDrop(player1.getPlayer(), List.of(itemStack));
                     final String itemName = Utils.getFormattedItemName(itemStack);
                     int itemAm = itemStack.getAmount();
                     player2Items.add(itemAm + "x " + itemName);
@@ -233,13 +230,27 @@ public class Trade {
         return ended;
     }
 
-    private void addOrDrop(Inventory inventory, List<ItemStack> items, Location location) {
-        Location copy = location.clone();
-        Scheduler.get().runAt(copy, () -> {
+    private void update(TradePlayer tradePlayer) {
+        Scheduler.get().run(tradePlayer.getPlayer(), scheduledTask -> {
+            if (ended || tradePlayer.getTradeGui() == null) return;
+            tradePlayer.getTradeGui().update();
+        }, () -> {});
+    }
+
+    private void closeInventory(TradePlayer tradePlayer) {
+        Scheduler.get().run(tradePlayer.getPlayer(), scheduledTask -> {
+            tradePlayer.getPlayer().closeInventory();
+            tradePlayer.getPlayer().updateInventory();
+        }, () -> {});
+    }
+
+    private void addOrDrop(Player player, List<ItemStack> items) {
+        Scheduler.get().run(player, scheduledTask -> {
+            Location copy = player.getLocation().clone();
             for (ItemStack key : items) {
-                HashMap<Integer, ItemStack> remaining = inventory.addItem(key);
+                HashMap<Integer, ItemStack> remaining = player.getInventory().addItem(key);
                 remaining.forEach((k, v) -> copy.getWorld().dropItem(copy, v));
             }
-        });
+        }, () -> {});
     }
 }
