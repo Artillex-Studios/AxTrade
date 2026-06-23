@@ -4,6 +4,7 @@ import com.artillexstudios.axapi.gui.SignInput;
 import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.Cooldown;
+import com.artillexstudios.axapi.utils.PaperUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.hooks.currency.CurrencyHook;
@@ -43,7 +44,7 @@ import static com.artillexstudios.axtrade.AxTrade.LANG;
 import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 
 public class TradeGui extends GuiFrame {
-    private static final Cooldown<Player> confirmCooldown = Cooldown.create();
+    private static final Cooldown<Player> confirmCooldown = PaperUtils.isFolia() ? Cooldown.createSynchronized() : Cooldown.create();;
     protected final Trade trade;
     private final TradePlayer player;
     protected final StorageGui gui;

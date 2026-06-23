@@ -45,6 +45,7 @@ public enum SafetyManager {
         String body = ExceptionUtils.catching(() -> Requests.get(str, Map.of()).body());
 
         JsonArray disabled = gson.fromJson(body, JsonArray.class);
+        if (disabled == null) return;
         for (SafetyManager value : SafetyManager.values()) {
             value.set(true);
         }

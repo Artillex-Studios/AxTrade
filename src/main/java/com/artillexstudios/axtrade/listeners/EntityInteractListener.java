@@ -1,6 +1,7 @@
 package com.artillexstudios.axtrade.listeners;
 
 import com.artillexstudios.axapi.utils.Cooldown;
+import com.artillexstudios.axapi.utils.PaperUtils;
 import com.artillexstudios.axtrade.request.Requests;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 
 public class EntityInteractListener implements Listener {
-    private static final Cooldown<Player> cooldown = Cooldown.create();
+    private static final Cooldown<Player> cooldown = PaperUtils.isFolia() ? Cooldown.createSynchronized() : Cooldown.create();
 
     @EventHandler (ignoreCancelled = true)
     public void onInteract(@NotNull PlayerInteractEntityEvent event) {
