@@ -6,12 +6,14 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI;
 import su.nightexpress.excellenteconomy.api.currency.ExcellentCurrency;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class ExcellentEconomyHook implements CurrencyHook {
+    private Method method;
     private ExcellentEconomyAPI api;
     private ExcellentCurrency currency = null;
     private final Map<String, Object> settings;
@@ -24,6 +26,13 @@ public class ExcellentEconomyHook implements CurrencyHook {
         }
         this.settings = map;
         this.internal = (String) settings.get("currency-name");
+
+        try {
+            Class<?> clazz = Class.forName("su.nightexpress.excellenteconomy.api.currency.ExcellentCurrency");
+            method = clazz.getMethod("isDecimal");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -52,7 +61,12 @@ public class ExcellentEconomyHook implements CurrencyHook {
 
     @Override
     public boolean usesDouble() {
-        return true;
+        try {
+            return (Boolean) method.invoke(currency);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return true;
+        }
     }
 
     @Override
