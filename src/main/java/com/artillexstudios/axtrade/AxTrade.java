@@ -25,6 +25,10 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Locale;
 
 public final class AxTrade extends AxPlugin {
     public static Config CONFIG;
@@ -51,14 +55,11 @@ public final class AxTrade extends AxPlugin {
         new Metrics(this, 21500);
 
         CONFIG = new Config(new File(getDataFolder(), "config.yml"), getResource("config.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setKeepAll(true).setVersioning(new BasicVersioning("version")).build());
-        GUIS = new Config(new File(getDataFolder(), "guis.yml"), getResource("guis.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setKeepAll(true).setVersioning(new BasicVersioning("version")).build());
-        LANG = new Config(new File(getDataFolder(), "lang.yml"), getResource("lang.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setKeepAll(true).setVersioning(new BasicVersioning("version")).build());
+        loadLanguageConfigs();
         HOOKS = new Config(new File(getDataFolder(), "currencies.yml"), getResource("currencies.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setKeepAll(true).setVersioning(new BasicVersioning("version")).build());
         TOGGLED = new Config(new File(getDataFolder(), "toggled.yml"), getResource("toggled.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.DEFAULT, DumperSettings.DEFAULT, UpdaterSettings.DEFAULT);
 
         LanguageManager.reload();
-
-        MESSAGEUTILS = new MessageUtils(LANG.getBackingDocument(), "prefix", CONFIG.getBackingDocument());
 
         threadedQueue = new ThreadedQueue<>("AxTrade-Datastore-thread");
 
@@ -92,5 +93,62 @@ public final class AxTrade extends AxPlugin {
         FeatureFlags.PLACEHOLDER_API_HOOK.set(true);
         FeatureFlags.PLACEHOLDER_API_IDENTIFIER.set("axtrade");
         FeatureFlags.ENABLE_PACKET_LISTENERS.set(true);
+    }
+
+    public static void loadLanguageConfigs() {
+        final AxTrade plugin = (AxTrade) instance;
+        GUIS = plugin.createLanguageConfig("guis.yml");
+        LANG = plugin.createLanguageConfig("lang.yml");
+        MESSAGEUTILS = new MessageUtils(LANG.getBackingDocument(), "prefix", CONFIG.getBackingDocument());
+    }
+
+    private Config createLanguageConfig(String resourceName) {
+        final File file = getLanguageFile(resourceName);
+        migrateLegacyLanguageFile(resourceName, file);
+        ensureLanguageDirectory(file);
+        return new Config(file, getLanguageResource(resourceName), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setKeepAll(true).setVersioning(new BasicVersioning("version")).build());
+    }
+
+    private File getLanguageFile(String resourceName) {
+        return new File(getDataFolder(), "lang/" + getConfiguredLanguageKey() + "/" + resourceName);
+    }
+
+    private InputStream getLanguageResource(String resourceName) {
+        final InputStream languageResource = getResource("lang/" + getConfiguredLanguageKey() + "/" + resourceName);
+        return languageResource == null ? getResource(resourceName) : languageResource;
+    }
+
+    private void migrateLegacyLanguageFile(String resourceName, File targetFile) {
+        if (!getConfiguredLanguageKey().equals("en_us") || targetFile.exists()) return;
+
+        final File legacyFile = new File(getDataFolder(), resourceName);
+        if (!legacyFile.exists()) return;
+
+        try {
+            Files.createDirectories(targetFile.toPath().getParent());
+            Files.copy(legacyFile.toPath(), targetFile.toPath());
+        } catch (IOException exception) {
+            getLogger().warning("Failed to migrate " + resourceName + " to " + targetFile.getPath() + ": " + exception.getMessage());
+        }
+    }
+
+    private void ensureLanguageDirectory(File file) {
+        try {
+            Files.createDirectories(file.toPath().getParent());
+        } catch (IOException exception) {
+            getLogger().warning("Failed to create language directory for " + file.getPath() + ": " + exception.getMessage());
+        }
+    }
+
+    private static String getConfiguredLanguageKey() {
+        if (CONFIG == null) return "en_us";
+        return CONFIG.getString("language", "en_US").toLowerCase(Locale.ROOT).replace('-', '_');
+    }
+
+    public static Locale getConfiguredLocale() {
+        if (CONFIG == null) return Locale.US;
+
+        final Locale locale = Locale.forLanguageTag(getConfiguredLanguageKey().replace('_', '-'));
+        return locale.toLanguageTag().equals("und") ? Locale.US : locale;
     }
 }

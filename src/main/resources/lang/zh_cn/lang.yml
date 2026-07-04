@@ -1,0 +1,120 @@
+# DOCUMENTATION: https://docs.artillex-studios.com/axtrade.html
+# Simplified Chinese translation by TendoArisu
+
+player-help:
+  - " "
+  - "<gradient:#00FFDD:#55FFFF><b>AxTrade</b></gradient> <#22FFDD>帮助"
+  - " <#22FFDD>- <white>/axtrade <player> <#DDDDDD>| <#77FFFF>发送交易请求"
+  - " <#22FFDD>- <white>/axtrade accept <player> <#DDDDDD>| <#77FFFF>接受交易请求"
+  - " <#22FFDD>- <white>/axtrade deny <player> <#DDDDDD>| <#77FFFF>拒绝交易请求"
+  - " "
+
+admin-help:
+  - " "
+  - "<gradient:#00FFDD:#55FFFF><b>AxTrade</b></gradient> <#22FFDD>帮助"
+  - " <#22FFDD>- <white>/axtrade <player> <#DDDDDD>| <#77FFFF>发送交易请求"
+  - " <#22FFDD>- <white>/axtrade accept <player> <#DDDDDD>| <#77FFFF>接受交易请求"
+  - " <#22FFDD>- <white>/axtrade deny <player> <#DDDDDD>| <#77FFFF>拒绝交易请求"
+  - " <#22FFDD>- <white>/axtrade reload <#DDDDDD>| <#77FFFF>重载插件"
+  - " <#22FFDD>- <white>/axtrade force <player> <#DDDDDD>| <#77FFFF>强制开始交易"
+  - " <#22FFDD>- <white>/axtrade preview <#DDDDDD>| <#77FFFF>打开只读 GUI（用于测试）"
+  - " "
+
+reload:
+  success: "&#33FF33插件已成功重载！"
+  failed: "&#FF3333插件重载失败！&f%file%&#FF3333 文件存在问题，请查看控制台或使用 YAML 校验器修复错误！"
+
+trade:
+  started: "&#CCFFEE你已与 &#00FFDD%player% &#CCFFEE开始交易！"
+  completed: "&#CCFFEE你与 &#00FFDD%player% &#CCFFEE的交易已完成！"
+  aborted: "&#CCFFEE你与 &#00FFDD%player% &#CCFFEE的交易已取消！"
+  blacklisted-item: "&#CCFFEE该物品禁止交易！"
+  inventory-full: "&#CCFFEE你的交易对象没有更多空位，无法继续向交易界面放入物品。"
+  preview-info: "&#CCFFEE你正在打开预览 GUI。它仅用于测试配置，点击按钮可能会报错或无法正常工作。"
+
+toggle:
+  enabled: "&#CCFFEE你已开启交易请求！"
+  disabled: "&#CCFFEE你已关闭交易请求！"
+
+# summary after a successful trade
+summary:
+  get:
+    item: "&#00FF00&l+ &#00FF00%amount%x %item%"
+    currency: "&#00FF00&l+ &#00FF00%amount% %currency%"
+  give:
+    item: "&#FF0000&l- &#FF0000%amount%x %item%"
+    currency: "&#FF0000&l- &#FF0000%amount% %currency%"
+
+currency-editor:
+  success: "&#CCFFEE数值已成功修改！"
+  failed: "&#CCFFEE数值无效！"
+  not-enough: "&#CCFFEE你的该货币余额不足！"
+
+request:
+  sent-sender: "&#CCFFEE你已成功向 &#00FFDD%player% &#CCFFEE发送交易请求！"
+  sent-receiver:
+    info: "&#CCFFEE你收到了来自 &#00FFDD%player% &#CCFFEE的交易请求！"
+    accept:
+      message: "&#00FF00/trade accept %player%"
+      hover: "&#00FF00点击此处&n接受&#00FF00交易请求！"
+    deny:
+      message: "&#FF0000/trade deny %player%"
+      hover: "&#FF0000点击此处&n拒绝&#FF0000交易请求！"
+  no-request: "&#CCFFEE你没有来自 &#00FFDD%player% &#CCFFEE的待处理交易请求！"
+  deny-sender: "&#CCFFEE你的交易请求已被 &#00FFDD%player% &#CCFFEE拒绝！"
+  deny-receiver: "&#CCFFEE你已成功拒绝 &#00FFDD%player% &#CCFFEE的交易请求！"
+  cant-trade-self: "&#CCFFEE你不能向自己发送交易请求！"
+  already-in-trade: "&#CCFFEE该玩家已经在与其他人交易！"
+  already-sent: "&#CCFFEE你最近已经向 &#00FFDD%player% &#CCFFEE发送过交易请求！"
+  too-far: "&#CCFFEE你距离 &#00FFDD%player% &#CCFFEE太远，无法发送交易请求！"
+  not-accepting: "&#CCFFEE该玩家当前不接受交易！"
+  disallowed-gamemode: "&#CCFFEE你或对方处于禁止交易的游戏模式！"
+  same-ip: "&#CCFFEE你不能与和你 IP 相同的账号交易！"
+  below-required-amount: "&#CCFFEE本次交易至少需要包含 &f%amount% %currency%&#CCFFEE！"
+  blacklisted-world: "&#CCFFEE此世界已禁用交易！"
+  expired: "&#CCFFEE你发送给 &#00FFDD%player% &#CCFFEE的交易请求已过期！"
+  disabled-trading: "&#CCFFEE你已关闭交易！使用 &#00FFDD/trade toggle &#CCFFEE开启。"
+
+# this must be 4 lines
+# note: currently the first line must be left empty
+currency-editor-sign:
+  - ""
+  - "-----------"
+  - "在第一行输入"
+  - "新的数值"
+
+# list of sounds: https://www.digminecraft.com/lists/sound_list_pc.php
+# set to "" to disable
+sounds:
+  # trade sounds
+  started: "entity.player.levelup"
+  completed: "entity.player.levelup"
+  aborted: "block.anvil.destroy"
+  # trade requests
+  deny: "block.anvil.land"
+  requested: "entity.experience_bottle.throw"
+  # gui sounds
+  accept: "ui.button.click"
+  countdown: "ui.button.click"
+  cancel: "ui.button.click"
+
+# can be used in the gui title as %own-status% and %partner-status%
+placeholders:
+  ready: "已确认"
+  waiting: "等待中"
+
+commands:
+  invalid-value: "&#FF0000无效参数：&#BB0000%value%"
+  invalid-command: "&#FF0000无效的命令或子命令！"
+  missing-argument: "&#FF0000缺少参数！你必须为 &#BB0000%value% &#FF0000指定一个值。"
+  no-permission: "&#FF0000你没有权限使用该命令！"
+  out-of-range: "&#FF0000数值 &#BB0000%number% &#FF0000必须介于 &#BB0000%min% &#FF0000和 &#BB0000%max% &#FF0000之间！"
+  player-only: "&#FF0000你必须是玩家才能使用该命令！"
+  invalid-player: "&#FF0000找不到玩家 &#BB0000%player%&#FF0000！"
+  invalid-selector: "&#FF0000你不能在该命令中使用此选择器！"
+
+update-notifier: "&#AAFFCC插件有新版本可用！&#DDDDDD（&#FFFFFF当前：&#FF0000%current% &#DDDDDD| &#FFFFFF最新：&#00FF00%latest%&#DDDDDD）"
+safety: "&#FF0000出于安全原因，该功能已被禁用，并且需要更新插件。请联系服务器管理员。"
+
+# do not change this
+version: 9

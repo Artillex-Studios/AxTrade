@@ -6,7 +6,6 @@ import revxrsal.commands.bukkit.BukkitCommandHandler;
 import revxrsal.commands.orphan.Orphans;
 
 import java.util.List;
-import java.util.Locale;
 
 import static com.artillexstudios.axtrade.AxTrade.CONFIG;
 
@@ -17,13 +16,14 @@ public class CommandManager {
         handler = BukkitCommandHandler.create(AxTrade.getInstance());
 
         handler.getTranslator().add(new CommandMessages());
-        handler.setLocale(Locale.of("en", "US"));
+        handler.setLocale(AxTrade.getConfiguredLocale());
 
         reload();
     }
 
     public static void reload() {
         handler.unregisterAllCommands();
+        handler.setLocale(AxTrade.getConfiguredLocale());
 
         List<String> aliases = CONFIG.getStringList("command-aliases");
         if (!aliases.isEmpty()) {
