@@ -189,9 +189,9 @@ public class Trade {
                 List<String> player1Items = new ArrayList<>();
                 player1.getTradeGui().getItems(false).forEach(itemStack -> {
                     if (itemStack == null) return;
-                    addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
-                    final String itemName = Utils.getFormattedItemName(itemStack);
+                    String itemName = Utils.getFormattedItemName(itemStack);
                     int itemAm = itemStack.getAmount();
+                    addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
                     player1Items.add(itemAm + "x " + itemName);
                     if (CONFIG.getBoolean("enable-trade-summaries")) {
                         MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
@@ -202,9 +202,9 @@ public class Trade {
                 List<String> player2Items = new ArrayList<>();
                 player2.getTradeGui().getItems(false).forEach(itemStack -> {
                     if (itemStack == null) return;
-                    addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
-                    final String itemName = Utils.getFormattedItemName(itemStack);
+                    String itemName = Utils.getFormattedItemName(itemStack);
                     int itemAm = itemStack.getAmount();
+                    addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
                     player2Items.add(itemAm + "x " + itemName);
                     if (CONFIG.getBoolean("enable-trade-summaries")) {
                         MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
