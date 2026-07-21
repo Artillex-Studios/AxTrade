@@ -29,7 +29,7 @@ public class LanguageManager {
 
     public static void reload() {
         final String lang = CONFIG.getString("language", "en_US").toLowerCase();
-        final File file = new File(AxTrade.getInstance().getDataFolder(), "lib/translations/" + lang + ".yml");
+        final File file = new File(AxTrade.getInstance().getDataFolder(), "assets/" + lang + ".yml");
         boolean exists = file.exists();
         translations = new Config(file);
         if (exists && !translations.getBackingDocument().isEmpty(true)) return;
