@@ -22,6 +22,19 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
+                    <excludes>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/BeastTokensHook.java</exclude>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/CoinsEngineHook.java</exclude>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/EcoBitsHook.java</exclude>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/ExcellentEconomyHook.java</exclude>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/KingdomsXHook.java</exclude>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/RivalCreditsHook.java</exclude>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/RivalHarvesterHoesHook.java</exclude>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/RoyaleEconomyHook.java</exclude>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/SuperMobCoinsHook.java</exclude>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/TheOnlyMobCoins.java</exclude>
+                        <exclude>com/artillexstudios/axtrade/hooks/currency/UltraEconomyHook.java</exclude>
+                    </excludes>
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
@@ -145,13 +158,6 @@
         </dependency>
 
         <dependency>
-            <groupId>me.aglerr.mobcoins</groupId>
-            <artifactId>MobCoins</artifactId>
-            <version>1.1.3</version>
-            <systemPath>${project.basedir}/libs/TheOnly-MobCoins-1.1.3.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
             <groupId>com.artillexstudios</groupId>
             <artifactId>AxQuestBoardAPI</artifactId>
             <version>3</version>
@@ -176,48 +182,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>me.swanis.mobcoins</groupId>
-            <artifactId>MobCoins</artifactId>
-            <version>1.1.2</version>
-            <systemPath>${project.basedir}/libs/mobcoins-api-1.1.2-SNAPSHOT.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.rivaldev.harvesterhoes</groupId>
-            <artifactId>Main</artifactId>
-            <version>LATEST</version>
-            <systemPath>${project.basedir}/libs/RivalHarvesterHoesAPI.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.cryptomorin</groupId>
-            <artifactId>kingdoms</artifactId>
-            <version>LATEST</version>
-            <systemPath>${project.basedir}/libs/KingdomsX-1.16.14.1.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>su.nightexpress.coinsengine</groupId>
-            <artifactId>CoinsEngine</artifactId>
-            <version>2.1.1</version>
-            <systemPath>${project.basedir}/libs/CoinsEngine-2.1.1.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>su.nightexpress.excellenteconomy</groupId>
-            <artifactId>ExcellentEconomy</artifactId>
-            <version>2.7.0</version>
-            <systemPath>${project.basedir}/libs/ExcellentEconomy-2.7.0.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.qKing12.RoyaleEconomy</groupId>
-            <artifactId>RoyaleEconomy</artifactId>
-            <version>1.4.4</version>
-            <systemPath>${project.basedir}/libs/RoyaleEconomyAPI.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
@@ -227,12 +191,6 @@
             <groupId>org.black_ixx</groupId>
             <artifactId>playerpoints</artifactId>
             <version>3.2.6</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.TechsCode</groupId>
-            <artifactId>UltraEconomyAPI</artifactId>
-            <version>2.6.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -254,25 +212,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>me.mraxetv.beasttokens.api</groupId>
-            <artifactId>BeastTokens</artifactId>
-            <version>3.13.3</version>
-            <systemPath>${project.basedir}/libs/bt-api-3.13.3.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.willfp.ecobits</groupId>
-            <artifactId>EcoBits</artifactId>
-            <version>1.8.4</version>
-            <systemPath>${project.basedir}/libs/EcoBits-v1.8.4.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.rivaldev.credits</groupId>
-            <artifactId>RivalCredits</artifactId>
-            <version>API</version>
-            <systemPath>${project.basedir}/libs/RivalCreditsAPI.jar</systemPath>
-            <scope>system</scope>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>6.3.2.RELEASE</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.artillexstudios</groupId>
