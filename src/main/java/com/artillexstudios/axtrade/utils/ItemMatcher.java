@@ -1,7 +1,7 @@
 package com.artillexstudios.axtrade.utils;
 
 import com.artillexstudios.axapi.items.WrappedItemStack;
-import com.artillexstudios.axapi.items.component.DataComponents;
+import com.artillexstudios.axapi.items.components.DataComponents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
@@ -30,7 +30,7 @@ public class ItemMatcher {
         Object val = map.getOrDefault("material", map.get("type"));
         if (val == null) return false;
         needMatch++;
-        var material = DataComponents.material();
+        var material = DataComponents.MATERIAL;
         if (material == null) return false;
         return SimpleRegex.matches((String) val, wrapped.get(material).toString());
     }
@@ -39,7 +39,7 @@ public class ItemMatcher {
         Object val = map.get("name");
         if (val == null) return false;
         needMatch++;
-        Component customName = wrapped.get(DataComponents.customName());
+        Component customName = wrapped.get(DataComponents.CUSTOM_NAME);
         if (customName == null) return false;
         String plain = plainSerializer.serialize(customName);
         return SimpleRegex.matches((String) val, plain);
@@ -49,7 +49,7 @@ public class ItemMatcher {
         Object val = map.get("custom-model-data");
         if (!(val instanceof Integer num)) return false;
         needMatch++;
-        var cmd = wrapped.get(DataComponents.customModelData());
+        var cmd = wrapped.get(DataComponents.CUSTOM_MODEL_DATA);
         if (cmd == null || cmd.floats().isEmpty()) return false;
         return num == cmd.floats().getFirst().intValue();
     }
