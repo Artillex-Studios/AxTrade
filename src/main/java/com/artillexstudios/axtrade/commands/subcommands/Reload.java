@@ -1,9 +1,12 @@
 package com.artillexstudios.axtrade.commands.subcommands;
 
 import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axtrade.AxTrade;
+import com.artillexstudios.axtrade.commands.CommandManager;
 import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.lang.LanguageManager;
 import com.artillexstudios.axtrade.utils.NumberUtils;
+import com.artillexstudios.axtrade.utils.UpdateNotifier;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -26,6 +29,7 @@ public enum Reload {
         }
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╠ &#AAFFDDReloaded &fconfig.yml&#AAFFDD!"));
 
+        AxTrade.loadLanguageConfigs();
         if (!LANG.reload()) {
             MESSAGEUTILS.sendLang(sender, "reload.failed", Map.of("%file%", "lang.yml"));
             return;
@@ -48,6 +52,8 @@ public enum Reload {
 
         HookManager.updateHooks();
         NumberUtils.reload();
+        CommandManager.reload();
+        UpdateNotifier.init(CONFIG, LANG);
 
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╚ &#AAFFDDSuccessful reload!"));
         MESSAGEUTILS.sendLang(sender, "reload.success");

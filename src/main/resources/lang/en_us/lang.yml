@@ -1,0 +1,119 @@
+# DOCUMENTATION: https://docs.artillex-studios.com/axtrade.html
+
+player-help:
+  - " "
+  - "<gradient:#00FFDD:#55FFFF><b>AxTrade</b></gradient> <#22FFDD>Help"
+  - " <#22FFDD>➤ <white>/axtrade <player> <#DDDDDD>| <#77FFFF>Send trade request"
+  - " <#22FFDD>➤ <white>/axtrade accept <player> <#DDDDDD>| <#77FFFF>Accept trade request"
+  - " <#22FFDD>➤ <white>/axtrade deny <player> <#DDDDDD>| <#77FFFF>Deny trade request"
+  - " "
+
+admin-help:
+  - " "
+  - "<gradient:#00FFDD:#55FFFF><b>AxTrade</b></gradient> <#22FFDD>Help"
+  - " <#22FFDD>➤ <white>/axtrade <player> <#DDDDDD>| <#77FFFF>Send trade request"
+  - " <#22FFDD>➤ <white>/axtrade accept <player> <#DDDDDD>| <#77FFFF>Accept trade request"
+  - " <#22FFDD>➤ <white>/axtrade deny <player> <#DDDDDD>| <#77FFFF>Deny trade request"
+  - " <#22FFDD>➤ <white>/axtrade reload <#DDDDDD>| <#77FFFF>Reload plugin"
+  - " <#22FFDD>➤ <white>/axtrade force <player> <#DDDDDD>| <#77FFFF>Force start a trade"
+  - " <#22FFDD>➤ <white>/axtrade preview <#DDDDDD>| <#77FFFF>Opens read only gui (meant for testing)"
+  - " "
+
+reload:
+  success: "&#33FF33Plugin successfully reloaded!"
+  failed: "&#FF3333Failed to reload the plugin! Something is wrong in the &f%file%&#FF3333 file, look in the console or use a yaml validator to fix the errors!"
+
+trade:
+  started: "&#CCFFEEYou have started a trade with &#00FFDD%player%&#CCFFEE!"
+  completed: "&#CCFFEEYour trade with &#00FFDD%player% &#CCFFEEwas completed!"
+  aborted: "&#CCFFEEYour trade with &#00FFDD%player% &#CCFFEEwas aborted!"
+  blacklisted-item: "&#CCFFEEThis item is blacklisted!"
+  inventory-full: "&#CCFFEEYou can't put any more items in the gui, because your trade partner has no more empty slots."
+  preview-info: "&#CCFFEEYou are opening the preview gui, this is meant for testing your configuration, clicking buttons will cause errors and might not work."
+
+toggle:
+  enabled: "&#CCFFEEYou have enabled trade requests!"
+  disabled: "&#CCFFEEYou have disabled trade requests!"
+
+# summary after a successful trade
+summary:
+  get:
+    item: "&#00FF00&l+ &#00FF00%amount%x %item%"
+    currency: "&#00FF00&l+ &#00FF00%amount% %currency%"
+  give:
+    item: "&#FF0000&l- &#FF0000%amount%x %item%"
+    currency: "&#FF0000&l- &#FF0000%amount% %currency%"
+
+currency-editor:
+  success: "&#CCFFEESuccessfully changed value!"
+  failed: "&#CCFFEEIncorrect value!"
+  not-enough: "&#CCFFEEYou don't have enough of this currency!"
+
+request:
+  sent-sender: "&#CCFFEEYou have successfully sent a trade request to &#00FFDD%player%&#CCFFEE!"
+  sent-receiver:
+    info: "&#CCFFEEYou have received a trade request from &#00FFDD%player%&#CCFFEE!"
+    accept:
+      message: "&#00FF00/trade accept %player%"
+      hover: "&#00FF00Click here to &naccept&#00FF00 trade request!"
+    deny:
+      message: "&#FF0000/trade deny %player%"
+      hover: "&#FF0000Click here to &ndeny&#FF0000 trade request!"
+  no-request: "&#CCFFEEYou don't have an active trade request from &#00FFDD%player%&#CCFFEE!"
+  deny-sender: "&#CCFFEEYou trade request was denied by &#00FFDD%player%&#CCFFEE!"
+  deny-receiver: "&#CCFFEEYou have successfully denied &#00FFDD%player%&#CCFFEE's trade request!"
+  cant-trade-self: "&#CCFFEEYou can't send a trade request to yourself!"
+  already-in-trade: "&#CCFFEEThe player is already trading with someone!"
+  already-sent: "&#CCFFEEYou have already sent a trade request to &#00FFDD%player% &#CCFFEErecently!"
+  too-far: "&#CCFFEEYou are too far from &#00FFDD%player% &#CCFFEEto send a trade request!"
+  not-accepting: "&#CCFFEEThis player is not accepting trades!"
+  disallowed-gamemode: "&#CCFFEEEither you or the other player is in a disallowed gamemode!"
+  same-ip: "&#CCFFEEYou can't trade with an account that has the same ip as you!"
+  below-required-amount: "&#CCFFEEYou are required to trade at least &f%amount% %currency%&#CCFFEE!"
+  blacklisted-world: "&#CCFFEETrades are disabled in this world!"
+  expired: "&#CCFFEEYour trade request to &#00FFDD%player% &#CCFFEEhas expired!"
+  disabled-trading: "&#CCFFEEYou have disabled trades! Use &#00FFDD/trade toggle &#CCFFEEto enable."
+
+# this must be 4 lines
+# note: currently the first line must be left empty
+currency-editor-sign:
+  - ""
+  - "-----------"
+  - "Write the new value"
+  - "in the first line"
+
+# list of sounds: https://www.digminecraft.com/lists/sound_list_pc.php
+# set to "" to disable
+sounds:
+  # trade sounds
+  started: "entity.player.levelup"
+  completed: "entity.player.levelup"
+  aborted: "block.anvil.destroy"
+  # trade requests
+  deny: "block.anvil.land"
+  requested: "entity.experience_bottle.throw"
+  # gui sounds
+  accept: "ui.button.click"
+  countdown: "ui.button.click"
+  cancel: "ui.button.click"
+
+# can be used in the gui title as %own-status% and %partner-status%
+placeholders:
+  ready: "Ready"
+  waiting: "Waiting"
+
+commands:
+  invalid-value: "&#FF0000Invalid parameter: &#BB0000%value%"
+  invalid-command: "&#FF0000Invalid command or subcommand!"
+  missing-argument: "&#FF0000Missing argument! You must specify a value for &#BB0000%value%&#FF0000."
+  no-permission: "&#FF0000You don't have permission to access this command!"
+  out-of-range: "&#FF0000The &#BB0000%number% &#FF0000must be between &#BB0000%min% &#FF0000and &#BB0000%max%&#FF0000!"
+  player-only: "&#FF0000You must be a player to use this command!"
+  invalid-player: "&#FF0000The player &#BB0000%player% &#FF0000can not be found!"
+  invalid-selector: "&#FF0000You can not use this selector in this command!"
+
+update-notifier: "&#AAFFCCThere is a new version of the plugin available! &#DDDDDD(&#FFFFFFcurrent: &#FF0000%current% &#DDDDDD| &#FFFFFFlatest: &#00FF00%latest%&#DDDDDD)"
+safety: "&#FF0000This feature has been disabled for safety reasons and updating the plugin is required, please contact the server administrators."
+
+# do not change this
+version: 9

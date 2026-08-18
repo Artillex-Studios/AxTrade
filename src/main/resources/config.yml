@@ -4,6 +4,8 @@ prefix: "<gradient:#00FFDD:#55FFFF><b>AxTrade</b></gradient> &7» "
 
 # format: language_COUNTRY
 # after changing this, the server will download the default item names
+# built-in languages: en_US, zh_CN
+# message/gui files are stored in the lang/<language>/ folder
 language: en_US
 
 # you must define at least 1

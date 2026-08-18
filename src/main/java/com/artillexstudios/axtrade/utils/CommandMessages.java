@@ -1,6 +1,7 @@
 package com.artillexstudios.axtrade.utils;
 
 import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axtrade.AxTrade;
 import revxrsal.commands.locales.LocaleReader;
 
 import java.util.Locale;
@@ -64,10 +65,8 @@ public class CommandMessages implements LocaleReader {
         return StringUtils.formatToString(CONFIG.getString("prefix", "") + res);
     }
 
-    private final Locale locale = new Locale("en", "US");
-
     @Override
     public Locale getLocale() {
-        return locale;
+        return AxTrade.getConfiguredLocale();
     }
 }
