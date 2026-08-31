@@ -108,14 +108,18 @@ public class Requests {
         if (LANG.getSection("request.sent-receiver") == null) // this is for backwards compatibility
             MESSAGEUTILS.sendLang(receiver, "request.sent-receiver", replacements2);
         else {
+            String mainCmd = CONFIG.getStringList("command-aliases").isEmpty() ? "trade" : CONFIG.getStringList("command-aliases").get(0);
+            String acceptSub = com.artillexstudios.axtrade.commands.CommandManager.getSubcommand("accept", "accept");
+            String denySub = com.artillexstudios.axtrade.commands.CommandManager.getSubcommand("deny", "deny");
+
             ServerPlayerWrapper receiverWrap = ServerPlayerWrapper.wrap(receiver);
             receiverWrap.message(StringUtils.format(CONFIG.getString("prefix") + LANG.getString("request.sent-receiver.info"), replacements2));
             receiverWrap.message(StringUtils.format(LANG.getString("request.sent-receiver.accept.message"), replacements2)
                     .hoverEvent(HoverEvent.showText(StringUtils.format(LANG.getString("request.sent-receiver.accept.hover"), replacements2)))
-                    .clickEvent(ClickEvent.runCommand("/trade accept " + sender.getName())));
+                    .clickEvent(ClickEvent.runCommand("/" + mainCmd + " " + acceptSub + " " + sender.getName())));
             receiverWrap.message(StringUtils.format(LANG.getString("request.sent-receiver.deny.message"), replacements2)
                     .hoverEvent(HoverEvent.showText(StringUtils.format(LANG.getString("request.sent-receiver.deny.hover"), replacements2)))
-                    .clickEvent(ClickEvent.runCommand("/trade deny " + sender.getName())));
+                    .clickEvent(ClickEvent.runCommand("/" + mainCmd + " " + denySub + " " + sender.getName())));
         }
         SoundUtils.playSound(sender, "requested");
         SoundUtils.playSound(receiver, "requested");
