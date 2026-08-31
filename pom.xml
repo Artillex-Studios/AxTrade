@@ -93,7 +93,7 @@
         </repository>
         <repository>
             <id>techscode</id>
-            <url>https://repo.techscode.com/repository/maven-releases/</url>
+            <url>https://repo.techscode.com/repository/techscode-apis/</url>
         </repository>
         <repository>
             <id>rosewood-repo</id>
@@ -102,6 +102,14 @@
         <repository>
             <id>alessiodp</id>
             <url>https://repo.alessiodp.com/releases/</url>
+        </repository>
+        <repository>
+            <id>auxilor</id>
+            <url>https://repo.auxilor.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>nightexpress-releases</id>
+            <url>https://repo.nightexpressdev.com/releases</url>
         </repository>
     </repositories>
 
@@ -176,11 +184,10 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>me.swanis.mobcoins</groupId>
-            <artifactId>MobCoins</artifactId>
-            <version>1.1.2</version>
-            <systemPath>${project.basedir}/libs/mobcoins-api-1.1.2-SNAPSHOT.jar</systemPath>
-            <scope>system</scope>
+            <groupId>com.github.superservic</groupId>
+            <artifactId>supermobcoins-api</artifactId>
+            <version>master-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>me.rivaldev.harvesterhoes</groupId>
@@ -206,9 +213,8 @@
         <dependency>
             <groupId>su.nightexpress.excellenteconomy</groupId>
             <artifactId>ExcellentEconomy</artifactId>
-            <version>2.7.0</version>
-            <systemPath>${project.basedir}/libs/ExcellentEconomy-2.7.0.jar</systemPath>
-            <scope>system</scope>
+            <version>2.8.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>me.qKing12.RoyaleEconomy</groupId>
@@ -232,7 +238,7 @@
         <dependency>
             <groupId>me.TechsCode</groupId>
             <artifactId>UltraEconomyAPI</artifactId>
-            <version>2.6.4</version>
+            <version>1.1.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -254,6 +260,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>6.3.2.RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>me.mraxetv.beasttokens.api</groupId>
             <artifactId>BeastTokens</artifactId>
             <version>3.13.3</version>
@@ -261,11 +273,10 @@
             <scope>system</scope>
         </dependency>
         <dependency>
-            <groupId>com.willfp.ecobits</groupId>
+            <groupId>com.willfp</groupId>
             <artifactId>EcoBits</artifactId>
             <version>1.8.4</version>
-            <systemPath>${project.basedir}/libs/EcoBits-v1.8.4.jar</systemPath>
-            <scope>system</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>me.rivaldev.credits</groupId>
