@@ -104,6 +104,9 @@ public class Trade {
             Scheduler.get().runLater(task -> {
                 Trades.removeTrade(this);
             }, 1);
+        }).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return null;
         });
     }
 
@@ -234,8 +237,17 @@ public class Trade {
                     Scheduler.get().runLater(task -> {
                         Trades.removeTrade(this);
                     }, 1);
+                }).exceptionally(throwable -> {
+                    throwable.printStackTrace();
+                    return null;
                 });
+            }).exceptionally(throwable -> {
+                throwable.printStackTrace();
+                return null;
             });
+        }).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return null;
         });
     }
 

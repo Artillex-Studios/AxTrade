@@ -35,12 +35,12 @@ public final class AxTrade extends AxPlugin {
     public static Config TOGGLED;
     public static MessageUtils MESSAGEUTILS;
     private static AxPlugin instance;
-    private static ThreadedQueue<Runnable> threadedQueue;
+//    private static ThreadedQueue<Runnable> threadedQueue;
     private static AxMetrics metrics;
 
-    public static ThreadedQueue<Runnable> getThreadedQueue() {
-        return threadedQueue;
-    }
+//    public static ThreadedQueue<Runnable> getThreadedQueue() {
+//        return threadedQueue;
+//    }
 
     public static AxPlugin getInstance() {
         return instance;
@@ -75,7 +75,7 @@ public final class AxTrade extends AxPlugin {
 
         MESSAGEUTILS = new MessageUtils(LANG.getBackingDocument(), "prefix", CONFIG.getBackingDocument());
 
-        threadedQueue = new ThreadedQueue<>("AxTrade-Datastore-thread");
+//        threadedQueue = new ThreadedQueue<>("AxTrade-Datastore-thread");
 
         getServer().getPluginManager().registerEvents(new EntityInteractListener(), this);
         getServer().getPluginManager().registerEvents(new TradeListeners(), this);
@@ -105,7 +105,7 @@ public final class AxTrade extends AxPlugin {
 
     @Override
     public void updateFlags() {
-        FeatureFlags.USE_LEGACY_HEX_FORMATTER.set(true);
+        FeatureFlags.USE_LEGACY_HEX_FORMATTER.set(false);
         FeatureFlags.PLACEHOLDER_API_HOOK.set(true);
         FeatureFlags.PLACEHOLDER_API_IDENTIFIER.set("axtrade");
         FeatureFlags.ENABLE_PACKET_LISTENERS.set(true);
