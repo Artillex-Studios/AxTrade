@@ -2,10 +2,6 @@
 
 prefix: "<gradient:#00FFDD:#55FFFF><b>AxTrade</b></gradient> &7» "
 
-# format: language_COUNTRY
-# after changing this, the server will download the default item names
-language: en_US
-
 # you must define at least 1
 # reloading will add new commands, however a restart is recommended when editing this
 command-aliases:
@@ -97,4 +93,4 @@ update-notifier:
 enable-safety: true
 
 # do not change this
-version: 9
+version: 10
