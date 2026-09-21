@@ -30,7 +30,7 @@ import static com.artillexstudios.axtrade.AxTrade.MESSAGEUTILS;
 public class Trade {
     protected final TradePlayer player1;
     protected final TradePlayer player2;
-    private boolean ended = false;
+    private volatile boolean ended = false;
     protected long prepTime = System.currentTimeMillis();
 
     public Trade(Player p1, Player p2) {

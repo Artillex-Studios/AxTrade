@@ -2,7 +2,6 @@ package com.artillexstudios.axtrade;
 
 import com.artillexstudios.axapi.AxPlugin;
 import com.artillexstudios.axapi.config.Config;
-import com.artillexstudios.axapi.executor.ThreadedQueue;
 import com.artillexstudios.axapi.libs.boostedyaml.dvs.versioning.BasicVersioning;
 import com.artillexstudios.axapi.libs.boostedyaml.settings.dumper.DumperSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.settings.general.GeneralSettings;
@@ -13,6 +12,7 @@ import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axapi.utils.featureflags.FeatureFlags;
 import com.artillexstudios.axapi.utils.file.FileUtils;
+import com.artillexstudios.axapi.utils.logging.LoggerNameFormat;
 import com.artillexstudios.axtrade.commands.CommandManager;
 import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.lang.LanguageManager;
@@ -35,12 +35,7 @@ public final class AxTrade extends AxPlugin {
     public static Config TOGGLED;
     public static MessageUtils MESSAGEUTILS;
     private static AxPlugin instance;
-//    private static ThreadedQueue<Runnable> threadedQueue;
     private static AxMetrics metrics;
-
-//    public static ThreadedQueue<Runnable> getThreadedQueue() {
-//        return threadedQueue;
-//    }
 
     public static AxPlugin getInstance() {
         return instance;
@@ -75,8 +70,6 @@ public final class AxTrade extends AxPlugin {
 
         MESSAGEUTILS = new MessageUtils(LANG.getBackingDocument(), "prefix", CONFIG.getBackingDocument());
 
-//        threadedQueue = new ThreadedQueue<>("AxTrade-Datastore-thread");
-
         getServer().getPluginManager().registerEvents(new EntityInteractListener(), this);
         getServer().getPluginManager().registerEvents(new TradeListeners(), this);
 
@@ -105,9 +98,9 @@ public final class AxTrade extends AxPlugin {
 
     @Override
     public void updateFlags() {
-        FeatureFlags.USE_LEGACY_HEX_FORMATTER.set(false);
         FeatureFlags.PLACEHOLDER_API_HOOK.set(true);
         FeatureFlags.PLACEHOLDER_API_IDENTIFIER.set("axtrade");
         FeatureFlags.ENABLE_PACKET_LISTENERS.set(true);
+        FeatureFlags.LOGGER_NAME_FORMAT.set(LoggerNameFormat.NAMEABLE);
     }
 }
