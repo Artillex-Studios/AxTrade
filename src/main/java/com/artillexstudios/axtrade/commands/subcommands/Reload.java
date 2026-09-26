@@ -2,7 +2,6 @@ package com.artillexstudios.axtrade.commands.subcommands;
 
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axtrade.hooks.HookManager;
-import com.artillexstudios.axtrade.lang.LanguageManager;
 import com.artillexstudios.axtrade.utils.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -43,8 +42,6 @@ public enum Reload {
             return;
         }
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╠ &#AAFFDDReloaded &fcurrencies.yml&#AAFFDD!"));
-
-        LanguageManager.reload();
 
         HookManager.updateHooks();
         NumberUtils.reload();

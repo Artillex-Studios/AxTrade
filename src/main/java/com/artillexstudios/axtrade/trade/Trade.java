@@ -11,6 +11,8 @@ import com.artillexstudios.axtrade.utils.NumberUtils;
 import com.artillexstudios.axtrade.utils.SoundUtils;
 import com.artillexstudios.axtrade.utils.TaxUtils;
 import com.artillexstudios.axtrade.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -200,26 +202,26 @@ public class Trade {
                     List<String> player1Items = new ArrayList<>();
                     player1.getTradeGui().getItems(false).forEach(itemStack -> {
                         if (itemStack == null) return;
-                        String itemName = Utils.getFormattedItemName(itemStack);
+                        Component itemName = Utils.getItemName(itemStack);
                         int itemAm = itemStack.getAmount();
                         addOrDrop(player2.getPlayer().getInventory(), List.of(itemStack), player2.getPlayer().getLocation());
-                        player1Items.add(itemAm + "x " + itemName);
+                        player1Items.add(itemAm + "x " + Utils.getPlainItemName(itemStack));
                         if (CONFIG.getBoolean("enable-trade-summaries")) {
-                            MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
-                            MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+                            MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.give.item"), Placeholder.unparsed("amount", String.valueOf(itemAm)), Placeholder.component("item", itemName));
+                            MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.get.item"), Placeholder.unparsed("amount", String.valueOf(itemAm)), Placeholder.component("item", itemName));
                         }
                     });
 
                     List<String> player2Items = new ArrayList<>();
                     player2.getTradeGui().getItems(false).forEach(itemStack -> {
                         if (itemStack == null) return;
-                        String itemName = Utils.getFormattedItemName(itemStack);
+                        Component itemName = Utils.getItemName(itemStack);
                         int itemAm = itemStack.getAmount();
                         addOrDrop(player1.getPlayer().getInventory(), List.of(itemStack), player1.getPlayer().getLocation());
-                        player2Items.add(itemAm + "x " + itemName);
+                        player2Items.add(itemAm + "x " + Utils.getPlainItemName(itemStack));
                         if (CONFIG.getBoolean("enable-trade-summaries")) {
-                            MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
-                            MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.item"), Map.of("%amount%", "" + itemAm, "%item%", itemName));
+                            MESSAGEUTILS.sendFormatted(player2.getPlayer(), LANG.getString("summary.give.item"), Placeholder.unparsed("amount", String.valueOf(itemAm)), Placeholder.component("item", itemName));
+                            MESSAGEUTILS.sendFormatted(player1.getPlayer(), LANG.getString("summary.get.item"), Placeholder.unparsed("amount", String.valueOf(itemAm)), Placeholder.component("item", itemName));
                         }
                     });
 

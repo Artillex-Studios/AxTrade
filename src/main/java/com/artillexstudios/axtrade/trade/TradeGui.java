@@ -337,7 +337,7 @@ public class TradeGui extends GuiFrame {
 
         BaseGui shulkerGui = Gui.storage()
                 .rows(3)
-                .title(StringUtils.format(Utils.getFormattedItemName(event.getCurrentItem())))
+                .title(Utils.getItemName(event.getCurrentItem()))
                 .disableAllInteractions()
                 .create();
 
