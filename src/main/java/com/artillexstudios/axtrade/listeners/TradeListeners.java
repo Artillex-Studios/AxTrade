@@ -9,6 +9,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -84,6 +85,7 @@ public class TradeListeners implements Listener {
 
     @EventHandler
     public void onInteract(@NotNull PlayerInteractEvent event) {
+        if (event.getAction() == Action.PHYSICAL) return;
         Trade trade = Trades.getTrade(event.getPlayer());
         if (trade == null) return;
         if (!CONFIG.getBoolean("abort.interact", true)) return;
