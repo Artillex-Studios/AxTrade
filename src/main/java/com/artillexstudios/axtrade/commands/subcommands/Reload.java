@@ -1,6 +1,7 @@
 package com.artillexstudios.axtrade.commands.subcommands;
 
 import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axtrade.commands.CommandManager;
 import com.artillexstudios.axtrade.hooks.HookManager;
 import com.artillexstudios.axtrade.lang.LanguageManager;
 import com.artillexstudios.axtrade.utils.NumberUtils;
@@ -48,6 +49,7 @@ public enum Reload {
 
         HookManager.updateHooks();
         NumberUtils.reload();
+        CommandManager.reload();
 
         Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FFDD╚ &#AAFFDDSuccessful reload!"));
         MESSAGEUTILS.sendLang(sender, "reload.success");

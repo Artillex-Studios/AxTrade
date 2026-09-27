@@ -3,6 +3,7 @@ package com.artillexstudios.axtrade.commands;
 import com.artillexstudios.axtrade.commands.subcommands.Accept;
 import com.artillexstudios.axtrade.commands.subcommands.Deny;
 import com.artillexstudios.axtrade.commands.subcommands.Force;
+import com.artillexstudios.axtrade.commands.subcommands.Help;
 import com.artillexstudios.axtrade.commands.subcommands.Preview;
 import com.artillexstudios.axtrade.commands.subcommands.Reload;
 import com.artillexstudios.axtrade.commands.subcommands.Request;
@@ -55,5 +56,10 @@ public class Commands implements OrphanCommand {
     @CommandPermission(value = "axtrade.admin")
     public void preview(Player sender) {
         Preview.INSTANCE.execute(sender);
+    }
+
+    @Subcommand("help")
+    public void help(CommandSender sender) {
+        Help.INSTANCE.execute(sender);
     }
 }

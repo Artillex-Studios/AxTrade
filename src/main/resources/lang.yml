@@ -102,6 +102,22 @@ placeholders:
   ready: "Ready"
   waiting: "Waiting"
 
+subcommands:
+  accept:
+    - "accept"
+  deny:
+    - "deny"
+  toggle:
+    - "toggle"
+  reload:
+    - "reload"
+  force:
+    - "force"
+  preview:
+    - "preview"
+  help:
+    - "help"
+
 commands:
   invalid-value: "&#FF0000Invalid parameter: &#BB0000%value%"
   invalid-command: "&#FF0000Invalid command or subcommand!"
@@ -116,4 +132,4 @@ update-notifier: "&#AAFFCCThere is a new version of the plugin available! &#DDDD
 safety: "&#FF0000This feature has been disabled for safety reasons and updating the plugin is required, please contact the server administrators."
 
 # do not change this
-version: 9
+version: 10
